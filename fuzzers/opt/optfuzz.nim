@@ -658,7 +658,8 @@ proc check(src: string; disable = ""; knownBase = ""): Result =
   let file = workDir / "fz.nim"
   writeFile(file, src)
   let (baseOk, baseOut) = if knownBase.len > 0: (true, knownBase) else: buildRun(file, "base", "")
-  if not baseOk:
+  if not baseOk or not baseOut.endsWith("exit code 0"):
+    # also a base that crashes or hangs: no oracle (the reducer can delete a base case)
     return Result(outcome: oInvalid, detail: "base build: " & baseOut)
   let (optOk, optOut) = buildRun(file, "opt", "--opt:speed", disable)
   if not optOk:
