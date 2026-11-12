@@ -704,13 +704,16 @@ proc sameFailure(a, b: Result): bool =
   true
 
 var reduceBudget = 120  ## max test builds per reduction
+var deadline = 0.0      ## epochTime() when --minutes runs out (0: never); the reducer stops there too
+
+proc late(): bool = deadline > 0 and epochTime() > deadline
 
 proc reduce(p: var Program; target: Result; only: int): string =
   ## Shrinks `p` (just `t<only>` if `only >= 0`) while it fails like `target`.
   var tests = 0
   proc still(p: Program): bool =
     inc tests
-    if tests > reduceBudget: return false
+    if tests > reduceBudget or late(): return false
     sameFailure(check(render(p, only)), target)
 
   proc tryList(p: var Program; list: var seq[Node]): bool =
@@ -770,7 +773,7 @@ proc reduce(p: var Program; target: Result; only: int): string =
   # line-level pass: unused helpers, declarations, helper statements
   var lines = render(p, only).splitLines
   var i = 0
-  while i < lines.len and tests <= reduceBudget:
+  while i < lines.len and tests <= reduceBudget and not late():
     let l = lines[i]
     let ind = l.skipWhitespace
     # the skeleton: deleting these only breaks the program
@@ -827,6 +830,7 @@ proc main() =
   workDir = absolutePath(workDir)
   createDir(outDir)
   let start = epochTime()
+  if minutes > 0: deadline = start + minutes * 60
   var programs, found, invalidCount = 0
   var seen = initTable[string, string]()   # signature -> first finding
   for k in 0 ..< count:

@@ -788,13 +788,16 @@ proc sameFailure(a, b: Verdict): bool =
   true
 
 var budget = 150   ## max reducer test builds per finding
+var deadline = 0.0 ## epochTime() when --minutes runs out (0: never); the reducer stops there too
+
+proc late(): bool = deadline > 0 and epochTime() > deadline
 
 proc reduce(p: var Program; target: Verdict; only: int; tag, be: string): string =
   ## Delete statements (and unwrap `if`/`for`) while the failure persists.
   var tests = 0
   proc stillFails(p: Program): bool =
     inc tests
-    if tests > budget: return false
+    if tests > budget or late(): return false
     let r = check(render(p, only), tag, be)
     sameFailure(r, target)
 
@@ -889,7 +892,7 @@ proc reduce(p: var Program; target: Verdict; only: int; tag, be: string): string
   # often what pins down a register-allocation dependent failure.
   var lines = render(p, only).splitLines
   var i = 0
-  while i < lines.len and tests <= budget:
+  while i < lines.len and tests <= budget and not late():
     let l = lines[i]
     # keep the skeleton: imports, type fields, test procs, their echo and calls
     let keep = l.len == 0 or l.startsWith("import") or l.startsWith("type") or
@@ -946,6 +949,7 @@ proc main() =
   for be in backends:
     if be != "c": others.add be
   let t0 = epochTime()
+  if minutes > 0: deadline = t0 + minutes * 60
   var found, invalidCount, programs = 0
   var perBe = initCountTable[string]()
   var seen = initCountTable[string]()    # findings per signature
