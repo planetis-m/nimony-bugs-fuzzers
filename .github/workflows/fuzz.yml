@@ -142,6 +142,8 @@ jobs:
           git init -q nimony
           git -C nimony fetch -q --depth 1 "$NIMONY_REPO" "$COMMIT"
           git -C nimony checkout -q FETCH_HEAD
+          # programs built without -d:useLibc compile vendor/mimalloc
+          git -C nimony submodule update -q --init --depth 1
 
       - uses: actions/cache/restore@v6
         with:
