@@ -1,3 +1,5 @@
 # Signatures of known bugs, one per line. The fuzz workflow's summary hides every
 # finding line that contains one of these strings (plain substring match).
 # Lines starting with # and blank lines are ignored.
+# planetis-m/nimony-bugs-fuzzers#65: native {.keepOverflowFlag.} on int8/int16/int32 crashes arkham
+keepovf for sub-
