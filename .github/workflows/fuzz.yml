@@ -2,8 +2,8 @@ name: fuzz
 
 # Every third day: build nimony master, run each fuzzer for a few minutes on
 # fresh seeds, upload what they found. The job summary lists every finding line
-# that matches nothing in known.txt. The prover is left out: too heavy for a
-# runner. Toolchain setup follows planetis-m/test_nimony_native.
+# that matches nothing in known.txt. Toolchain setup follows
+# planetis-m/test_nimony_native.
 
 on:
   schedule:
@@ -68,7 +68,7 @@ jobs:
           S=$(( $(date +%s) / 86400 * 1000 ))   # fresh seeds each day
           T=$(( MIN * 60 ))
           cd fz/fuzzers
-          for f in backends/bfuzz opt/optfuzz closures/clofuzz exc/excfuzz arc/arcfuzz nifasm/asmfuzz; do
+          for f in backends/bfuzz opt/optfuzz closures/clofuzz exc/excfuzz arc/arcfuzz nifasm/asmfuzz prover/provfuzz; do
             nim c -d:release --hints:off $f.nim
           done
           # The outer timeout also stops a reduction that overruns its budget.
@@ -79,6 +79,8 @@ jobs:
           run exc      timeout $T exc/excfuzz      --seed:$S --count:1000000 --nimony:$N
           run arc      timeout $T arc/arcfuzz      --seed:$S --count:1000000 --nimony:$N
           run nifasm   nifasm/asmfuzz --seed:$S --minutes:$MIN --nifasm:$GITHUB_WORKSPACE/nimony/bin/nifasm
+          # 4 GiB address-space cap per process (children inherit it), as the old prover had.
+          run prover   prlimit --as=4294967296 prover/provfuzz --seed:$S --count:1000000 --minutes:$MIN --nimony:$N
 
       - name: Summary
         if: always()

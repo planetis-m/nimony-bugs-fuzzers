@@ -18,7 +18,7 @@ ranges and separate `--out` dirs.
 
 ## Fuzzing in CI
 
-`.github/workflows/fuzz.yml` builds nimony master every third day and runs six fuzzers (not the prover)
+`.github/workflows/fuzz.yml` builds nimony master every third day and runs all seven fuzzers
 for a few minutes each on fresh seeds; run it by hand with `gh workflow run fuzz -f minutes=8`. Findings
 are uploaded as the `fuzz-out` artifact, and the run summary lists every finding line not matched by
 `known.txt`. Add a bug's signature there once it has an issue.
