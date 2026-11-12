@@ -10,4 +10,4 @@ and finally, string case, if/case/try expressions, object defaults) is rendered 
 try/finally semantics, so the expected output is exact. Oracle: `nimony c`, `c --opt:speed` and `n` must print
 that trace. A new failure signature is reduced by deleting procs/statements/arms, unwrapping and shrinking
 expressions. Output in `out/` (`<seed>_<cfg>[.min].nim`, `log.csv`). Parallelism: several processes, different
-`--seed`. Findings: `findings/NN.md`, repros in `min/`. The old Python version is in `old/`.
+`--seed`. Findings: `findings/NN.md`.
