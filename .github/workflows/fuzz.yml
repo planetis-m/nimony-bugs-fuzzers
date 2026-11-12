@@ -199,7 +199,7 @@ jobs:
         if: always()
         run: |
           grep -v '^#' fz/known.txt | grep . > known || true   # blank patterns would match everything
-          cat $RUNNER_TEMP/out/*.csv 2>/dev/null | grep -v '^#' | grep -vF -f known > new || true
+          cat $RUNNER_TEMP/out/*.csv 2>/dev/null | grep -v -e '^#' -e '^time_s,' | grep -vF -f known > new || true   # minus comments and CSV headers
           echo "### ${{ matrix.name }}: $(wc -l < new) new (nimony $COMMIT)" >> "$GITHUB_STEP_SUMMARY"
           if [ -s new ]; then { echo '```'; head -40 new; echo '```'; } >> "$GITHUB_STEP_SUMMARY"; fi
 
