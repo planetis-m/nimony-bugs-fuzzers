@@ -289,10 +289,7 @@ proc expr(g: var Gen; t: Ty; depth: int): string =
     g.leaf(t)
   of tU64, tU32, tU8:
     let s = suffix(t)
-    let mask = (case t
-      of tU64: "63"
-      of tU32: "31"
-      else: "7") & s
+    let mask = $(bitWidth(t) - 1) & s
     case g.rng.rand(13)
     of 0..5:
       "(" & e(t) & " " & g.pick(["+", "-", "*", "xor", "and", "or"]) & " " & e(t) & ")"
@@ -464,18 +461,12 @@ proc stmts(g: var Gen; n: int): seq[Node] =
 proc toU64(t: Ty; x: string): string =
   ## Every scalar as a uint64 that depends on all its bits.
   case t
-  of tF64: bitsOf(tF64, x)
-  of tF32: "uint64(" & bitsOf(tF32, x) & ")"
-  of tI8: "uint64(cast[uint8](" & x & "))"
-  of tI16: "uint64(cast[uint16](" & x & "))"
-  of tI32: "uint64(cast[uint32](" & x & "))"
-  of tI64: "cast[uint64](" & x & ")"
-  of tBool: "uint64(ord(" & x & "))"
+  of tF64, tI64: bitsOf(t, x)
   of tS: "(uint64(cast[uint16](" & x & ".a)) xor (uint64(cast[uint8](" & x & ".b)) shl 16) xor (uint64(" &
          bitsOf(tF32, x & ".c") & ") shl 24))"
   of tB: "(" & x & ".q[0] xor " & x & ".q[3] xor " & bitsOf(tF64, x & ".d") & " xor uint64(cast[uint8](" & x & ".e)))"
   of tObj: "(" & bitsOf(tF64, x & ".x") & " xor uint64(" & x & ".n))"
-  else: "uint64(" & x & ")"
+  else: "uint64(" & bitsOf(t, x) & ")"
 
 proc genHelper(g: var Gen; i: int): Helper =
   ## Helper `h<i>`: a fixed small signature, or 6..17 mixed parameters.
@@ -612,9 +603,6 @@ proc generate(seed, nprocs: int): Program =
   result.helpers = g.helpers
   for i in 0 ..< nprocs:
     g.rng = initRand(seed * 1000 + i + 1)      # each proc reproducible on its own
-    g.loopDepth = 0
-    g.nest = 0
-    g.loopVars.setLen 0
     let (head, body, printed, call) = g.genProc(i)
     result.heads.add head
     result.bodies.add body

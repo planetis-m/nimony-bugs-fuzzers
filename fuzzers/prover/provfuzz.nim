@@ -89,7 +89,6 @@ proc conj(l, r: Expr): Expr = Expr(kind: eAnd, args: @[l, r])
 proc disj(l, r: Expr): Expr = Expr(kind: eOr, args: @[l, r])
 proc negate(x: Expr): Expr = Expr(kind: eNot, args: @[x])
 proc call(f: string; xs: varargs[Expr]): Expr = Expr(kind: eCall, str: f, args: @xs)
-proc isBool(e: Expr): bool = e.kind in {eCmp, eAnd, eOr, eNot, eChk, eTrue, eFalse}
 
 let arrays = {"ar": (0, 7), "la": (2, 5), "o.arr": (0, 3)}.toTable   # fixed-size containers: first, last index
 proc loHi(c: string): (Expr, Expr) =
@@ -430,7 +429,7 @@ type Gen = object
   frozen: seq[string]                   ## must not be written: a clean loop's counter, a C try body
   loops: seq[string]                    ## enclosing loop kinds, innermost last
   nogrow: int                           ## > 0: no seq may grow (inside a clean loop or a C try body)
-  loopDepth, tryDepth: int
+  tryDepth: int
   uniq: int                             ## counter for fresh names
   ids: int                              ## next claim id, shared by the whole module
 
@@ -716,9 +715,9 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
     g.ptrs.add (nm, t)
     return @[simple("let " & nm & " = addr " & t)]
   if q < 60:
-    if g.loopDepth > 0 and g.frozen.len == 0 and g.chance(0.7):
+    if g.loops.len > 0 and g.frozen.len == 0 and g.chance(0.7):
       return @[simple(if noBreak: "continue" else: g.pick(["break", "continue"]))]
-    if g.loopDepth > 0 and g.chance(0.5) and not noBreak: return @[simple("break")]
+    if g.loops.len > 0 and g.chance(0.5) and not noBreak: return @[simple("break")]
     return @[Node(kind: nIf, exprs: @[g.cond(1)], kids: @[simple("return")])]
   if q < 62: return @[simple("result = $1", g.intExpr(2))]
   # ---- compound
@@ -742,7 +741,7 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
     let neg = g.pick([disj(cmp("<", e, lo), cmp(">=", e, hi)), cmp(">=", e, hi), cmp("<", e, lo), negate(g.guard(v, c))])
     g.conds.add(if neg.kind == eNot: neg.args[0] else: negate(neg))
     g.guarded.add (v, c)
-    let ex = g.pick(["return", "return", if g.loopDepth > 0 and not noBreak: "break" else: "return"])
+    let ex = g.pick(["return", "return", if g.loops.len > 0 and not noBreak: "break" else: "return"])
     return @[Node(kind: nIf, exprs: @[neg], kids: @[simple(ex)])]
   if q < 91:   # counting while loop; a clean one writes neither its counter nor grows a seq
     let w = among(g.writable, ["i", "j", "x", "y", "z"])
@@ -768,7 +767,6 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
       test = conj(test, Expr(kind: eChk, id: g.newId, str: c, rhs: g.pick(["!=", "==", ">", "<"]) & " " & $g.pick([0, 3, 5]),
                      args: @[e]))
     elif g.chance(0.15): test = conj(test, g.compare)
-    inc g.loopDepth
     g.loops.add "while"
     if clean:
       g.frozen.add v
@@ -777,7 +775,6 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
     if clean:
       discard g.frozen.pop
       dec g.nogrow
-    dec g.loopDepth
     discard g.loops.pop
     if clean or g.chance(0.9): kids.add step
     return @[init, Node(kind: nWhile, exprs: @[test], kids: kids, fuel: if clean: "" else: g.pick(["break", "break", "return"]))]
@@ -798,11 +795,9 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
       fmt = "for " & kv & " in countdown($1, $2):"
       ex = @[g.pick([bin("-", hi, num(1)), g.small]), g.pick([lo, num(0), num(1)])]
     g.lets.add kv
-    inc g.loopDepth
     g.loops.add "for"
     let kids = g.body(depth, @[], @[(kv, c)])
     discard g.loops.pop
-    dec g.loopDepth
     g.lets.delete(g.lets.find(kv))
     return @[Node(kind: nFor, fmt: fmt, exprs: ex, kids: kids)]
   if q < 98.5:   # try/except around risky(); flavour C: the try body writes nothing (finding 08)
@@ -837,7 +832,7 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
       lab = num(lo).str
     brs.add Node(kind: nOf, fmt: lab, kids: g.body(depth, @[conj(cmp(">=", e, num(lo)), cmp("<=", e, num(hi)))],
                                               @[(v, g.pick(["ar", "la", "o.arr"]))]))
-  @[Node(kind: nCase, exprs: @[e], kids: brs, hasElse: true, els: if g.chance(0.5): g.body(depth) else: @[])]
+  @[Node(kind: nCase, exprs: @[e], kids: brs, els:if g.chance(0.5): g.body(depth) else: @[])]
 
 proc genProc(seed, idx: int; flavour: char; ids: var int): Node =
   ## Proc `p<idx>`; `ids` is the module's next claim id.
@@ -1015,7 +1010,7 @@ proc renderFuncs(cs: seq[FuncCase]): (string, seq[(int, int)]) =
 # ---- running ---------------------------------------------------------------------
 
 type
-  Err = tuple[ln, col: int, msg: string]
+  Err = tuple[ln: int, msg: string]
   Run = tuple[status: string, reached, passed, failed: seq[int], witness: Table[int, string], output: string]
 
 proc build(src, name, cmd: string): (int, string) =
@@ -1027,8 +1022,6 @@ proc build(src, name, cmd: string): (int, string) =
     let (o, rc) = execCmdEx(c)
     result = (rc, o)
     if rc == 0 or "deps.nif" notin o: break   # known flake (report 08): retry once
-
-proc isNum(s: string): bool = s.len > 0 and s.allCharsInSet(Digits)
 
 proc errors(o, name: string): seq[Err] =
   ## `file(line, col) Error: msg`; an error in another file gets line 0.
@@ -1042,12 +1035,12 @@ proc errors(o, name: string): seq[Err] =
     let comma = pos.find(", ")
     if comma < 0: continue
     let (ln, col) = (pos.substr(0, comma - 1), pos.substr(comma + 2))
-    if not (isNum(ln) and isNum(col)): continue
+    if ln.len == 0 or col.len == 0 or not (ln & col).allCharsInSet(Digits): continue
     var m = l.substr(k + 9)
     let v = m.find(" [pass --verbose")
     if v >= 0: m.setLen v
     let here = l.substr(0, b - 1).extractFilename == file  # not `strings.nim`
-    result.add ((if here: parseInt(ln) else: 0), parseInt(col), m)
+    result.add ((if here: parseInt(ln) else: 0), m)
 
 proc fromProver(m: string): bool =
   for w in ["cannot prove", "violated", "value out of range", "unexpectedly"]:
@@ -1189,7 +1182,7 @@ proc persists(kind: string; cid, nclaims: int): proc (p: Node): bool =
 
 proc smaller(e: Expr): seq[Expr] =
   ## Smaller expressions of the same type for `e` or any sub-expression.
-  if e.isBool:
+  if e.kind in {eCmp, eAnd, eOr, eNot, eChk, eTrue, eFalse}:
     if e.kind in {eAnd, eOr, eNot}: result.add e.args
     if e.kind notin {eTrue, eCmp}: result.add Expr(kind: eTrue)
   else:

@@ -244,10 +244,9 @@ proc runNifasm(cs: seq[Case]; idx: seq[int]; rs: var seq[Outcome]) =
       runNifasm(cs, idx[idx.len div 2 .. ^1], rs)
       return
 
-proc runGas(cs: seq[Case]; rs: var seq[Outcome]) =
-  ## assembles all cases in one file
-  var idx: seq[int]
-  for i in 0 ..< cs.len: idx.add i
+proc runGas(cs: seq[Case]; idx: seq[int]; rs: var seq[Outcome]) =
+  ## assembles cases `idx` in one file
+  var idx = idx
   let src = work / "b.s"
   let outf = work / "b.o"
   while idx.len > 0:
@@ -336,7 +335,7 @@ proc eval(cs: seq[Case]): seq[Outcome] =
   var all: seq[int]
   for i in 0 ..< cs.len: all.add i
   runNifasm(cs, all, result)
-  runGas(cs, result)
+  runGas(cs, all, result)
   var unsure: seq[int]
   for i, r in result.mpairs:
     r.verdict = if not r.nifOk and not r.gasOk: "ok"
@@ -383,7 +382,6 @@ proc shrinks(o: Operand): seq[Operand] =
   template alt(f, v) =
     var y = o
     y.f = v
-    when astToStr(f) == "index": (if v < 0: y.scale = 1)
     result.add y
   case o.kind
   of 'r', 'x':
@@ -393,7 +391,10 @@ proc shrinks(o: Operand): seq[Operand] =
     for v in [0, 1, 5]:
       if o.val == low(int) or abs(v) < abs(o.val): alt(val, v)
   of 'm':
-    if o.index >= 0: alt(index, -1)
+    if o.index >= 0:   # no index: scale back to 1
+      var y = o
+      (y.index, y.scale) = (-1, 1)
+      result.add y
     if o.index >= 0 and o.scale != 1: alt(scale, 1)
     if o.hasDisp: alt(hasDisp, false)
     if o.hasDisp and o.val notin [0, 1]: alt(val, 1)
@@ -460,7 +461,7 @@ proc main() =
   let log = open(outDir / "log.csv", fmAppend)
   let findings = open(outDir / "findings.txt", fmAppend)
   if log.getFileSize == 0: log.writeLine "time_s,programs,finding_id,kind,signature"
-  var seen: Table[string, int]
+  var seen: seq[string]   # signatures already reported
   var capped: CountTable[string]   # findings per group before minimizing; caps the expensive repeats
   var counts: CountTable[string]
   var total, fid = 0
@@ -507,10 +508,8 @@ proc main() =
         gas.add b
       var sig = r.verdict & " | " & nif.join(" ")
       if r.verdict == "rejects-valid": sig.add " :: " & errKey(again.nifErr)
-      if sig in seen:
-        inc seen[sig]
-        continue
-      seen[sig] = 1
+      if sig in seen: continue
+      seen.add sig
       inc fid
       let secs = int(epochTime() - start)
       log.writeLine &"{secs},{total},{fid},{r.verdict},\"" & sig.replace('"', '\'') & "\""

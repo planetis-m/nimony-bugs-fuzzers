@@ -223,8 +223,7 @@ proc stmt(c: Ctx; d: int): Node =
     elif blocks.len > 0:
       let b = rng.sample(blocks)[1]
       Node(kind: sBreak, name: b, text: b)
-    elif inner[0]: Node(kind: sBreak, name: inner[1])
-    else: Node(kind: sEcho, name: token())
+    else: Node(kind: sBreak, name: inner[1])  # only `for`s in scope
   elif x < 0.66 and not noJump:
     Node(kind: sRet, exprs: (if c.inHelper: @[expr(c, 2)] else: @[]))
   elif x < 0.78 and not c.inDefer:
@@ -637,12 +636,11 @@ proc verdict(p: Node; cfg: string): string =
 
 # ---- reducer --------------------------------------------------------------------
 
-proc collect(n: Node; res: var seq[Node]) =
-  res.add n
-  for x in n.exprs: collect(x, res)
-  for x in n.body: collect(x, res)
-  if n.fin != nil: collect(n.fin, res)
-proc flatten(p: Node): seq[Node] = collect(p, result)
+proc flatten(n: Node): seq[Node] =
+  result = @[n]
+  for x in n.exprs: result.add flatten(x)
+  for x in n.body: result.add flatten(x)
+  if n.fin != nil: result.add flatten(n.fin)
 
 const
   IntKinds = {eVar, eCall, eAdd, eIfx, eTryx, eBlkx, eLen}

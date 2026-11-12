@@ -400,8 +400,7 @@ proc stmt(d: int): Node =
   of "assignR":
     let vs = visible('R')
     if x < 0.6 and vs.len > 0:
-      let v = rng.sample(vs).name
-      touched.incl v
+      let v = touch(vs)
       let e = rExpr()
       # an assignment revives the target only if declared in this scope
       var here = scopes.len == 1
@@ -678,12 +677,12 @@ const Valgrind = "valgrind -q --leak-check=full --errors-for-leak-kinds=definite
 const VgErrors = {"Invalid read": "invalid-read", "Invalid write": "invalid-write", "Invalid free": "invalid-free",
   "definitely lost": "def-lost", "uninitialised": "uninit", "Mismatched free": "mismatched-free"}
 
-proc normErr(progSeed: string): string =
+proc normErr(s: string): string =
   ## the identifying line of an error, numbers replaced by N
   var l = ""
-  for x in progSeed.splitLines:
+  for x in s.splitLines:
     if not x.isEmptyOrWhitespace: l = x
-  for x in progSeed.splitLines:
+  for x in s.splitLines:
     if "Error:" in x or "BUG" in x or "Assertion" in x or "SIGSEGV" in x or "Defect" in x:
       let e = x.rfind("Error:")
       l = if e < 0: x else: x.substr(e + "Error:".len)

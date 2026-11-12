@@ -66,8 +66,8 @@ type
 
   Result = object
     outcome: Outcome
-    detail: string               ## opt compiler output, or why the base build failed
-    baseOut, optOut: string      ## program output + exit code
+    detail: string               ## why the base build failed
+    baseOut, optOut: string      ## program output + exit code, or the opt compiler's error
     badProc: int                 ## the `t<i>` blamed, -1 if unknown
 
 const
@@ -202,11 +202,6 @@ proc callPure(g: var Gen; t: Ty; d: int): string =
              else: "V(x: 1.0, y: -2.0, n: 3'u32)")
   h.name & "(" & args.join(", ") & ")"
 
-proc nanFreeBits(g: var Gen; t: Ty; x: string): string =
-  # NaN payloads may differ between builds: map every NaN to one pattern
-  if t == tF64: "(if " & x & " != " & x & ": 0x7ff8000000000000'u64 else: cast[uint64](" & x & "))"
-  else: "(if " & x & " != " & x & ": 0x7fc00000'u32 else: cast[uint32](" & x & "))"
-
 proc expr(g: var Gen; t: Ty; d: int): string =
   if d <= 0 or g.chance(0.2): return g.leaf(t)
   template e(tt: Ty): string = g.expr(tt, d - 1)
@@ -230,10 +225,10 @@ proc expr(g: var Gen; t: Ty; d: int): string =
     of 8:
       case t
       of tU64: g.pick(["uint64(" & e(tU32) & ")", "uint64(" & e(tU8) & ")",
-                       g.nanFreeBits(tF64, e(tF64)), "cast[uint64](" & e(tI64) & ")",
+                       bitsOf(tF64, e(tF64)), "cast[uint64](" & e(tI64) & ")",
                        "cast[uint64](" & e(tInt) & ")"])
       of tU32: g.pick(["uint32(" & e(tU64) & " and 0xffffffff'u64)", "uint32(" & e(tU8) & ")",
-                       "cast[uint32](" & e(tI32) & ")", g.nanFreeBits(tF32, e(tF32))])
+                       "cast[uint32](" & e(tI32) & ")", bitsOf(tF32, e(tF32))])
       else: g.pick(["uint8(" & e(tU64) & " and 255'u64)", "uint8(" & e(tU32) & " and 255'u32)"])
     of 9: "(not " & e(t) & ")"
     of 10: tyName(t) & "(ord(" & e(tBool) & "))"
@@ -537,7 +532,7 @@ proc genProc(g: var Gen; i: int): (seq[string], seq[Node], seq[string], string) 
   printed.add ["v.n", "w.n", "gv.n", "pa[]", "pb[]", "g0", "g1"]
   for j in 0 ..< 8: printed.add "arr[" & $j & "]"
   for j in 0 ..< 8: printed.add "garr[" & $j & "]"
-  var call = "t" & $i & "(" & g.lit(tU64) & ", " & g.lit(tF64) & ", " & g.lit(tU32) &
+  let call = "t" & $i & "(" & g.lit(tU64) & ", " & g.lit(tF64) & ", " & g.lit(tU32) &
              ", " & g.lit(tF32) & ", " & g.lit(tI32) & ", " & g.lit(tInt) & ")"
   (head, body, printed, call)
 
@@ -545,8 +540,7 @@ proc generate(seed, nprocs: int): Program =
   var g = Gen(r: initRand(seed))
   for i in 0 ..< 3: g.helpers.add g.genPure(i)
   for i, kind in [hkVar, hkVarObj, hkPtr, hkRec, hkGlobal, HelperKind(g.r.rand(1..5))]:
-    let h = g.genEffect(i, kind)
-    g.helpers.add h
+    g.helpers.add g.genEffect(i, kind)
   result.helpers = g.helpers
   for i in 0 ..< nprocs:
     # own seed per proc: `t<i>` does not depend on the helpers or other procs
@@ -654,7 +648,7 @@ proc check(src: string; env = ""; knownBase = ""): Result =
       while j < optOut.len and optOut[j] in {'0'..'9'}:
         num.add optOut[j]; inc j
       if num.len > 0: bad = parseInt(num)
-    return Result(outcome: oCompile, baseOut: baseOut, optOut: optOut, detail: optOut, badProc: bad)
+    return Result(outcome: oCompile, baseOut: baseOut, optOut: optOut, badProc: bad)
   if baseOut != optOut:
     let crashed = not optOut.endsWith("exit code 0") and baseOut.endsWith("exit code 0")
     return Result(outcome: (if crashed: oCrash else: oMismatch), baseOut: baseOut, optOut: optOut,
@@ -683,7 +677,7 @@ proc normKey(s: string): string =
 
 proc sameFailure(a, b: Result): bool =
   if a.outcome != b.outcome: return false
-  if a.outcome == oCompile: return normKey(a.detail) == normKey(b.detail)
+  if a.outcome == oCompile: return normKey(a.optOut) == normKey(b.optOut)
   true
 
 var reduceBudget = 120  ## max test builds per reduction
@@ -831,7 +825,7 @@ proc main() =
       inc found
       let stem = outDir / &"{backend}_{res.outcome}_{s}"
       var sig = $res.outcome
-      if res.outcome == oCompile: sig.add ": " & normKey(res.detail)
+      if res.outcome == oCompile: sig.add ": " & normKey(res.optOut)
       else: sig.add " [" & bisectPasses(render(p), res) & "]"   # triage before reducing
       echo &"[{el}s] seed {s}: {sig} (proc t{res.badProc})"
       let f = open(outDir / "log.csv", fmAppend)
@@ -839,7 +833,7 @@ proc main() =
       f.close()
       writeFile(stem & ".nim", render(p))
       writeFile(stem & ".base.txt", res.baseOut)
-      writeFile(stem & ".opt.txt", (if res.outcome == oCompile: res.detail else: res.optOut))
+      writeFile(stem & ".opt.txt", res.optOut)
       if sig in seen:
         echo "  duplicate of ", seen[sig]
       elif doReduce:
@@ -850,7 +844,7 @@ proc main() =
         let after = check(reduced)
         writeFile(stem & ".reduced.nim", reduced)
         writeFile(stem & ".reduced.base.txt", after.baseOut)
-        writeFile(stem & ".reduced.opt.txt", (if after.outcome == oCompile: after.detail else: after.optOut))
+        writeFile(stem & ".reduced.opt.txt", after.optOut)
         let passes = bisectPasses(reduced, after)
         writeFile(stem & ".passes.txt", passes & "\n")
         echo &"  reduced to {reduced.countLines} lines ({after.outcome}); passes: {passes}"

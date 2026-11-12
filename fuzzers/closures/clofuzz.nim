@@ -60,8 +60,6 @@ type
     params: seq[string]        ## iterator params
     clo, guarded, cleanup, mayRaise: bool  ## iterator facts, see `forIter`
 
-const Codes = ["SyntaxError", "IOError", "RangeError", "ValueError"]
-
 # ---- emitting ----------------------------------------------------------------
 
 proc emitExpr(e: Node): string =
@@ -263,8 +261,8 @@ proc evalSrc(c: Node; sc: Scope): Val =
     if v.kind != vClo: invalid "not a closure"
     v
   else:
-    if c.name notin facs: invalid "no factory"
-    let f = facs[c.name]
+    let f = facs.getOrDefault(c.name)
+    if f == nil: invalid "no factory"
     let a = eval(c.args[0], sc)
     tick()
     let s = Scope()
@@ -690,7 +688,6 @@ proc stmt(c: var Ctx): seq[Node] =
     c.vars.add sym(n, gBox, c.depth)
     one Node(kind: sBox, name: n, src: src)
   of "localiter":
-    if c.nest > 2: one echoStmt(c)
     let cl = chance(0.5) and not ("citer-in-citer" in avoid and c.routine == "citer")
     # a local INLINE iterator may not touch the enclosing routine's locals
     let d = iterDef(fresh("li"), cl, if cl: captures(c, high(int)) else: newSeq[Sym](), c.iters, c.facs, c.nest + 1)
@@ -701,7 +698,7 @@ proc stmt(c: var Ctx): seq[Node] =
     let (ck, cn) = rng.sample(callees(c))
     let tgt = if ints.len > 0 and chance(0.75): rng.sample(ints).name else: ""
     one Node(kind: sCall, name: tgt, other: cn, num: ck, aux: rnd(0, 2), args: @[expr(c, 1)])
-  of "raise": maybeIf Node(kind: sRaise, name: rng.sample(Codes))
+  of "raise": maybeIf Node(kind: sRaise, name: rng.sample(["SyntaxError", "IOError", "RangeError", "ValueError"]))
   of "break": maybeIf Node(kind: sBreak)
   of "continue": maybeIf Node(kind: sCont)
   of "return": maybeIf(Node(kind: sRet), 2.0)  # always conditional
@@ -823,7 +820,8 @@ proc check(p: seq[Node]; expected: seq[string]; want = ""): seq[(string, string)
 
 var prog: seq[Node]            ## the program being reduced
 var target: string             ## the signature it must keep
-var tests, budget = 0          ## compile tests used and allowed per reduction
+var tests = 0                  ## compile tests used in this reduction
+var budget = 100               ## and allowed
 
 proc fails(): bool =
   ## Whether `prog` is still a valid program and still shows `target`.
@@ -870,7 +868,6 @@ proc main() =
   var count = 10
   var outDir = getAppDir() / "out"
   var doReduce = true
-  budget = 100
   for kind, key, val in getopt():
     case key
     of "seed": seed = parseInt(val)
