@@ -1,0 +1,17 @@
+# built fuzzer binaries
+fuzzers/arc/arcfuzz
+fuzzers/backends/bfuzz
+fuzzers/closures/clofuzz
+fuzzers/exc/excfuzz
+fuzzers/nifasm/asmfuzz
+fuzzers/opt/optfuzz
+fuzzers/prover/provfuzz
+# per-run output and compiler caches
+out/
+work/
+nimcache/
+nc*/
+smoke*/
+*.pkl
+vgcore.*
+__pycache__/
