@@ -1046,8 +1046,7 @@ proc errors(o, name: string): seq[Err] =
     var m = l.substr(k + 9)
     let v = m.find(" [pass --verbose")
     if v >= 0: m.setLen v
-    let at = b - file.len  # file name must be whole: `s.nim` is not the tail of `strings.nim`
-    let here = at >= 0 and l.continuesWith(file, at) and (at == 0 or l[at - 1] in {'/', ' '})
+    let here = l.substr(0, b - 1).extractFilename == file  # not `strings.nim`
     result.add ((if here: parseInt(ln) else: 0), parseInt(col), m)
 
 proc fromProver(m: string): bool =
