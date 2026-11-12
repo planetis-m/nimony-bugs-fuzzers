@@ -19,4 +19,4 @@ ranges and separate `--out` dirs.
 ## Closing issues
 
 A nimony PR or commit that says `Fixes planetis-m/nimony-bugs-fuzzers#N` closes issue N here once it is
-merged: `.github/workflows/close-fixed.yml` runs `scripts/close_fixed.py` hourly.
+merged: `.github/workflows/close-fixed.yml` runs `scripts/close_fixed.py` daily (or run it by hand: `gh workflow run close-fixed`).
