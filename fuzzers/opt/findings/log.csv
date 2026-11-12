@@ -1,0 +1,36 @@
+time_s,programs,finding_id,signature,seed
+54,56,01,mismatch,c_500027
+79,68,01,mismatch,c_1039
+202,73,01,mismatch,c_500032
+290,82,01,mismatch,c_1048
+422,84,01,mismatch,c_500034
+725,125,01,mismatch [cse],c_500108
+842,148,01,mismatch [cse],c_1138
+982,151,01,mismatch [cse],c_500111
+1078,166,01,mismatch [cse],c_500126
+1321,246,02,mismatch [imi],c_1173
+1324,246,01,mismatch [cse],c_500171
+1582,295,01,mismatch [cse],c_500220
+1656,306,01,mismatch [cse],c_500231
+1854,377,03,"mismatch [scalarize,copyprop]",n_900041
+1947,405,03,mismatch [imi],n_900059
+2018,429,03,"mismatch [scalarize,copyprop]",n_900068
+2012,443,01,mismatch [cse],c_1198
+2051,451,01,mismatch [cse],n_900087
+2084,459,01,mismatch [cse],c_1209
+2231,519,01,mismatch [cse],n_900116
+2246,528,01,mismatch [cse],n_900121
+2259,531,nativenif#201,optCompileFails: [Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scratch register collided with the d,n_900123
+2364,608,02,mismatch [none (no single pass disable fixes it)],c_1273
+2393,608,01,mismatch [cse],n_900172
+2413,616,01,mismatch [cse],n_900180
+2428,621,01,mismatch [cse],n_900185
+2438,622,01,mismatch [cse],n_900186
+2481,648,03,mismatch [imi],n_900212
+2504,659,03,mismatch [none (no single pass disable fixes it)],n_900223
+2662,666,03,"mismatch [scalarize,copyprop]",n_900230
+2690,681,01,mismatch [cse],n_900245
+
+"# totals: 682 programs (C mode 435: v1 A 49 + B 51, v2 A2 174 + B2 161; native mode N 247) in 2700 s wall"
+"# CPU (user+sys) of v2 workers: A2 1949 s, B2 1106 s, N 667 s; v1 A/B killed at ~690 s, est. ~1300 s; total ~5000 s"
+"# 31 raw findings -> 3 distinct bugs (01 cse alias, 02 inliner arg substitution, 03 native div/mod out of phase) + nativenif#201; 11 INVALID (generator: 3 constant index out of range, 8 nativenif#201 in native base)"

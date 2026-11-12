@@ -1,0 +1,51 @@
+time_s,programs,finding_id,signature,bug
+37.7,96,false-violation_2026171783335_87,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+66.3,160,false-violation_2026171783339_122,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+71.8,176,unsound_2026171783340_39,unsound:rng:other,02-negative-shr-fold
+127.1,320,false-violation_2026171783349_42,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+427.6,992,false-violation_2026171783391_100,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+433.6,1008,unsound_2026171783392_144,unsound:idx:other,01-for-break-exit
+525.6,1200,unsound_2026171783404_39,unsound:idx:other,01-for-break-exit
+558.9,1264,unsound_2026171783408_47,unsound:rng:other,02-negative-shr-fold
+671.4,1488,false-violation_2026171783422_109,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+703.3,1552,unsound_2026171783426_35,unsound:idx:addr-write,04-addr-write(known 87)
+817.9,1776,unsound_2026171783440_109,unsound:rng:other,01-for-break-exit
+819.1,1776,unsound_2026171783440_116,unsound:idx:other,01-for-break-exit
+820.9,1776,unsound_2026171783440_124,unsound:idx:other,01-for-break-exit
+890.6,1904,unsound_2026171783448_87,unsound:assert:addr-write,04-addr-write(known 87)
+907.5,1936,unsound_2026171783450_98,unsound:idx:addr-write,04-addr-write(known 87)
+916.1,1952,unsound_2026171783451_188,unsound:idx:addr-write,04-addr-write(known 87)
+1009.3,2160,unsound_2026171783464_119,unsound:assert:addr-write,04-addr-write(known 87)
+1010.4,2160,unsound_2026171783464_121,unsound:idx:addr-write,04-addr-write(known 87)
+1041.4,2224,false-violation_2026171783468_62,false-violation:assert:assertion violated,02-negative-shr-fold
+1106.1,2368,unsound_2026171783477_93,unsound:idx:addr-write,04-addr-write(known 87)
+1161.3,2496,false-violation_2026171783485_102,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+1189.6,2560,false-violation_2026171783489_94,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+1282.2,2784,unsound_2026171783503_11,unsound:rng:other,01-for-break-exit
+1283.8,2784,unsound_2026171783503_90,unsound:condidx:addr-write,04-addr-write(known 87)
+1333.8,2896,unsound_2026171783510_165,unsound:ensures:other,artifact:false assume (oracle fixed after the run)
+1379.2,2992,unsound_2026171783516_152,unsound:idx:other,01-for-break-exit
+1409.4,3056,unsound_2026171783520_72,unsound:assert:addr-write,04-addr-write(known 87)
+1431.6,3104,false-violation_2026171783523_85,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+1445.9,3136,false-violation_2026171783525_137,false-violation:idx:contract violated,01-for-break-exit
+1508.9,3280,false-violation_2026171783534_95,false-violation:assert:assertion violated,02-negative-shr-fold
+1549.7,3376,unsound_2026171783540_105,unsound:rng:other,02-negative-shr-fold
+1677.6,3648,false-violation_2026171783557_78,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+1683.6,3664,unsound_2026171783558_21,unsound:pos:other,01-for-break-exit
+1700.3,3696,unsound_2026171783560_31,unsound:rng:other,02-negative-shr-fold
+1733.2,3760,unsound_2026171783564_154,unsound:idx:other,01-for-break-exit
+1794.6,3888,false-violation_2026171783572_58,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+1862.1,4048,false-violation_2026171783582_69,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+1874.4,4080,unsound_2026171783584_112,unsound:assert:addr-write,04-addr-write(known 87)
+1997.5,4352,unsound_2026171783601_19,unsound:pos:addr-write,04-addr-write(known 87)
+2013.1,4384,unsound_2026171783603_100,unsound:idx:addr-write,04-addr-write(known 87)
+2096.4,4576,false-violation_2026171783615_175,false-violation:assert:assertion violated,02-negative-shr-fold
+2202.9,4832,unsound_2026171783631_151,unsound:idx:addr-write,04-addr-write(known 87)
+2211.9,4848,false-violation_2026171783632_13,false-violation:assert:assertion violated,02-negative-shr-fold
+2260.4,4976,false-violation_2026171783640_147,false-violation:assert:assertion violated,02-negative-shr-fold
+2315.5,5120,unsound_2026171783649_5,unsound:condidx:addr-write,04-addr-write(known 87)
+2356.0,5216,unsound_2026171783655_190,unsound:between:other,02-negative-shr-fold
+2417.5,5376,false-violation_2026171783665_82,false-violation:ensures:postcondition violated,artifact:per-return postcondition vs whole-proc oracle
+2423.0,5392,unsound_2026171783666_155,unsound:idx:other,01-for-break-exit
+2459.5,5472,unsound_2026171783671_50,unsound:rng:other,02-negative-shr-fold
+2549.7,5712,unsound_2026171783686_109,unsound:rng:other,02-negative-shr-fold

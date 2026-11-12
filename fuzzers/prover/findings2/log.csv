@@ -1,0 +1,871 @@
+time_s,programs,finding_id,signature
+4.4,48,unsound_2026171983339_33,unsound/A:assert:claim-o
+4.4,48,unsound_2026171983339_52,unsound/A:idx:forbreak+negshr+abs+addr+try
+8.8,120,func-accepts-invalid_2026171983340_16,func-accepts-invalid:iter behind=True head=n: Node += path=RE
+8.8,120,func-accepts-invalid_2026171983340_30,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE
+9.1,136,func-other-error_2026171983341_28,func-other-error:func behind=True head=h: Holder let path=ffDf:invalid expression for `addr` operation: PATH
+10.4,152,unsound_2026171983342_41,unsound/A:assert:claim-n+forbreak+negshr+abs+addr+stash+try
+10.4,152,unsound_2026171983342_57,unsound/A:rng:claim-o+forbreak+negshr+abs+addr+stash+try
+17.8,296,func-accepts-invalid_2026171983346_9,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+17.8,296,func-accepts-invalid_2026171983346_24,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE
+17.8,296,func-rejects-valid_2026171983346_26,func-rejects-valid:proc behind=True head=p: var ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+22.3,400,unsound_2026171983351_76,unsound/A:assert:claim-n+claim-o+forbreak+stash+try
+22.3,400,unsound_2026171983351_138,unsound/A:assert:claim-q+addr
+27.1,488,func-accepts-invalid_2026171983353_5,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE
+27.1,488,func-accepts-invalid_2026171983353_12,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE
+27.1,488,func-accepts-invalid_2026171983353_36,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERE
+31.4,576,unsound_2026171983357_78,unsound/A:assert:claim-gv
+36.2,704,func-accepts-invalid_2026171983359_1,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+40.3,752,unsound_2026171983363_94,unsound/A:assert:claim-n+abs
+44.2,824,func-accepts-invalid_2026171983364_18,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+44.2,824,func-accepts-invalid_2026171983364_29,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+44.9,840,func-accepts-invalid_2026171983365_11,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE
+52.8,1000,func-rejects-valid_2026171983370_30,func-rejects-valid:fse behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+54.0,1056,func-accepts-invalid_2026171983371_6,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE
+54.0,1056,func-accepts-invalid_2026171983371_18,func-accepts-invalid:func behind=True head=n: var Node += path=RfE
+58.2,1104,unsound_2026171983375_21,unsound/A:assert:claim-n+abs+addr
+63.1,1232,func-accepts-invalid_2026171983377_23,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+63.1,1232,func-accepts-invalid_2026171983377_31,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+70.5,1352,func-accepts-invalid_2026171983382_1,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE
+71.4,1408,func-accepts-invalid_2026171983383_17,func-accepts-invalid:iter behind=True head=h: var Holder inc path=ffRE
+79.6,1528,func-accepts-invalid_2026171983388_20,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+79.6,1528,func-accepts-invalid_2026171983388_32,func-accepts-invalid:func behind=True head=n: var Node inc path=RE
+80.3,1544,func-rejects-valid_2026171983389_27,func-rejects-valid:proc behind=True head=s: var seq[Node] let path=EDf:invalid expression for `addr` operation: PATH
+80.3,1544,func-accepts-invalid_2026171983389_31,func-accepts-invalid:var-result nse behind=True expr varres-expr path=fRE
+83.1,1600,false-violation_2026171983391_170,false-violation:assert:assertion violated
+84.6,1632,unsound_2026171983393_36,unsound/A:assert:claim-gv+addr
+88.5,1704,func-accepts-invalid_2026171983394_0,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+89.4,1760,func-accepts-invalid_2026171983395_7,func-accepts-invalid:nse behind=True head=n: var Node swap path=RE
+89.4,1760,func-accepts-invalid_2026171983395_10,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE
+98.0,1896,func-accepts-invalid_2026171983401_34,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+102.4,1984,unsound_2026171983405_60,unsound/A:assert:claim-n+forbreak+abs+addr
+106.5,2056,func-accepts-invalid_2026171983406_22,func-accepts-invalid:func behind=True head=n: Node += path=RE
+110.2,2128,false-violation_2026171983409_52,false-violation:assert:assertion violated
+125.2,2424,func-rejects-valid_2026171983419_0,func-rejects-valid:proc behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH
+129.4,2512,unsound_2026171983423_7,unsound/A:idx:claim-o+abs+addr
+134.1,2600,func-accepts-invalid_2026171983425_0,func-accepts-invalid:nse behind=True head=n: Node inc path=RfE
+134.1,2600,func-accepts-invalid_2026171983425_8,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+134.1,2600,func-accepts-invalid_2026171983425_25,func-accepts-invalid:nse behind=True head=a: var array[2; Node] fb path=ERE
+142.1,2760,func-accepts-invalid_2026171983430_7,func-accepts-invalid:var-result nse behind=True result varres-result path=fRE
+142.1,2760,func-accepts-invalid_2026171983430_12,func-accepts-invalid:var-result nse behind=True return varres-return path=fRE
+142.1,2760,func-accepts-invalid_2026171983430_21,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+142.4,2776,func-accepts-invalid_2026171983431_20,func-accepts-invalid:func behind=True head=s: var seq[Node] fb path=ERE
+142.4,2776,func-accepts-invalid_2026171983431_25,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+142.4,2776,func-accepts-invalid_2026171983431_28,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE
+143.7,2792,unsound_2026171983432_208,unsound/A:assert:claim-gs+claim-n+abs+addr
+150.9,2936,func-accepts-invalid_2026171983437_1,func-accepts-invalid:func behind=True head=n: Node fb path=RE
+150.9,2936,func-accepts-invalid_2026171983437_2,func-accepts-invalid:func behind=True head=h: Holder swap path=fRE
+150.9,2936,func-accepts-invalid_2026171983437_7,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE
+150.9,2936,func-accepts-invalid_2026171983437_17,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE
+150.9,2936,func-accepts-invalid_2026171983437_23,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+151.2,2952,func-accepts-invalid_2026171983436_6,func-accepts-invalid:func behind=True head=n: var Node inc path=DfE
+151.2,2952,func-accepts-invalid_2026171983436_28,func-accepts-invalid:iter behind=True head=n: var Node swap path=RfE
+152.8,3008,unsound_2026171983438_82,unsound/A:assert:claim-n+claim-t+forbreak+stash
+159.8,3112,func-accepts-invalid_2026171983443_25,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE
+162.0,3184,unsound_2026171983444_66,unsound/A:assert:claim-q+claim-o
+163.9,3200,unsound_2026171983447_64,unsound/A:idx:claim-o+forbreak+stash
+168.7,3288,func-accepts-invalid_2026171983449_35,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+169.2,3304,func-accepts-invalid_2026171983448_1,func-accepts-invalid:func behind=True head=h: Holder swap path=fRE
+170.7,3360,unsound_2026171983450_49,unsound/A:assert:claim-gs+claim-q+forbreak+abs
+172.8,3376,unsound_2026171983453_136,unsound/A:assert:claim-gv+claim-t+abs+addr
+177.3,3424,false-violation_2026171983454_42,false-violation:assert:assertion violated
+178.2,3480,func-accepts-invalid_2026171983454_1,func-accepts-invalid:func behind=True head=n: var Node inc path=RE
+178.2,3480,func-accepts-invalid_2026171983454_22,func-accepts-invalid:func behind=True head=h: var Holder inc path=fRE
+179.7,3536,unsound_2026171983456_65,unsound/A:assert:claim-tv+forbreak+abs
+186.3,3640,func-accepts-invalid_2026171983461_39,func-accepts-invalid:nse behind=True head=a: var array[2; Node] fb path=ERE
+187.7,3696,func-accepts-invalid_2026171983460_15,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE
+189.3,3712,unsound_2026171983462_94,unsound/A:assert:claim-q+claim-t+abs
+189.3,3712,unsound_2026171983462_113,unsound/A:assert:claim-go+claim-q+try
+190.5,3728,unsound_2026171983465_135,unsound/A:assert:claim-gv+claim-gs+forbreak+abs+addr+try
+195.1,3816,func-accepts-invalid_2026171983467_22,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+195.1,3816,func-accepts-invalid_2026171983467_26,func-accepts-invalid:nse behind=True head=n: var Node += path=RE
+195.1,3816,func-accepts-invalid_2026171983467_34,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE
+198.4,3888,unsound_2026171983468_60,unsound/A:assert:claim-gv+stash
+199.3,3904,unsound_2026171983471_114,unsound/A:assert:claim-gv+claim-t
+204.4,3992,func-accepts-invalid_2026171983473_10,func-accepts-invalid:var-result func behind=True expr varres-expr path=fRE
+204.4,3992,func-accepts-invalid_2026171983473_21,func-accepts-invalid:iter behind=True head=h: var Holder swap path=fERE
+206.3,4048,func-accepts-invalid_2026171983472_7,func-accepts-invalid:iter behind=True head=n: var Node fb path=RE
+206.3,4048,func-accepts-invalid_2026171983472_26,func-accepts-invalid:nse behind=True head=n: var Node fb path=RE
+208.0,4064,unsound_2026171983474_13,unsound/A:assert:claim-gv+claim-tv+claim-gs
+208.0,4064,unsound_2026171983474_135,unsound/A:assert:claim-go+forbreak+addr
+208.6,4080,unsound_2026171983477_84,unsound/A:assert:claim-q+claim-o
+213.4,4168,func-accepts-invalid_2026171983479_16,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE
+213.4,4168,func-accepts-invalid_2026171983479_20,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE
+213.4,4168,func-rejects-valid_2026171983479_21,func-rejects-valid:castfunc behind=True head=p: var ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+216.9,4240,unsound_2026171983480_2,unsound/A:idx:claim-go+claim-n+abs+addr+try
+216.9,4240,unsound_2026171983480_57,unsound/A:assert:claim-gv
+223.0,4344,func-accepts-invalid_2026171983485_2,func-accepts-invalid:func behind=True head=n: Node swap path=RE
+223.0,4344,func-accepts-invalid_2026171983485_24,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE
+223.0,4344,func-accepts-invalid_2026171983485_29,func-accepts-invalid:iter behind=True head=n: Node inc path=RE
+223.0,4344,func-other-error_2026171983485_34,func-other-error:func behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+224.4,4400,func-accepts-invalid_2026171983484_3,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+227.1,4432,unsound_2026171983489_140,unsound/A:idx:claim-gv+claim-t
+231.8,4520,func-accepts-invalid_2026171983491_22,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=DfE
+231.8,4520,func-accepts-invalid_2026171983491_24,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+231.8,4520,func-accepts-invalid_2026171983491_28,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE
+233.5,4576,func-accepts-invalid_2026171983490_2,func-accepts-invalid:func behind=True head=n: var Node swap path=DffE
+235.1,4592,unsound_2026171983492_6,unsound/A:assert:claim-gv+addr+stash
+235.1,4592,unsound_2026171983492_13,unsound/A:assert:claim-q+claim-t+addr+stash+try
+236.2,4608,unsound_2026171983495_131,unsound/A:assert:addr+try
+242.3,4752,func-accepts-invalid_2026171983496_12,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE
+242.3,4752,func-accepts-invalid_2026171983496_20,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=DfE
+242.3,4752,func-accepts-invalid_2026171983496_35,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+249.8,4872,func-accepts-invalid_2026171983503_0,func-accepts-invalid:nse behind=True head=n: Node fb path=RE
+249.8,4872,func-accepts-invalid_2026171983503_15,func-accepts-invalid:func behind=True head=t: var Tup fb path=fRE
+251.2,4928,func-accepts-invalid_2026171983502_0,func-accepts-invalid:iter behind=True head=a: var array[2; Node] fb path=ERE
+251.2,4928,func-accepts-invalid_2026171983502_9,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE
+251.2,4928,func-other-error_2026171983502_12,func-other-error:func behind=True head=n: var Node let path=Dff:invalid expression for `addr` operation: PATH
+251.2,4928,func-accepts-invalid_2026171983502_15,func-accepts-invalid:func behind=True head=n: var Node inc path=RfE
+251.2,4928,func-accepts-invalid_2026171983502_32,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+252.8,4944,unsound_2026171983504_21,unsound/A:assert:claim-q+forbreak+abs+addr+stash+try
+256.4,4992,unsound_2026171983509_102,unsound/C:idx:claim-t
+260.0,5104,func-accepts-invalid_2026171983508_2,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+261.5,5120,unsound_2026171983510_70,unsound/A:assert:claim-go+claim-gs
+268.6,5280,func-accepts-invalid_2026171983514_6,func-accepts-invalid:iter behind=True head=n: Node += path=DfE
+268.6,5280,func-accepts-invalid_2026171983514_12,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE
+275.4,5400,func-accepts-invalid_2026171983521_25,func-accepts-invalid:nse behind=True head=a: var array[2; Node] inc path=ERE
+277.4,5456,func-accepts-invalid_2026171983520_5,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+277.4,5456,func-accepts-invalid_2026171983520_29,func-accepts-invalid:func behind=True head=t: var Tup swap path=fRE
+286.0,5632,func-accepts-invalid_2026171983526_5,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE
+287.6,5648,unsound_2026171983528_25,unsound/A:assert:claim-go+claim-t+forbreak+addr
+288.5,5664,unsound_2026171983531_53,unsound/A:assert:claim-n+negshr+abs+addr
+293.2,5752,func-accepts-invalid_2026171983533_2,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+293.2,5752,func-accepts-invalid_2026171983533_8,func-accepts-invalid:var-result nse behind=True return varres-return path=ERE
+293.2,5752,func-accepts-invalid_2026171983533_13,func-accepts-invalid:func behind=True head=n: Node += path=DfE
+294.2,5808,func-accepts-invalid_2026171983532_9,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+294.2,5808,func-accepts-invalid_2026171983532_28,func-accepts-invalid:func behind=True head=p: ptr Plain += path=DfE
+294.2,5808,func-accepts-invalid_2026171983532_30,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE
+294.2,5808,func-accepts-invalid_2026171983532_38,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE
+297.4,5840,unsound_2026171983537_52,unsound/A:idx:forbreak+negshr+addr
+297.4,5840,unsound_2026171983537_131,unsound/A:assert:claim-tv+claim-t+abs+addr
+302.1,5928,func-accepts-invalid_2026171983539_12,func-accepts-invalid:iter behind=True head=p: var ptr Plain fb path=RE
+302.1,5928,func-accepts-invalid_2026171983539_27,func-accepts-invalid:func behind=True head=n: var Node inc path=DfE
+302.1,5928,func-accepts-invalid_2026171983539_32,func-accepts-invalid:func behind=True head=n: Node swap path=RE
+302.1,5928,func-rejects-valid_2026171983539_34,func-rejects-valid:fse behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+303.2,5984,func-accepts-invalid_2026171983538_1,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE
+303.2,5984,func-accepts-invalid_2026171983538_39,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+306.4,6016,unsound_2026171983543_6,unsound/A:assert:claim-n
+306.4,6016,unsound_2026171983543_50,unsound/A:assert:claim-gv+addr+stash+try
+306.4,6016,unsound_2026171983543_136,unsound/A:assert:claim-gs+forbreak+addr+try
+311.5,6104,func-accepts-invalid_2026171983545_21,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+312.1,6120,func-accepts-invalid_2026171983544_3,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+312.1,6120,func-accepts-invalid_2026171983544_23,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+319.9,6280,func-accepts-invalid_2026171983551_18,func-accepts-invalid:var-result func behind=True result varres-result path=fRE
+319.9,6280,func-accepts-invalid_2026171983551_22,func-accepts-invalid:func behind=True head=n: Node += path=RfE
+324.1,6368,unsound_2026171983555_18,unsound/A:assert:claim-go
+324.1,6368,unsound_2026171983555_28,unsound/A:assert:addr
+324.1,6368,unsound_2026171983555_30,unsound/A:assert:addr
+324.1,6368,unsound_2026171983555_50,unsound/A:idx:claim-q+claim-cx+claim-t+abs+addr+stash
+328.7,6456,func-accepts-invalid_2026171983557_33,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=DfE
+330.4,6512,func-accepts-invalid_2026171983556_19,func-accepts-invalid:nse behind=True head=n: Node swap path=DffE
+330.4,6512,func-accepts-invalid_2026171983556_22,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+331.9,6528,unsound_2026171983558_80,unsound/A:assert:claim-n+stash
+342.0,6720,unsound_2026171983567_51,unsound/A:assert:claim-tv+forbreak+abs+addr+try
+351.0,6880,false-violation_2026171983570_146,false-violation:idx:contract violated
+351.0,6896,unsound_2026171983573_88,unsound/A:assert:claim-n+abs
+355.7,6984,func-accepts-invalid_2026171983575_27,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+356.7,7040,func-rejects-valid_2026171983574_0,func-rejects-valid:fse behind=True head=p: var ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+364.8,7160,func-accepts-invalid_2026171983581_26,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+364.8,7160,func-accepts-invalid_2026171983581_38,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+365.9,7216,func-accepts-invalid_2026171983580_2,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE
+365.9,7216,func-accepts-invalid_2026171983580_16,func-accepts-invalid:iter behind=True head=n: Node swap path=RE
+365.9,7216,func-accepts-invalid_2026171983580_36,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+365.9,7216,func-rejects-valid_2026171983580_37,func-rejects-valid:castfunc behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+369.3,7248,unsound_2026171983585_110,unsound/A:assert:claim-n+abs+stash+try
+384.5,7528,func-accepts-invalid_2026171983592_1,func-accepts-invalid:iter behind=True head=p: var ptr Plain swap path=RE
+384.5,7528,func-accepts-invalid_2026171983592_13,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+386.1,7584,unsound_2026171983594_106,unsound/A:assert:claim-go
+393.1,7688,func-accepts-invalid_2026171983599_4,func-accepts-invalid:nse behind=True head=n: Node fb path=RE
+393.1,7688,func-accepts-invalid_2026171983599_7,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE
+393.1,7688,func-accepts-invalid_2026171983599_21,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE
+393.1,7688,func-accepts-invalid_2026171983599_25,func-accepts-invalid:func behind=True head=h: var Holder fb path=fDfE
+394.3,7744,func-accepts-invalid_2026171983598_7,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE
+395.8,7760,unsound_2026171983600_4,unsound/A:assert:claim-o+addr
+397.5,7776,unsound_2026171983603_149,unsound/A:assert:claim-gv+abs
+402.4,7864,func-accepts-invalid_2026171983605_2,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+402.4,7864,func-accepts-invalid_2026171983605_14,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE
+407.6,7952,false-violation_2026171983609_62,false-violation:assert:assertion violated
+411.0,8040,func-accepts-invalid_2026171983611_17,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=DfE
+419.8,8216,func-accepts-invalid_2026171983617_26,func-accepts-invalid:func behind=True head=h: var Holder += path=fRE
+424.4,8304,unsound_2026171983621_85,unsound/A:assert:claim-q+abs+addr+stash
+429.7,8392,func-accepts-invalid_2026171983623_30,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=DfE
+431.3,8448,func-accepts-invalid_2026171983622_29,func-accepts-invalid:iter behind=True head=h: var Holder inc path=fRE
+434.2,8480,unsound_2026171983627_188,unsound/A:assert:claim-q+negshr+addr+stash+try
+449.1,8744,func-accepts-invalid_2026171983635_37,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE
+449.5,8760,func-accepts-invalid_2026171983634_18,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+449.5,8760,func-accepts-invalid_2026171983634_35,func-accepts-invalid:iter behind=True head=n: var Node fb path=RfE
+451.1,8816,unsound_2026171983636_67,unsound/A:assert:claim-gs+claim-n+abs
+458.1,8920,func-accepts-invalid_2026171983641_3,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=DfE
+458.1,8920,func-rejects-valid_2026171983641_21,func-rejects-valid:fse behind=True head=a: var array[2; Node] let path=EDf:invalid expression for `addr` operation: PATH
+458.1,8920,func-accepts-invalid_2026171983641_36,func-accepts-invalid:iter behind=True head=h: var Holder += path=fERE
+460.1,8992,unsound_2026171983642_52,unsound/A:assert:claim-o+addr+stash
+467.9,9152,func-accepts-invalid_2026171983646_7,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+467.9,9152,func-accepts-invalid_2026171983646_8,func-accepts-invalid:func behind=True head=n: Node fb path=RE
+467.9,9152,func-accepts-invalid_2026171983646_32,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE
+471.2,9184,unsound_2026171983651_39,unsound/A:idx:claim-gv+addr
+475.9,9272,func-accepts-invalid_2026171983653_20,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE
+476.6,9288,func-accepts-invalid_2026171983652_35,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE
+476.6,9288,func-accepts-invalid_2026171983652_36,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=DfE
+480.0,9360,unsound_2026171983657_0,unsound/A:assert:claim-gv+claim-gs
+480.0,9360,unsound_2026171983657_59,unsound/A:rng:negshr
+485.4,9464,func-accepts-invalid_2026171983658_14,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=RE
+485.4,9464,func-accepts-invalid_2026171983658_34,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+493.9,9624,func-accepts-invalid_2026171983665_6,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+493.9,9624,func-accepts-invalid_2026171983665_13,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+493.9,9624,func-accepts-invalid_2026171983665_22,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+493.9,9624,func-accepts-invalid_2026171983665_33,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+494.4,9640,func-accepts-invalid_2026171983664_14,func-accepts-invalid:nse behind=True head=n: var Node += path=RE
+494.4,9640,func-accepts-invalid_2026171983664_30,func-accepts-invalid:func behind=True head=t: var Tup += path=fRE
+496.1,9696,unsound_2026171983666_55,unsound/A:assert:claim-q+forbreak+abs+addr
+496.1,9696,unsound_2026171983666_57,unsound/A:idx:claim-go+claim-q+forbreak+abs+addr
+502.6,9816,func-accepts-invalid_2026171983670_4,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=DfE
+502.6,9816,func-accepts-invalid_2026171983670_29,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=DfE
+502.8,9800,func-accepts-invalid_2026171983671_34,func-accepts-invalid:func behind=True head=n: var Node += path=RE
+511.7,9992,func-accepts-invalid_2026171983677_19,func-accepts-invalid:func behind=True head=t: var Tup fb path=fRE
+511.7,9992,func-accepts-invalid_2026171983677_28,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+515.8,10080,unsound_2026171983681_89,unsound/A:assert:claim-gv+claim-q
+519.6,10152,func-accepts-invalid_2026171983682_31,func-accepts-invalid:nse behind=True head=n: var Node swap path=RE
+519.6,10152,func-accepts-invalid_2026171983682_35,func-accepts-invalid:func behind=True head=n: var Node swap path=RfE
+520.5,10208,func-accepts-invalid_2026171983683_15,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE
+521.1,10168,unsound_2026171983684_5,unsound/A:assert:claim-q
+524.6,10256,unsound_2026171983687_87,unsound/A:assert:claim-gv+abs+addr
+529.3,10384,func-accepts-invalid_2026171983689_10,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+529.3,10384,func-accepts-invalid_2026171983689_33,func-accepts-invalid:func behind=True head=n: var Node swap path=RfE
+529.8,10344,unsound_2026171983690_12,unsound/A:assert:claim-o+stash
+529.8,10344,unsound_2026171983690_85,unsound/A:assert:claim-gs+claim-n
+537.3,10504,func-accepts-invalid_2026171983694_21,func-accepts-invalid:nse behind=True head=p: var ptr Plain inc path=RE
+538.1,10520,func-accepts-invalid_2026171983695_9,func-accepts-invalid:var-result nse behind=True result varres-result path=EDfE
+538.7,10536,unsound_2026171983696_71,unsound/A:assert:claim-n+claim-q+abs+stash
+554.4,10856,func-accepts-invalid_2026171983706_37,func-accepts-invalid:var-result nse behind=True result varres-result path=EDfE
+555.3,10912,func-accepts-invalid_2026171983707_34,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE
+555.9,10872,unsound_2026171983708_81,unsound/A:assert:claim-gv+claim-o+addr+stash
+555.9,10872,unsound_2026171983708_88,unsound/A:assert:claim-n
+563.2,11032,func-accepts-invalid_2026171983712_2,func-accepts-invalid:nse behind=True head=n: var Node swap path=DfE
+563.2,11032,func-accepts-invalid_2026171983712_15,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE
+564.2,11088,func-accepts-invalid_2026171983713_3,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE
+568.4,11136,unsound_2026171983717_128,unsound/A:assert:claim-gv+claim-q+abs
+568.4,11136,unsound_2026171983717_138,unsound/A:assert:forbreak+abs
+571.4,11208,func-accepts-invalid_2026171983718_7,func-accepts-invalid:func behind=True head=h: var Holder swap path=fRE
+571.4,11208,func-accepts-invalid_2026171983718_36,func-accepts-invalid:var-result nse behind=True result varres-result path=fERE
+572.9,11224,unsound_2026171983720_61,unsound/A:assert:claim-o
+573.1,11264,func-accepts-invalid_2026171983719_37,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+573.1,11264,func-other-error_2026171983719_39,func-other-error:func behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH
+580.2,11384,func-accepts-invalid_2026171983724_3,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE
+580.2,11384,func-accepts-invalid_2026171983724_9,func-accepts-invalid:func behind=True head=n: Node inc path=RfE
+581.7,11440,func-accepts-invalid_2026171983725_23,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE
+588.7,11560,func-other-error_2026171983730_7,func-other-error:func behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+588.7,11560,func-accepts-invalid_2026171983730_16,func-accepts-invalid:iter behind=True head=n: Node fb path=RE
+590.0,11576,unsound_2026171983732_37,unsound/A:assert:claim-tv+abs
+590.5,11616,func-accepts-invalid_2026171983731_6,func-accepts-invalid:var-result func behind=True return varres-return path=DfE
+598.5,11752,unsound_2026171983738_125,unsound/A:assert:claim-tv+claim-q+forbreak+stash+try
+599.1,11792,func-accepts-invalid_2026171983737_11,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE
+605.7,11912,func-accepts-invalid_2026171983742_1,func-accepts-invalid:var-result func behind=True result varres-result path=fRE
+605.7,11912,func-accepts-invalid_2026171983742_23,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE
+605.7,11912,func-accepts-invalid_2026171983742_32,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+611.9,12016,unsound_2026171983747_122,unsound/A:assert:claim-n+abs
+623.0,12264,func-accepts-invalid_2026171983754_33,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+625.2,12320,func-accepts-invalid_2026171983755_10,func-accepts-invalid:var-result nse behind=True return varres-return path=fDfE
+634.0,12496,func-accepts-invalid_2026171983761_5,func-accepts-invalid:func behind=True head=t: var Tup += path=fRE
+634.0,12496,func-accepts-invalid_2026171983761_19,func-accepts-invalid:nse behind=True head=p: var ptr Plain fb path=DfE
+641.1,12616,func-accepts-invalid_2026171983766_11,func-accepts-invalid:func behind=True head=h: var Holder inc path=ffRE
+641.1,12616,func-accepts-invalid_2026171983766_12,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE
+641.1,12616,func-other-error_2026171983766_35,func-other-error:func behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+643.1,12672,func-other-error_2026171983767_26,func-other-error:iter behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH
+647.2,12720,unsound_2026171983771_113,unsound/A:assert:claim-n
+650.1,12792,func-accepts-invalid_2026171983772_5,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+650.1,12792,func-accepts-invalid_2026171983772_13,func-accepts-invalid:var-result nse behind=True expr varres-expr path=EDfE
+650.1,12792,func-accepts-invalid_2026171983772_19,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE
+651.6,12808,unsound_2026171983774_98,unsound/A:condidx:claim-q+forbreak+stash+try
+659.5,12968,func-accepts-invalid_2026171983778_12,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE
+659.5,12968,func-accepts-invalid_2026171983778_31,func-accepts-invalid:iter behind=True head=a: var array[2; Node] += path=ERE
+661.3,13024,func-accepts-invalid_2026171983779_22,func-accepts-invalid:iter behind=True head=n: Node += path=RfE
+665.6,13072,unsound_2026171983783_132,unsound/A:idx:claim-gv+claim-n+forbreak+addr+try
+668.1,13144,func-accepts-invalid_2026171983784_17,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=DfE
+669.6,13160,unsound_2026171983786_87,unsound/A:assert:claim-o+abs+try
+670.2,13200,func-accepts-invalid_2026171983785_21,func-accepts-invalid:nse behind=True head=n: var Node fb path=RE
+676.9,13320,func-accepts-invalid_2026171983790_16,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE
+678.2,13336,unsound_2026171983792_60,unsound/A:assert:claim-go+forbreak
+679.0,13376,func-accepts-invalid_2026171983791_33,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+683.0,13424,unsound_2026171983795_19,unsound/A:assert:claim-gs+addr
+683.0,13424,unsound_2026171983795_36,unsound/A:assert:claim-n+forbreak+addr
+685.4,13496,func-rejects-valid_2026171983796_6,func-rejects-valid:castfunc behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+685.4,13496,func-accepts-invalid_2026171983796_8,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=DfE
+687.9,13552,func-accepts-invalid_2026171983797_12,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=RE
+687.9,13552,func-accepts-invalid_2026171983797_15,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE
+688.3,13512,false-violation_2026171983798_71,false-violation:assert:assertion violated
+694.2,13656,func-accepts-invalid_2026171983802_17,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+694.2,13656,func-accepts-invalid_2026171983802_27,func-accepts-invalid:nse behind=True head=a: var array[2; Node] swap path=EDfE
+696.9,13728,func-accepts-invalid_2026171983803_0,func-accepts-invalid:iter behind=True head=p: ptr Plain inc path=RE
+696.9,13728,func-other-error_2026171983803_11,func-other-error:nse behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+696.9,13728,func-accepts-invalid_2026171983803_19,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE
+703.2,13848,func-accepts-invalid_2026171983808_17,func-accepts-invalid:iter behind=True head=n: var Node inc path=RE
+703.2,13848,func-accepts-invalid_2026171983808_28,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+704.6,13864,unsound_2026171983810_40,unsound/A:assert:claim-tv+addr+stash
+705.6,13904,func-accepts-invalid_2026171983809_26,func-accepts-invalid:var-result nse behind=True expr varres-expr path=EDfE
+713.4,14040,unsound_2026171983816_85,unsound/A:assert:claim-o+addr+try
+720.5,14184,func-accepts-invalid_2026171983820_11,func-accepts-invalid:func behind=True head=h: Holder inc path=fRE
+720.5,14184,func-accepts-invalid_2026171983820_29,func-accepts-invalid:nse behind=True head=n: Node += path=RE
+720.5,14184,func-accepts-invalid_2026171983820_36,func-accepts-invalid:nse behind=True head=n: var Node fb path=RE
+720.5,14184,func-accepts-invalid_2026171983820_38,func-accepts-invalid:func behind=True head=h: var Holder inc path=fRE
+723.7,14256,func-accepts-invalid_2026171983821_2,func-accepts-invalid:iter behind=True head=p: var ptr Plain fb path=RE
+729.9,14360,func-accepts-invalid_2026171983826_28,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+732.6,14432,func-accepts-invalid_2026171983827_14,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE
+739.2,14552,func-accepts-invalid_2026171983832_1,func-accepts-invalid:nse behind=True head=n: var Node += path=RE
+739.2,14552,func-accepts-invalid_2026171983832_3,func-accepts-invalid:func behind=True head=n: Node fb path=DfE
+739.2,14552,func-accepts-invalid_2026171983832_7,func-accepts-invalid:nse behind=True head=p: var ptr Plain += path=RE
+741.5,14608,func-accepts-invalid_2026171983833_14,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE
+741.5,14608,func-accepts-invalid_2026171983833_18,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE
+750.8,14784,func-accepts-invalid_2026171983839_17,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE
+750.8,14784,func-accepts-invalid_2026171983839_18,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+760.0,14960,func-accepts-invalid_2026171983845_13,func-accepts-invalid:iter behind=True head=p: var ptr Plain += path=RE
+760.0,14960,func-accepts-invalid_2026171983845_36,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+766.7,15080,func-accepts-invalid_2026171983850_22,func-accepts-invalid:nse behind=True head=p: var ptr Plain fb path=RE
+769.3,15136,func-accepts-invalid_2026171983851_10,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+769.3,15136,func-accepts-invalid_2026171983851_18,func-accepts-invalid:iter behind=True head=p: var ptr Plain fb path=DfE
+769.3,15136,func-accepts-invalid_2026171983851_19,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE
+769.3,15136,func-accepts-invalid_2026171983851_25,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE
+769.3,15136,func-accepts-invalid_2026171983851_34,func-accepts-invalid:func behind=True head=n: var Node fb path=DfE
+769.3,15136,func-accepts-invalid_2026171983851_39,func-accepts-invalid:func behind=True head=n: Node swap path=RE
+773.7,15184,unsound_2026171983855_122,unsound/A:assert:claim-gv+abs+addr
+773.7,15184,unsound_2026171983855_190,unsound/A:idx:claim-n
+776.2,15256,func-accepts-invalid_2026171983856_1,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERfE
+776.2,15256,func-accepts-invalid_2026171983856_18,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RfE
+776.2,15256,func-accepts-invalid_2026171983856_26,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+776.2,15256,func-other-error_2026171983856_33,func-other-error:iter behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+778.7,15312,func-accepts-invalid_2026171983857_1,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE
+782.8,15360,unsound_2026171983861_76,unsound/A:assert:claim-o
+785.3,15432,func-accepts-invalid_2026171983862_13,func-accepts-invalid:func behind=True head=n: Node += path=RE
+787.6,15488,func-accepts-invalid_2026171983863_32,func-accepts-invalid:iter behind=True head=s: var seq[Node] inc path=EDfE
+794.1,15608,func-accepts-invalid_2026171983868_20,func-accepts-invalid:var-result nse behind=True return varres-return path=RE
+795.6,15624,unsound_2026171983870_72,unsound/A:idx:claim-q+claim-o
+796.4,15664,func-accepts-invalid_2026171983869_21,func-accepts-invalid:nse behind=True head=n: Node swap path=DfE
+800.5,15712,unsound_2026171983873_96,unsound/A:assert:claim-n+abs+addr+stash
+802.9,15784,func-accepts-invalid_2026171983874_20,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+805.1,15840,func-accepts-invalid_2026171983875_5,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE
+805.1,15840,func-accepts-invalid_2026171983875_22,func-accepts-invalid:var-result func behind=True result varres-result path=DfE
+813.3,15976,unsound_2026171983882_123,unsound/A:assert:claim-gv+claim-o+forbreak+addr+stash
+813.4,16016,func-accepts-invalid_2026171983881_29,func-accepts-invalid:nse behind=True head=p: var ptr Plain += path=RE
+820.6,16136,func-accepts-invalid_2026171983886_28,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE
+820.6,16136,func-accepts-invalid_2026171983886_32,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE
+822.2,16152,unsound_2026171983888_154,unsound/A:assert:claim-q+claim-o+stash
+822.6,16192,func-accepts-invalid_2026171983887_6,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+826.6,16240,unsound_2026171983891_58,unsound/A:assert:claim-o+claim-t+abs+stash
+829.9,16312,func-accepts-invalid_2026171983892_0,func-accepts-invalid:nse behind=True head=p: var ptr Plain += path=RE
+831.3,16368,func-accepts-invalid_2026171983893_14,func-accepts-invalid:nse behind=True head=n: var Node fb path=RE
+835.1,16416,unsound_2026171983897_40,unsound/A:assert:claim-gv+claim-t+abs
+839.1,16488,func-accepts-invalid_2026171983898_0,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+839.1,16488,func-accepts-invalid_2026171983898_23,func-accepts-invalid:var-result nse behind=True expr varres-expr path=fRE
+839.5,16504,func-accepts-invalid_2026171983899_18,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+839.5,16504,func-accepts-invalid_2026171983899_28,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE
+840.6,16520,unsound_2026171983900_75,unsound/A:assert:claim-gv+addr
+844.0,16592,unsound_2026171983903_5,unsound/A:assert:claim-gv+claim-t+stash
+848.1,16664,func-rejects-valid_2026171983904_17,func-rejects-valid:castfunc behind=True head=s: var seq[Node] let path=EDf:invalid expression for `addr` operation: PATH
+848.1,16664,func-accepts-invalid_2026171983904_26,func-accepts-invalid:func behind=True head=n: var Node inc path=RfE
+848.1,16664,func-accepts-invalid_2026171983904_28,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE
+848.8,16680,func-accepts-invalid_2026171983905_5,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE
+848.8,16680,func-accepts-invalid_2026171983905_26,func-accepts-invalid:func behind=True head=n: var Node += path=RE
+849.6,16696,unsound_2026171983906_108,unsound/A:assert:claim-q+addr
+849.6,16696,unsound_2026171983906_137,unsound/A:assert:claim-q+abs
+852.7,16768,unsound_2026171983909_66,unsound/A:assert:claim-q+abs
+858.5,16872,unsound_2026171983912_95,unsound/A:assert:claim-q+try
+861.1,16928,unsound_2026171983915_11,unsound/A:assert:claim-q+forbreak+addr+stash+try
+865.8,17016,func-other-error_2026171983917_20,func-other-error:func behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+865.8,17016,func-other-error_2026171983917_22,func-other-error:func behind=True head=a: var array[2; Node] let path=EDff:invalid expression for `addr` operation: PATH
+866.0,17032,func-accepts-invalid_2026171983916_35,func-accepts-invalid:var-result nse behind=True return varres-return path=ERE
+870.1,17104,unsound_2026171983921_60,unsound/A:assert:claim-q+forbreak+abs+addr
+874.8,17192,func-accepts-invalid_2026171983923_2,func-accepts-invalid:func behind=True head=n: Node inc path=RfE
+874.8,17192,func-accepts-invalid_2026171983923_10,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+878.9,17280,unsound_2026171983927_26,unsound/A:assert:claim-go
+878.9,17280,unsound_2026171983927_84,unsound/A:assert:claim-n+addr
+884.4,17384,func-accepts-invalid_2026171983928_1,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE
+884.4,17384,func-accepts-invalid_2026171983928_33,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+884.4,17384,func-accepts-invalid_2026171983928_38,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+886.0,17440,unsound_2026171983930_82,unsound/A:ensures:abs+stash+try
+888.2,17456,unsound_2026171983933_5,unsound/A:assert:claim-n+claim-t+addr+try
+892.9,17544,func-accepts-invalid_2026171983935_9,func-accepts-invalid:nse behind=True head=h: var Holder fb path=fRfE
+892.9,17544,func-accepts-invalid_2026171983935_21,func-accepts-invalid:func behind=True head=n: var Node fb path=RfE
+893.6,17560,func-accepts-invalid_2026171983934_18,func-accepts-invalid:var-result nse behind=True result varres-result path=ERfE
+893.6,17560,func-accepts-invalid_2026171983934_22,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE
+901.6,17720,func-accepts-invalid_2026171983941_12,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+910.5,17912,func-accepts-invalid_2026171983946_29,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ffRE
+912.1,17968,unsound_2026171983948_13,unsound/A:assert:claim-go+claim-t
+914.3,17984,unsound_2026171983951_100,unsound/A:idx:claim-n+claim-q+addr+try
+918.7,18072,func-accepts-invalid_2026171983953_15,func-accepts-invalid:func behind=True head=h: var Holder inc path=fRE
+919.4,18088,func-rejects-valid_2026171983952_10,func-rejects-valid:fse behind=True head=n: Node let path=Dff:invalid expression for `addr` operation: PATH
+927.2,18248,func-rejects-valid_2026171983959_8,func-rejects-valid:proc behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+928.0,18264,func-accepts-invalid_2026171983958_13,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+928.0,18264,func-accepts-invalid_2026171983958_14,func-accepts-invalid:func behind=True head=h: Holder += path=fDfE
+928.0,18264,func-accepts-invalid_2026171983958_25,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+936.0,18424,func-accepts-invalid_2026171983965_25,func-accepts-invalid:func behind=True head=h: var Holder swap path=ffRE
+936.0,18424,func-accepts-invalid_2026171983965_34,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+943.8,18600,func-accepts-invalid_2026171983971_21,func-accepts-invalid:nse behind=True head=h: var Holder swap path=fRE
+943.8,18600,func-accepts-invalid_2026171983971_39,func-accepts-invalid:var-result nse behind=True return varres-return path=fRE
+946.1,18656,func-accepts-invalid_2026171983970_5,func-accepts-invalid:func behind=True head=h: var Holder swap path=ffRE
+946.1,18656,func-rejects-valid_2026171983970_16,func-rejects-valid:fse behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH
+946.1,18656,func-accepts-invalid_2026171983970_21,func-accepts-invalid:func behind=True head=n: Node swap path=RE
+946.1,18656,func-accepts-invalid_2026171983970_29,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE
+946.1,18656,func-accepts-invalid_2026171983970_32,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE
+946.1,18656,func-accepts-invalid_2026171983970_37,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+946.1,18656,func-accepts-invalid_2026171983970_39,func-accepts-invalid:nse behind=True head=s: var seq[Node] inc path=ERE
+947.7,18672,unsound_2026171983972_91,unsound/A:assert:claim-n+claim-t+addr+stash
+952.4,18776,func-accepts-invalid_2026171983977_5,func-accepts-invalid:var-result func behind=True return varres-return path=ERE
+952.4,18776,func-accepts-invalid_2026171983977_10,func-accepts-invalid:var-result func behind=True return varres-return path=RfE
+952.4,18776,func-rejects-valid_2026171983977_26,func-rejects-valid:proc behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+954.9,18832,func-accepts-invalid_2026171983976_37,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE
+961.2,18936,func-accepts-invalid_2026171983983_6,func-accepts-invalid:func behind=True head=h: var Holder += path=fERE
+961.2,18936,func-accepts-invalid_2026171983983_14,func-accepts-invalid:var-result nse behind=True result varres-result path=fRE
+961.2,18936,func-accepts-invalid_2026171983983_28,func-accepts-invalid:nse behind=True head=h: Holder += path=ffRE
+970.2,19112,func-accepts-invalid_2026171983989_2,func-accepts-invalid:nse behind=True head=h: var Holder swap path=fERE
+979.2,19288,func-accepts-invalid_2026171983995_0,func-accepts-invalid:iter behind=True head=n: Node += path=RE
+979.2,19288,func-accepts-invalid_2026171983995_11,func-accepts-invalid:iter behind=True head=s: var seq[Node] += path=ERE
+979.2,19288,func-accepts-invalid_2026171983995_16,func-accepts-invalid:func behind=True head=n: var Node fb path=DfE
+979.2,19288,func-accepts-invalid_2026171983995_17,func-accepts-invalid:var-result func behind=True return varres-return path=fERE
+979.2,19288,func-accepts-invalid_2026171983995_23,func-accepts-invalid:func behind=True head=n: var Node inc path=RE
+983.7,19392,unsound_2026171983996_32,unsound/A:idx:claim-cx+claim-o+addr+stash
+983.7,19392,unsound_2026171983996_146,unsound/A:assert:claim-q+forbreak
+991.4,19536,func-accepts-invalid_2026171984000_19,func-accepts-invalid:func behind=True head=n: var Node += path=RE
+991.4,19536,func-accepts-invalid_2026171984000_20,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=DfE
+996.7,19640,func-accepts-invalid_2026171984007_25,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE
+1005.6,19816,func-other-error_2026171984013_5,func-other-error:func behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+1009.0,19888,func-rejects-valid_2026171984012_35,func-rejects-valid:castfunc behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1014.6,19992,func-other-error_2026171984019_3,func-other-error:func behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1014.6,19992,func-accepts-invalid_2026171984019_32,func-accepts-invalid:nse behind=True head=n: Node inc path=DfE
+1017.8,20064,func-accepts-invalid_2026171984018_20,func-accepts-invalid:func behind=True head=n: var Node inc path=DfE
+1017.8,20064,func-accepts-invalid_2026171984018_26,func-accepts-invalid:func behind=True head=h: Holder fb path=fRE
+1017.8,20064,func-accepts-invalid_2026171984018_27,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE
+1018.8,20056,unsound_2026171984023_49,unsound/A:assert:claim-cx+forbreak+abs+addr
+1019.4,20096,unsound_2026171984020_150,unsound/A:idx:claim-o+abs+addr+try
+1023.7,20168,func-accepts-invalid_2026171984025_26,func-accepts-invalid:nse behind=True head=s: var seq[Node] fb path=ERE
+1026.6,20240,func-accepts-invalid_2026171984024_39,func-accepts-invalid:var-result nse behind=True result varres-result path=fRfE
+1032.4,20344,func-accepts-invalid_2026171984031_1,func-accepts-invalid:func behind=True head=n: Node += path=RE
+1032.4,20344,func-accepts-invalid_2026171984031_17,func-accepts-invalid:func behind=True head=n: var Node += path=RfE
+1035.1,20416,func-accepts-invalid_2026171984030_26,func-accepts-invalid:var-result func behind=True result varres-result path=fDfE
+1041.7,20536,func-accepts-invalid_2026171984037_2,func-accepts-invalid:var-result func behind=True expr varres-expr path=fRE
+1051.6,20712,func-accepts-invalid_2026171984043_8,func-accepts-invalid:nse behind=True head=n: Node fb path=DfE
+1051.6,20712,func-accepts-invalid_2026171984043_12,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE
+1051.6,20712,func-other-error_2026171984043_21,func-other-error:func behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH
+1055.0,20768,func-accepts-invalid_2026171984042_3,func-accepts-invalid:var-result func behind=True return varres-return path=DfE
+1056.7,20800,unsound_2026171984047_128,unsound/A:assert:claim-go+claim-t
+1061.4,20888,func-accepts-invalid_2026171984049_10,func-accepts-invalid:iter behind=True head=p: ptr Plain fb path=RE
+1061.4,20888,func-accepts-invalid_2026171984049_23,func-accepts-invalid:var-result func behind=True return varres-return path=fRfE
+1064.1,20944,func-other-error_2026171984048_23,func-other-error:func behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1064.1,20944,func-accepts-invalid_2026171984048_29,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+1064.1,20944,func-accepts-invalid_2026171984048_36,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE
+1071.1,21048,func-accepts-invalid_2026171984055_4,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+1071.1,21048,func-accepts-invalid_2026171984055_15,func-accepts-invalid:func behind=True head=h: Holder inc path=fERE
+1071.1,21048,func-accepts-invalid_2026171984055_36,func-accepts-invalid:var-result nse behind=True return varres-return path=fDfE
+1073.0,21120,func-accepts-invalid_2026171984054_6,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+1073.0,21120,func-accepts-invalid_2026171984054_35,func-accepts-invalid:func behind=True head=h: var Holder fb path=fERE
+1074.7,21136,unsound_2026171984056_87,unsound/A:assert:claim-q+claim-cx+abs+addr+stash
+1074.7,21136,unsound_2026171984056_190,unsound/A:idx:claim-o+forbreak+addr+try
+1075.2,21152,unsound_2026171984059_31,unsound/A:assert:claim-q+claim-o+forbreak+addr+stash
+1080.9,21240,func-accepts-invalid_2026171984061_12,func-accepts-invalid:var-result func behind=True result varres-result path=ERfE
+1083.0,21296,func-accepts-invalid_2026171984060_13,func-accepts-invalid:func behind=True head=n: Node swap path=DfE
+1083.0,21296,func-accepts-invalid_2026171984060_25,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE
+1090.3,21416,func-accepts-invalid_2026171984067_18,func-accepts-invalid:func behind=True head=n: Node swap path=DfE
+1092.1,21472,func-accepts-invalid_2026171984066_16,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE
+1092.1,21472,func-accepts-invalid_2026171984066_19,func-accepts-invalid:var-result func behind=True expr varres-expr path=RfE
+1099.4,21592,func-accepts-invalid_2026171984073_26,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+1102.6,21608,false-violation_2026171984075_71,false-violation:assert:assertion violated
+1103.9,21664,unsound_2026171984074_149,unsound/A:assert:claim-n+abs+addr
+1104.2,21680,unsound_2026171984077_26,unsound/A:assert:claim-cx+forbreak+try
+1109.3,21768,func-accepts-invalid_2026171984079_34,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+1111.8,21824,func-accepts-invalid_2026171984078_38,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=EDfE
+1111.8,21824,func-accepts-invalid_2026171984078_39,func-accepts-invalid:nse behind=True head=h: Holder fb path=fRfE
+1113.3,21856,unsound_2026171984083_5,unsound/A:assert:claim-q+try
+1122.0,21928,func-accepts-invalid_2026171984085_0,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=DfE
+1122.0,21928,func-accepts-invalid_2026171984085_29,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE
+1125.9,22016,unsound_2026171984086_11,unsound/A:assert:claim-o+claim-t
+1125.9,22016,unsound_2026171984086_69,unsound/A:assert:claim-gv
+1126.6,22032,unsound_2026171984089_112,unsound/A:idx:claim-gv+stash+try
+1133.2,22120,func-other-error_2026171984091_1,func-other-error:iter behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1133.2,22120,func-other-error_2026171984091_28,func-other-error:nse behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH
+1137.8,22208,unsound_2026171984095_140,unsound/A:assert:claim-gv+abs+addr+try
+1145.2,22296,func-accepts-invalid_2026171984097_29,func-accepts-invalid:func behind=True head=n: Node += path=RE
+1147.1,22352,func-accepts-invalid_2026171984096_11,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE
+1149.8,22384,unsound_2026171984101_36,unsound/A:idx:claim-gv+claim-q+forbreak+stash
+1155.5,22472,func-accepts-invalid_2026171984103_25,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+1158.2,22528,func-rejects-valid_2026171984102_21,func-rejects-valid:proc behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1161.0,22560,unsound_2026171984104_81,unsound/A:assert:claim-q+stash
+1167.7,22648,func-accepts-invalid_2026171984109_19,func-accepts-invalid:func behind=True head=n: Node inc path=RfE
+1167.7,22648,func-accepts-invalid_2026171984109_37,func-accepts-invalid:var-result nse behind=True return varres-return path=ERE
+1167.7,22648,func-accepts-invalid_2026171984109_39,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+1170.3,22704,func-accepts-invalid_2026171984108_26,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE
+1177.9,22824,func-accepts-invalid_2026171984115_10,func-accepts-invalid:func behind=True head=n: Node fb path=DfE
+1183.9,22872,unsound_2026171984119_77,unsound/A:assert:claim-n+forbreak+abs
+1196.5,23072,func-accepts-invalid_2026171984120_36,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+1215.8,23320,func-accepts-invalid_2026171984133_3,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+1215.8,23320,func-accepts-invalid_2026171984133_28,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE
+1227.4,23496,func-accepts-invalid_2026171984139_13,func-accepts-invalid:var-result nse behind=True expr varres-expr path=DfE
+1227.4,23496,func-accepts-invalid_2026171984139_16,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+1231.5,23560,unsound_2026171984143_36,unsound/A:assert:claim-gv+forbreak
+1231.5,23560,unsound_2026171984143_54,unsound/A:assert:claim-n+claim-t
+1232.6,23600,func-other-error_2026171984138_14,func-other-error:iter behind=True head=s: var seq[Node] let path=EDf:invalid expression for `addr` operation: PATH
+1236.5,23632,false-violation_2026171984145_1,false-violation:assert:assertion violated
+1237.4,23688,func-accepts-invalid_2026171984145_14,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+1243.3,23736,unsound_2026171984149_37,unsound/A:assert:claim-q+abs+stash
+1244.1,23776,func-accepts-invalid_2026171984144_11,func-accepts-invalid:var-result func behind=True return varres-return path=ERE
+1244.1,23776,func-accepts-invalid_2026171984144_22,func-accepts-invalid:var-result func behind=True return varres-return path=ERE
+1245.7,23792,unsound_2026171984146_102,unsound/A:assert:claim-tv
+1248.0,23864,func-accepts-invalid_2026171984151_2,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE
+1248.0,23864,func-rejects-valid_2026171984151_30,func-rejects-valid:castfunc behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1248.0,23864,func-other-error_2026171984151_35,func-other-error:nse behind=True head=h: var Holder let path=fEDf:invalid expression for `addr` operation: PATH
+1252.3,23912,unsound_2026171984155_9,unsound/A:idx:claim-tv+claim-t+abs+addr+try
+1252.9,23952,func-accepts-invalid_2026171984150_34,func-accepts-invalid:func behind=True head=t: var Tup swap path=fRE
+1257.2,24040,func-accepts-invalid_2026171984157_8,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+1257.2,24040,func-accepts-invalid_2026171984157_20,func-accepts-invalid:func behind=True head=n: var Node inc path=RE
+1261.4,24088,unsound_2026171984161_4,unsound/A:idx:claim-tv+claim-o+addr
+1270.0,24264,unsound_2026171984167_45,unsound/A:assert:claim-n
+1274.0,24336,unsound_2026171984164_18,unsound/A:assert:claim-gv+abs+addr
+1280.8,24440,unsound_2026171984173_18,unsound/A:assert:claim-gv+try
+1283.4,24480,func-accepts-invalid_2026171984168_15,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+1283.4,24480,func-accepts-invalid_2026171984168_37,func-accepts-invalid:func behind=True head=n: var Node swap path=DfE
+1286.2,24552,func-accepts-invalid_2026171984175_3,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=DfE
+1292.7,24672,func-accepts-invalid_2026171984174_38,func-accepts-invalid:func behind=True head=n: var Node inc path=RE
+1297.8,24728,func-accepts-invalid_2026171984181_37,func-accepts-invalid:var-result func behind=True expr varres-expr path=ffRE
+1304.8,24832,func-accepts-invalid_2026171984180_19,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+1308.6,24904,func-accepts-invalid_2026171984187_9,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+1313.9,25008,func-accepts-invalid_2026171984186_17,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE
+1317.8,25096,func-other-error_2026171984193_38,func-other-error:func behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH
+1323.1,25184,func-accepts-invalid_2026171984192_13,func-accepts-invalid:iter behind=True head=p: ptr Plain inc path=DfE
+1323.1,25184,func-accepts-invalid_2026171984192_17,func-accepts-invalid:iter behind=True head=n: Node inc path=RE
+1324.9,25200,unsound_2026171984194_6,unsound/A:assert:claim-q+forbreak+abs+addr+try
+1327.2,25256,func-accepts-invalid_2026171984199_2,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+1327.2,25256,func-accepts-invalid_2026171984199_9,func-accepts-invalid:func behind=True head=n: var Node inc path=DfE
+1327.2,25256,func-rejects-valid_2026171984199_20,func-rejects-valid:castfunc behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH
+1327.2,25256,func-accepts-invalid_2026171984199_28,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=DfE
+1333.0,25360,func-accepts-invalid_2026171984198_16,func-accepts-invalid:var-result func behind=True expr varres-expr path=fRE
+1336.3,25432,func-accepts-invalid_2026171984205_27,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+1340.9,25496,unsound_2026171984209_53,unsound/A:assert:claim-gv+addr+try
+1340.9,25496,unsound_2026171984209_88,unsound/A:assert:claim-cx+forbreak+addr+stash
+1344.2,25536,func-accepts-invalid_2026171984204_5,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+1344.2,25536,func-accepts-invalid_2026171984204_24,func-accepts-invalid:var-result func behind=True expr varres-expr path=fRE
+1350.3,25608,func-accepts-invalid_2026171984211_24,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+1360.2,25744,unsound_2026171984212_9,unsound/A:assert:claim-go+claim-gs
+1360.2,25744,unsound_2026171984212_11,unsound/A:assert:claim-go+claim-gs
+1361.1,25784,func-accepts-invalid_2026171984217_11,func-accepts-invalid:iter behind=True head=h: Holder swap path=fRfE
+1361.1,25784,func-accepts-invalid_2026171984217_38,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE
+1366.5,25832,unsound_2026171984221_99,unsound/A:assert:claim-n+abs
+1366.5,25832,unsound_2026171984221_153,unsound/A:idx:claim-q+claim-cx+addr
+1371.7,25904,func-accepts-invalid_2026171984216_8,func-accepts-invalid:iter behind=True head=n: var Node inc path=RE
+1371.7,25904,func-accepts-invalid_2026171984216_22,func-accepts-invalid:func behind=True head=n: Node fb path=RE
+1371.7,25904,func-accepts-invalid_2026171984216_27,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+1374.0,25960,func-accepts-invalid_2026171984223_33,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+1378.5,26008,unsound_2026171984227_152,unsound/A:assert:claim-gs+claim-n
+1378.5,26008,unsound_2026171984227_182,unsound/A:rng:forbreak+addr+stash+try
+1384.5,26080,func-accepts-invalid_2026171984222_10,func-accepts-invalid:var-result func behind=True return varres-return path=ERE
+1384.5,26080,func-accepts-invalid_2026171984222_35,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+1386.3,26096,unsound_2026171984224_51,unsound/A:assert:claim-gv+claim-t+addr
+1386.9,26136,func-accepts-invalid_2026171984229_29,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+1386.9,26136,func-accepts-invalid_2026171984229_31,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE
+1398.2,26312,func-accepts-invalid_2026171984235_2,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+1398.2,26312,func-accepts-invalid_2026171984235_38,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE
+1409.0,26400,func-rejects-valid_2026171984241_27,func-rejects-valid:castfunc behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+1421.7,26488,func-accepts-invalid_2026171984247_4,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=DfE
+1432.7,26576,func-accepts-invalid_2026171984253_23,func-accepts-invalid:nse behind=True head=s: var seq[Node] fb path=ERE
+1443.4,26664,func-other-error_2026171984259_19,func-other-error:nse behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1448.0,26696,unsound_2026171984263_186,unsound/A:idx:claim-gv+claim-gs+addr
+1452.6,26752,func-accepts-invalid_2026171984265_2,func-accepts-invalid:func behind=True head=n: var Node += path=DfE
+1454.5,26272,odd_2026171984230_x,odd:oracle-timeout
+1460.6,26872,func-rejects-valid_2026171984234_0,func-rejects-valid:fse behind=True head=a: var array[2; Node] let path=EDf:invalid expression for `addr` operation: PATH
+1460.6,26872,func-accepts-invalid_2026171984234_13,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+1460.6,26872,func-accepts-invalid_2026171984234_38,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE
+1465.4,26976,unsound_2026171984275_128,unsound/A:assert:claim-go+forbreak+stash+try
+1465.4,26976,unsound_2026171984275_148,unsound/A:assert:claim-go+forbreak+stash+try
+1469.2,27048,func-accepts-invalid_2026171984240_29,func-accepts-invalid:func behind=True head=h: Holder += path=fRE
+1470.1,27104,func-accepts-invalid_2026171984277_29,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+1470.1,27104,func-accepts-invalid_2026171984277_38,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=DfE
+1470.7,27064,unsound_2026171984242_138,unsound/A:assert:claim-o+claim-t+addr
+1478.7,27224,func-accepts-invalid_2026171984246_22,func-accepts-invalid:func behind=True head=n: Node inc path=RfE
+1478.7,27224,func-accepts-invalid_2026171984246_23,func-accepts-invalid:func behind=True head=h: Holder fb path=fRE
+1478.7,27224,func-accepts-invalid_2026171984246_33,func-accepts-invalid:func behind=True head=h: var Holder fb path=fERE
+1478.7,27224,func-rejects-valid_2026171984246_35,func-rejects-valid:fse behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1479.9,27280,func-accepts-invalid_2026171984283_14,func-accepts-invalid:func behind=True head=h: var Holder += path=fRE
+1479.9,27280,func-accepts-invalid_2026171984283_19,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=DfE
+1480.3,27240,unsound_2026171984248_2,unsound/A:assert:claim-n+forbreak
+1480.3,27240,unsound_2026171984248_85,unsound/A:assert:claim-gs+claim-q
+1485.2,27328,unsound_2026171984287_109,unsound/A:assert:claim-q
+1489.3,27400,func-accepts-invalid_2026171984252_26,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=DfE
+1489.3,27400,func-accepts-invalid_2026171984252_30,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE
+1490.6,27456,func-accepts-invalid_2026171984289_23,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE
+1494.8,27504,unsound_2026171984293_2,unsound/A:assert:claim-n
+1494.8,27504,unsound_2026171984293_58,unsound/A:assert:claim-go+claim-t+forbreak
+1494.8,27504,unsound_2026171984293_61,unsound/A:idx:claim-go+claim-q+claim-t+forbreak
+1500.2,27576,func-accepts-invalid_2026171984258_20,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+1502.1,27608,unsound_2026171984260_171,unsound/A:assert:claim-go
+1509.8,27752,func-accepts-invalid_2026171984264_20,func-accepts-invalid:func behind=True head=h: var Holder swap path=fRE
+1509.8,27752,func-accepts-invalid_2026171984264_23,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE
+1509.8,27752,func-accepts-invalid_2026171984264_25,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE
+1509.8,27752,func-accepts-invalid_2026171984264_30,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE
+1510.7,27808,func-accepts-invalid_2026171984301_5,func-accepts-invalid:func behind=True head=n: var Node += path=DfE
+1514.5,27856,unsound_2026171984305_93,unsound/A:assert:claim-gs+claim-o+addr
+1522.7,28032,unsound_2026171984311_80,unsound/A:assert:claim-q+claim-t+addr
+1536.0,28296,func-accepts-invalid_2026171984319_5,func-accepts-invalid:func behind=True head=h: var Holder += path=fRE
+1536.0,28296,func-accepts-invalid_2026171984319_33,func-accepts-invalid:func behind=True head=n: Node swap path=RfE
+1536.8,28312,unsound_2026171984284_8,unsound/A:idx:claim-tv+claim-o+try
+1544.9,28512,func-accepts-invalid_2026171984325_39,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE
+1548.8,28560,unsound_2026171984329_39,unsound/A:assert:claim-gv+abs
+1552.9,28632,func-accepts-invalid_2026171984294_0,func-accepts-invalid:func behind=True head=n: var Node inc path=RfE
+1553.7,28648,func-accepts-invalid_2026171984331_9,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE
+1553.7,28648,func-other-error_2026171984331_38,func-other-error:iter behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1557.9,28736,unsound_2026171984335_35,unsound/A:assert:claim-q+claim-o+addr+try
+1557.9,28736,unsound_2026171984335_153,unsound/A:assert:claim-gv
+1562.7,28864,func-accepts-invalid_2026171984337_10,func-accepts-invalid:iter behind=True head=n: Node inc path=RE
+1570.9,28984,func-accepts-invalid_2026171984306_35,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE
+1570.9,28984,func-accepts-invalid_2026171984306_38,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+1571.4,29000,func-accepts-invalid_2026171984343_30,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE
+1579.7,29160,func-accepts-invalid_2026171984312_13,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+1580.2,29176,func-other-error_2026171984349_38,func-other-error:func behind=True head=h: Holder let path=fDf:invalid expression for `addr` operation: PATH
+1584.2,29264,unsound_2026171984353_64,unsound/A:assert:claim-tv+addr
+1588.8,29352,func-accepts-invalid_2026171984355_10,func-accepts-invalid:var-result nse behind=True return varres-return path=RE
+1588.8,29352,func-accepts-invalid_2026171984355_34,func-accepts-invalid:nse behind=True head=p: var ptr Plain inc path=RE
+1590.0,29368,unsound_2026171984320_52,unsound/A:assert:addr
+1592.7,29440,unsound_2026171984359_35,unsound/A:assert:claim-gv+abs
+1597.1,29512,func-accepts-invalid_2026171984361_4,func-accepts-invalid:var-result func behind=True result varres-result path=fRE
+1597.1,29512,func-accepts-invalid_2026171984361_34,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+1597.4,29528,func-accepts-invalid_2026171984324_12,func-accepts-invalid:nse behind=True head=t: var Tup inc path=fRE
+1605.4,29688,func-accepts-invalid_2026171984367_7,func-accepts-invalid:iter behind=True head=n: Node fb path=RE
+1605.4,29688,func-accepts-invalid_2026171984367_25,func-accepts-invalid:func behind=True head=n: var Node swap path=DffE
+1605.6,29704,func-accepts-invalid_2026171984330_16,func-accepts-invalid:iter behind=True head=n: Node swap path=RE
+1605.6,29704,func-accepts-invalid_2026171984330_26,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+1605.6,29704,func-accepts-invalid_2026171984330_34,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE
+1607.2,29760,unsound_2026171984332_101,unsound/A:assert:claim-q+abs+addr+try
+1607.2,29760,unsound_2026171984332_125,unsound/A:assert:claim-gs+addr+try
+1608.6,29760,false-violation_2026171984332_99,false-violation:assert:assertion violated
+1614.1,29864,func-accepts-invalid_2026171984373_21,func-accepts-invalid:nse behind=True head=t: var Tup inc path=fRE
+1614.6,29880,func-accepts-invalid_2026171984336_12,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE
+1616.2,29936,unsound_2026171984338_163,unsound/A:assert:claim-n+forbreak
+1616.2,29936,unsound_2026171984338_166,unsound/A:assert:claim-n+forbreak
+1617.9,29952,unsound_2026171984377_142,unsound/A:assert:claim-gv+addr
+1622.5,30040,func-other-error_2026171984379_38,func-other-error:iter behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH
+1623.5,30096,func-other-error_2026171984342_12,func-other-error:iter behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+1623.5,30096,func-accepts-invalid_2026171984342_25,func-accepts-invalid:var-result nse behind=True expr varres-expr path=DfE
+1623.5,30096,func-accepts-invalid_2026171984342_29,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE
+1623.5,30096,func-other-error_2026171984342_35,func-other-error:iter behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH
+1625.0,30112,unsound_2026171984344_5,unsound/A:assert:claim-q+abs+addr
+1625.0,30112,unsound_2026171984344_93,unsound/A:assert:claim-n+claim-o
+1631.2,30216,func-accepts-invalid_2026171984385_1,func-accepts-invalid:func behind=True head=t: var Tup swap path=fRE
+1631.2,30216,func-accepts-invalid_2026171984385_10,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=DfE
+1631.2,30216,func-accepts-invalid_2026171984385_22,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+1632.1,30272,func-accepts-invalid_2026171984348_0,func-accepts-invalid:func behind=True head=h: Holder inc path=fRE
+1639.7,30392,func-rejects-valid_2026171984391_2,func-rejects-valid:fse behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH
+1639.7,30392,func-accepts-invalid_2026171984391_21,func-accepts-invalid:func behind=True head=n: var Node += path=DfE
+1641.9,30464,unsound_2026171984356_77,unsound/A:assert:claim-q+forbreak+abs+addr+try
+1641.9,30464,unsound_2026171984356_109,unsound/A:assert:claim-n+claim-q+forbreak+try
+1643.7,30480,unsound_2026171984395_114,unsound/A:assert:claim-q
+1648.1,30568,func-accepts-invalid_2026171984397_4,func-accepts-invalid:func behind=True head=n: Node fb path=DfE
+1648.8,30584,func-accepts-invalid_2026171984360_13,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE
+1648.8,30584,func-other-error_2026171984360_36,func-other-error:func behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+1650.2,30640,unsound_2026171984362_91,unsound/A:assert:claim-t+abs+addr
+1652.5,30656,unsound_2026171984401_138,unsound/A:assert:claim-q+claim-t
+1652.5,30656,unsound_2026171984401_217,unsound/A:idx:claim-cx+abs
+1657.1,30744,func-other-error_2026171984366_13,func-other-error:func behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+1657.1,30760,func-accepts-invalid_2026171984403_25,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE
+1657.1,30760,func-accepts-invalid_2026171984403_29,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+1665.4,30920,func-accepts-invalid_2026171984372_23,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+1665.6,30936,func-accepts-invalid_2026171984409_16,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+1666.8,30952,unsound_2026171984374_72,unsound/A:assert:claim-o
+1673.6,31096,func-accepts-invalid_2026171984378_20,func-accepts-invalid:func behind=True head=t: var Tup swap path=fDfE
+1674.0,31112,func-accepts-invalid_2026171984415_3,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+1674.0,31112,func-accepts-invalid_2026171984415_33,func-accepts-invalid:iter behind=True head=n: var Node swap path=RE
+1674.0,31112,func-accepts-invalid_2026171984415_35,func-accepts-invalid:nse behind=True head=s: var seq[Node] swap path=ERE
+1675.2,31128,unsound_2026171984380_40,unsound/A:assert:claim-n
+1682.2,31272,func-other-error_2026171984384_13,func-other-error:func behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1682.2,31272,func-accepts-invalid_2026171984384_15,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERfE
+1682.2,31272,func-accepts-invalid_2026171984384_31,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE
+1682.4,31288,func-accepts-invalid_2026171984421_19,func-accepts-invalid:var-result func behind=True return varres-return path=fRE
+1691.1,31464,func-accepts-invalid_2026171984427_38,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE
+1695.3,31552,unsound_2026171984431_119,unsound/A:assert:claim-gv+claim-gs
+1699.0,31624,func-accepts-invalid_2026171984396_9,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+1699.0,31624,func-accepts-invalid_2026171984396_35,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE
+1699.0,31624,func-accepts-invalid_2026171984396_37,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE
+1699.8,31680,func-accepts-invalid_2026171984433_19,func-accepts-invalid:func behind=True head=n: var Node swap path=DfE
+1707.5,31800,func-accepts-invalid_2026171984402_34,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+1708.1,31816,func-accepts-invalid_2026171984439_3,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+1715.9,31976,func-accepts-invalid_2026171984408_27,func-accepts-invalid:func behind=True head=n: var Node swap path=RfE
+1720.4,32080,unsound_2026171984449_10,unsound/A:assert:claim-gv+claim-q
+1724.3,32152,func-accepts-invalid_2026171984414_2,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+1724.3,32152,func-accepts-invalid_2026171984414_10,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE
+1724.9,32168,func-accepts-invalid_2026171984451_13,func-accepts-invalid:nse behind=True head=t: var Tup += path=fRfE
+1732.9,32328,func-accepts-invalid_2026171984420_2,func-accepts-invalid:var-result nse behind=True result varres-result path=EDfE
+1741.4,32504,func-accepts-invalid_2026171984426_0,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+1741.4,32504,func-accepts-invalid_2026171984426_27,func-accepts-invalid:iter behind=True head=n: var Node += path=RE
+1741.9,32520,func-accepts-invalid_2026171984463_17,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=DfE
+1749.7,32680,func-other-error_2026171984432_14,func-other-error:func behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH
+1749.7,32680,func-accepts-invalid_2026171984432_35,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE
+1751.1,32696,unsound_2026171984434_125,unsound/A:idx:claim-q+claim-o
+1758.7,32856,func-accepts-invalid_2026171984438_2,func-accepts-invalid:nse behind=True head=p: var ptr Plain fb path=DfE
+1758.7,32856,func-accepts-invalid_2026171984438_27,func-accepts-invalid:var-result nse behind=True result varres-result path=DfE
+1758.7,32856,func-accepts-invalid_2026171984438_30,func-accepts-invalid:func behind=True head=n: var Node inc path=RE
+1759.3,32872,func-accepts-invalid_2026171984475_25,func-accepts-invalid:var-result func behind=True result varres-result path=DfE
+1760.1,32888,unsound_2026171984440_42,unsound/A:assert:claim-gs+claim-n+abs+addr
+1763.2,32960,unsound_2026171984479_143,unsound/A:assert:claim-n+claim-q+abs+addr+stash+try
+1767.0,33032,func-rejects-valid_2026171984444_18,func-rejects-valid:castfunc behind=True head=a: var array[2; Node] let path=EDff:invalid expression for `addr` operation: PATH
+1767.0,33032,func-rejects-valid_2026171984444_29,func-rejects-valid:fse behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+1771.7,33136,unsound_2026171984485_116,unsound/A:idx:claim-q+addr
+1776.4,33264,func-accepts-invalid_2026171984487_4,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=DfE
+1776.4,33264,func-rejects-valid_2026171984487_25,func-rejects-valid:proc behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+1776.4,33264,func-accepts-invalid_2026171984487_35,func-accepts-invalid:var-result nse behind=True expr varres-expr path=DfE
+1776.8,33224,unsound_2026171984452_61,unsound/A:assert:claim-n+abs+addr+try
+1784.9,33384,func-accepts-invalid_2026171984493_14,func-accepts-invalid:iter behind=True head=n: var Node fb path=RE
+1784.9,33384,func-accepts-invalid_2026171984493_29,func-accepts-invalid:iter behind=True head=p: ptr Plain fb path=RE
+1808.0,33328,odd_2026171984456_x,odd:oracle-fail
+1808.7,33416,unsound_2026171984497_52,unsound/A:assert:claim-gv+claim-t+abs
+1808.7,33416,unsound_2026171984497_156,unsound/A:assert:claim-cx
+1808.7,33456,func-accepts-invalid_2026171984456_14,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+1808.7,33456,func-accepts-invalid_2026171984456_31,func-accepts-invalid:func behind=True head=n: var Node swap path=DfE
+1817.4,33632,func-accepts-invalid_2026171984462_13,func-accepts-invalid:func behind=True head=n: var Node += path=RE
+1817.4,33632,func-accepts-invalid_2026171984462_29,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE
+1818.9,33648,unsound_2026171984464_59,unsound/A:assert:claim-cx+abs
+1818.9,33648,unsound_2026171984464_63,unsound/A:assert:claim-tv+forbreak+stash
+1825.2,33768,unsound_2026171984509_38,unsound/A:assert:claim-gv+claim-gs+addr
+1826.0,33808,func-accepts-invalid_2026171984468_17,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE
+1826.0,33808,func-accepts-invalid_2026171984468_23,func-accepts-invalid:var-result func behind=True result varres-result path=RfE
+1830.1,33896,func-accepts-invalid_2026171984511_14,func-accepts-invalid:iter behind=True head=s: var seq[Node] inc path=ERfE
+1834.2,33984,func-accepts-invalid_2026171984474_4,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE
+1834.2,33984,func-accepts-invalid_2026171984474_19,func-accepts-invalid:var-result func behind=True result varres-result path=ERE
+1834.2,33984,func-accepts-invalid_2026171984474_21,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERE
+1835.7,34000,unsound_2026171984476_40,unsound/A:assert:claim-cx+claim-o+forbreak+abs+addr
+1842.7,34160,func-accepts-invalid_2026171984480_0,func-accepts-invalid:iter behind=True head=n: var Node swap path=RE
+1842.7,34160,func-accepts-invalid_2026171984480_20,func-accepts-invalid:func behind=True head=n: Node fb path=RE
+1842.7,34160,func-accepts-invalid_2026171984480_39,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=RE
+1844.1,34176,unsound_2026171984482_68,unsound/A:assert:claim-gs+claim-q+abs+stash
+1856.2,34424,func-accepts-invalid_2026171984529_0,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE
+1859.6,34512,func-accepts-invalid_2026171984492_12,func-accepts-invalid:iter behind=True head=n: var Node fb path=RfE
+1861.0,34528,unsound_2026171984494_25,unsound/A:assert:claim-q+abs
+1864.6,34600,func-other-error_2026171984535_14,func-other-error:iter behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH
+1868.0,34688,func-accepts-invalid_2026171984498_14,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE
+1868.0,34688,func-accepts-invalid_2026171984498_17,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE
+1868.0,34688,func-accepts-invalid_2026171984498_20,func-accepts-invalid:nse behind=True head=p: ptr Plain fb path=RE
+1868.0,34688,func-accepts-invalid_2026171984498_28,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+1881.4,34952,func-accepts-invalid_2026171984547_2,func-accepts-invalid:nse behind=True head=n: Node += path=RE
+1885.6,35040,func-accepts-invalid_2026171984510_11,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE
+1889.7,35128,func-accepts-invalid_2026171984553_24,func-accepts-invalid:iter behind=True head=s: var seq[Node] swap path=ERE
+1893.6,35176,unsound_2026171984557_6,unsound/A:assert:claim-n
+1894.3,35216,func-accepts-invalid_2026171984516_36,func-accepts-invalid:var-result nse behind=True return varres-return path=ERE
+1898.3,35304,func-accepts-invalid_2026171984559_30,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+1898.3,35304,func-accepts-invalid_2026171984559_37,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE
+1902.9,35392,func-accepts-invalid_2026171984522_39,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=DfE
+1919.9,35704,unsound_2026171984575_28,unsound/A:assert:claim-go+forbreak+abs+addr+stash+try
+1920.2,35744,func-accepts-invalid_2026171984534_0,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+1920.2,35744,func-accepts-invalid_2026171984534_26,func-accepts-invalid:var-result nse behind=True return varres-return path=DfE
+1924.3,35832,func-accepts-invalid_2026171984577_24,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE
+1928.6,35920,func-rejects-valid_2026171984540_38,func-rejects-valid:castfunc behind=True head=s: var seq[Node] let path=EDf:invalid expression for `addr` operation: PATH
+1933.4,36008,func-accepts-invalid_2026171984583_5,func-accepts-invalid:nse behind=True head=a: var array[2; Node] fb path=ERE
+1933.4,36008,func-accepts-invalid_2026171984583_31,func-accepts-invalid:var-result func behind=True return varres-return path=ERE
+1936.3,36040,false-violation_2026171984546_22,false-violation:assert:assertion violated
+1937.1,36096,func-accepts-invalid_2026171984546_3,func-accepts-invalid:nse behind=True head=p: ptr Plain inc path=RE
+1937.1,36096,func-accepts-invalid_2026171984546_5,func-accepts-invalid:func behind=True head=n: Node swap path=DfE
+1941.7,36184,func-accepts-invalid_2026171984589_12,func-accepts-invalid:var-result nse behind=True result varres-result path=fRE
+1941.7,36184,func-accepts-invalid_2026171984589_16,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+1945.5,36272,func-accepts-invalid_2026171984552_33,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+1945.6,36232,unsound_2026171984593_19,unsound/A:assert:claim-q+forbreak+abs+stash
+1945.6,36232,unsound_2026171984593_43,unsound/A:assert:claim-gv+forbreak+abs+stash
+1947.0,36288,unsound_2026171984554_93,unsound/A:assert:claim-q+claim-o+addr+stash+try
+1950.2,36360,func-accepts-invalid_2026171984595_20,func-accepts-invalid:var-result nse behind=True return varres-return path=fRE
+1950.2,36360,func-accepts-invalid_2026171984595_34,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE
+1953.8,36448,func-accepts-invalid_2026171984558_20,func-accepts-invalid:func behind=True head=h: Holder inc path=fDfE
+1953.8,36448,func-accepts-invalid_2026171984558_31,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+1954.0,36408,unsound_2026171984599_85,unsound/A:assert:claim-q+claim-o+forbreak+abs+addr
+1958.4,36536,func-accepts-invalid_2026171984601_2,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE
+1958.4,36536,func-accepts-invalid_2026171984601_31,func-accepts-invalid:func behind=True head=s: var seq[Node] fb path=ERE
+1962.1,36624,func-accepts-invalid_2026171984564_38,func-accepts-invalid:nse behind=True head=p: ptr Plain fb path=RE
+1962.4,36584,unsound_2026171984605_79,unsound/A:assert:claim-go+claim-t+forbreak
+1970.3,36784,func-other-error_2026171984570_29,func-other-error:nse behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH
+1975.7,36888,func-other-error_2026171984613_5,func-other-error:iter behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+1979.2,36976,func-accepts-invalid_2026171984576_12,func-accepts-invalid:iter behind=True head=t: var Tup swap path=fRE
+1984.0,37064,func-accepts-invalid_2026171984619_7,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE
+1984.0,37064,func-accepts-invalid_2026171984619_28,func-accepts-invalid:iter behind=True head=n: Node fb path=RE
+1987.6,37152,func-other-error_2026171984582_12,func-other-error:func behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+1992.3,37240,func-accepts-invalid_2026171984625_28,func-accepts-invalid:func behind=True head=n: var Node += path=DfE
+1992.3,37240,func-accepts-invalid_2026171984625_33,func-accepts-invalid:func behind=True head=n: Node fb path=RE
+1996.4,37328,func-accepts-invalid_2026171984588_16,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE
+1996.4,37328,func-accepts-invalid_2026171984588_18,func-accepts-invalid:var-result func behind=True return varres-return path=RE
+2001.2,37416,func-accepts-invalid_2026171984631_34,func-accepts-invalid:func behind=True head=n: Node inc path=RE
+2005.4,37504,func-accepts-invalid_2026171984594_6,func-accepts-invalid:func behind=True head=h: Holder += path=fERE
+2005.4,37504,func-accepts-invalid_2026171984594_9,func-accepts-invalid:nse behind=True head=p: ptr Plain fb path=RE
+2005.4,37464,unsound_2026171984635_208,unsound/A:assert:claim-n+forbreak+abs
+2014.1,37640,unsound_2026171984641_20,unsound/A:assert:claim-n+addr+stash
+2022.6,37856,func-accepts-invalid_2026171984606_39,func-accepts-invalid:iter behind=True head=n: var Node swap path=RE
+2027.2,37944,func-accepts-invalid_2026171984649_6,func-accepts-invalid:iter behind=True head=p: var ptr Plain inc path=RE
+2027.2,37944,func-accepts-invalid_2026171984649_26,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERE
+2027.2,37944,func-accepts-invalid_2026171984649_35,func-accepts-invalid:iter behind=True head=n: var Node fb path=RE
+2031.2,37992,unsound_2026171984653_23,unsound/A:assert:claim-gs+forbreak+abs+try
+2031.4,38032,func-other-error_2026171984612_20,func-other-error:iter behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+2035.9,38120,func-accepts-invalid_2026171984655_33,func-accepts-invalid:func behind=True head=n: var Node += path=RE
+2039.9,38168,unsound_2026171984659_2,unsound/A:assert:claim-gs+claim-o
+2039.9,38168,unsound_2026171984659_176,unsound/A:assert:claim-gs+claim-q
+2040.0,38208,func-accepts-invalid_2026171984618_9,func-accepts-invalid:nse behind=True head=n: var Node += path=RE
+2041.6,38224,unsound_2026171984620_18,unsound/A:assert:claim-gv+try
+2057.0,38560,func-accepts-invalid_2026171984630_4,func-accepts-invalid:func behind=True head=h: var Holder += path=fDfE
+2057.0,38560,func-accepts-invalid_2026171984630_16,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=EDfE
+2057.0,38560,func-rejects-valid_2026171984630_24,func-rejects-valid:castfunc behind=True head=n: var Node let path=Dff:invalid expression for `addr` operation: PATH
+2057.0,38560,func-accepts-invalid_2026171984630_27,func-accepts-invalid:nse behind=True head=p: var ptr Plain inc path=RE
+2057.0,38560,func-accepts-invalid_2026171984630_33,func-accepts-invalid:iter behind=True head=s: var seq[Node] += path=ERE
+2065.0,38696,unsound_2026171984677_12,unsound/A:assert:claim-go+forbreak+stash
+2065.6,38736,func-accepts-invalid_2026171984636_12,func-accepts-invalid:func behind=True head=n: Node fb path=RE
+2065.6,38736,func-accepts-invalid_2026171984636_21,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=DfE
+2065.6,38736,func-accepts-invalid_2026171984636_24,func-accepts-invalid:func behind=True head=n: var Node fb path=RfE
+2078.2,39000,func-accepts-invalid_2026171984685_4,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERE
+2078.2,39000,func-accepts-invalid_2026171984685_21,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE
+2082.3,39088,func-accepts-invalid_2026171984648_15,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+2083.8,39104,unsound_2026171984650_103,unsound/A:assert:claim-tv+addr+try
+2086.5,39176,func-accepts-invalid_2026171984691_8,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE
+2086.5,39176,func-other-error_2026171984691_29,func-other-error:nse behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH
+2086.5,39176,func-accepts-invalid_2026171984691_34,func-accepts-invalid:var-result nse behind=True return varres-return path=RE
+2090.8,39264,func-accepts-invalid_2026171984654_16,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE
+2099.0,39400,unsound_2026171984701_29,unsound/A:assert:claim-tv+claim-q+stash
+2099.0,39400,unsound_2026171984701_96,unsound/A:idx:claim-q+forbreak+try
+2099.4,39440,func-accepts-invalid_2026171984660_17,func-accepts-invalid:var-result func behind=True expr varres-expr path=fDfE
+2100.2,39400,false-violation_2026171984701_44,false-violation:assert:assertion violated
+2103.3,39528,func-other-error_2026171984703_39,func-other-error:func behind=True head=n: Node let path=Dff:invalid expression for `addr` operation: PATH
+2108.0,39616,func-accepts-invalid_2026171984666_3,func-accepts-invalid:func behind=True head=n: var Node swap path=RE
+2116.5,39792,func-accepts-invalid_2026171984672_33,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE
+2124.4,39968,func-accepts-invalid_2026171984678_13,func-accepts-invalid:nse behind=True head=n: var Node swap path=RE
+2124.4,39968,func-accepts-invalid_2026171984678_19,func-accepts-invalid:iter behind=True head=h: var Holder fb path=fDfE
+2124.4,39968,func-accepts-invalid_2026171984678_39,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+2125.9,39984,unsound_2026171984680_42,unsound/A:assert:claim-gv+forbreak+abs+addr
+2128.7,40056,func-accepts-invalid_2026171984721_31,func-accepts-invalid:iter behind=True head=p: ptr Plain inc path=RE
+2128.7,40056,func-accepts-invalid_2026171984721_38,func-accepts-invalid:var-result func behind=True return varres-return path=ERE
+2129.5,40016,false-violation_2026171984682_16,false-violation:assert:assertion violated
+2132.7,40144,func-accepts-invalid_2026171984684_3,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE
+2132.7,40144,func-accepts-invalid_2026171984684_23,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE
+2141.3,40320,func-accepts-invalid_2026171984690_36,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=RE
+2145.3,40408,func-accepts-invalid_2026171984733_23,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE
+2145.3,40408,func-accepts-invalid_2026171984733_31,func-accepts-invalid:iter behind=True head=n: var Node swap path=DfE
+2145.3,40408,func-accepts-invalid_2026171984733_36,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE
+2149.5,40456,unsound_2026171984737_5,unsound/A:idx:claim-gv+claim-cx+abs+addr
+2158.2,40672,func-other-error_2026171984702_3,func-other-error:iter behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+2162.4,40760,func-accepts-invalid_2026171984745_21,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=DfE
+2166.5,40848,func-accepts-invalid_2026171984708_7,func-accepts-invalid:nse behind=True head=a: var array[2; Node] fb path=ERE
+2166.5,40848,func-accepts-invalid_2026171984708_31,func-accepts-invalid:var-result nse behind=True return varres-return path=fERE
+2171.1,40936,func-accepts-invalid_2026171984751_3,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+2174.8,41024,func-accepts-invalid_2026171984714_12,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE
+2174.8,41024,func-accepts-invalid_2026171984714_30,func-accepts-invalid:iter behind=True head=p: ptr Plain inc path=RE
+2179.4,41112,func-accepts-invalid_2026171984757_25,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=DfE
+2179.4,41112,func-rejects-valid_2026171984757_26,func-rejects-valid:fse behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH
+2183.4,41200,func-accepts-invalid_2026171984720_0,func-accepts-invalid:var-result nse behind=True return varres-return path=RE
+2188.0,41288,func-accepts-invalid_2026171984763_28,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+2192.0,41376,func-accepts-invalid_2026171984726_8,func-accepts-invalid:func behind=True head=n: var Node += path=RE
+2192.0,41376,func-accepts-invalid_2026171984726_29,func-accepts-invalid:func behind=True head=t: var Tup inc path=fRE
+2192.1,41336,unsound_2026171984767_37,unsound/A:assert:claim-tv+claim-o
+2202.2,41568,unsound_2026171984734_34,unsound/A:idx:claim-q+abs+addr+try
+2205.0,41640,func-accepts-invalid_2026171984775_15,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE
+2205.0,41640,func-accepts-invalid_2026171984775_38,func-accepts-invalid:var-result func behind=True return varres-return path=DfE
+2209.1,41688,unsound_2026171984779_79,unsound/A:idx:claim-o+forbreak+addr+stash
+2209.3,41728,func-accepts-invalid_2026171984738_36,func-accepts-invalid:var-result nse behind=True result varres-result path=RE
+2213.5,41816,func-rejects-valid_2026171984781_28,func-rejects-valid:castfunc behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH
+2213.5,41816,func-accepts-invalid_2026171984781_31,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE
+2213.5,41816,func-accepts-invalid_2026171984781_35,func-accepts-invalid:iter behind=True head=n: var Node swap path=RE
+2222.2,41992,func-accepts-invalid_2026171984787_1,func-accepts-invalid:nse behind=True head=s: var seq[Node] swap path=ERE
+2222.2,41992,func-accepts-invalid_2026171984787_27,func-accepts-invalid:func behind=True head=h: Holder inc path=fRE
+2227.3,42096,unsound_2026171984752_11,unsound/A:assert:claim-q+claim-t+addr
+2227.3,42096,unsound_2026171984752_38,unsound/A:idx:claim-go+claim-q+try
+2234.4,42240,func-accepts-invalid_2026171984756_22,func-accepts-invalid:func behind=True head=h: var Holder inc path=fRfE
+2239.5,42344,func-accepts-invalid_2026171984799_8,func-accepts-invalid:func behind=True head=n: var Node fb path=RE
+2239.5,42344,func-accepts-invalid_2026171984799_10,func-accepts-invalid:func behind=True head=t: var Tup += path=fRE
+2239.5,42344,func-accepts-invalid_2026171984799_19,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE
+2242.7,42416,func-accepts-invalid_2026171984762_13,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+2248.3,42520,func-accepts-invalid_2026171984805_0,func-accepts-invalid:var-result func behind=True result varres-result path=RE
+2251.2,42592,func-accepts-invalid_2026171984768_8,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE
+2251.2,42592,func-accepts-invalid_2026171984768_34,func-accepts-invalid:iter behind=True head=n: var Node fb path=RE

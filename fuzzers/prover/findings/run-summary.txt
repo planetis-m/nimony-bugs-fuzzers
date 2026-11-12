@@ -1,0 +1,19 @@
+45-minute run: python3 -I fuzz.py --seed 20261110 --minutes 45 --jobs 1   (nimony master 0305d6c6, C backend)
+wall 2701.0 s, CPU 1798.9 s (driver + all compiler/gcc/test children)
+programs: 6080 procs in 380 modules (each module compiled 2-5 times under staticContracts, 1-2 times as oracle)
+claims generated 60115; rejected by the prover 43093; accepted (proved) 17041, of which 11126 reached at run time
+log.csv: 50 findings = 37 real (11 x bug 01, 12 x bug 02, 14 x bug 04) + 13 oracle artifacts (see dedupe.csv)
+incomplete.log: 8112 rejects-valid candidates (sampled domain, see 06.md)
+
+find-rate (real findings, cumulative):   5 min: 1 raw / 1 distinct
+                                         15 min: 9 raw / 3 distinct
+                                         30 min: 25 raw / 3 distinct
+                                         45 min: 37 raw / 3 distinct
+first hit: bug 02 at 71.8 s (176 programs), bug 01 at 433.6 s (1008), bug 04 at 703.3 s (1552).
+
+Outside the budget (same machine, 1 job):
+  t/explore0, t/explore1  trial runs while building the fuzzer (640 + ~700 procs)
+  t/ex2  FUZZ_DISABLE=addr,forbreak,negshr, seed 31, 9 min, 1136 procs: 1 finding, again bug 02 (inside an assume)
+  t/ex3  FUZZ_DISABLE=addr,forbreak,negshr FUZZ_EXTRA=abs,globals, seed 47, 10 min, 1312 procs:
+         bug 05 found twice (one unsound, one wrong "assertion violated"); bug 03 not hit; 1 false-assume artifact
+Bugs 03, 05 and 08 were found by hand probes during the run (constructs outside the generator's grammar).

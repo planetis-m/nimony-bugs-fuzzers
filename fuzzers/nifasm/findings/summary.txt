@@ -1,0 +1,1 @@
+seed=1 programs=109502 wall_s=2700 cpu_parent_s=614.8 distinct_sigs=1610 counts={'rejects-valid': 24015, 'ok': 32541, 'accepts-invalid': 35530, 'j-ok': 10756, 'mismatch': 6414, 'j-mismatch': 218, 'hazard': 28}

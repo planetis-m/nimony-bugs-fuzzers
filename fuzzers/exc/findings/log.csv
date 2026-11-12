@@ -1,0 +1,27 @@
+time_s,programs,finding_id,signature
+0.0,0,01,hand probe while writing the generator (raise as if-expression branch -> xelim AutoT assertion); generator option p_raise_branch then off
+8.1,6,02,c:cfail:workp.nim Error: cannot prove that `x has been initialized [pass --verbose for the Final IR]
+23.6,11,03,c:cfail:[Bug] could not find symbol: lN.0
+49.1,16,02(dup),c:cfail:[Error] statement expected; but got: 3@i;V;workp.nim
+83.9,23,03(dup),c:cfail:[Bug] call must have been bound to a location
+203.0,60,04,c:mismatch
+211.4,63,03(dup),c:cfail:Error: unhandled exception:  [AssertionDefect]
+224.1,64,03(dup),c:cfail:Error: unhandled exception: nimony_model.nim:295 `n.isTagLit`  [AssertionDefect]
+237.3,65,04(dup),c:mismatch
+250.2,65,04(dup),opt:mismatch
+293.1,65,04(dup),opt:mismatch
+369.3,80,04(dup),n:mismatch
+375.1,81,02(dup),c:cfail:(i@G;p;arithmetics.nim 64)6~2 `x.39@1)1023@4)
+419.3,84,04(dup),c:mismatch
+435.7,88,02(dup),c:cfail:(i@G;p;arithmetics.nim 64)v0.0~3 3@2)1023@4)
+456.9,88,04(dup),opt:mismatch
+476.0,92,02(dup),c:cfail:(i@G;p;arithmetics.nim 64)v1.2~3 3@2)1023@4)
+491.8,97,04(dup),c:mismatch
+520.5,103,04(dup),c:mismatch
+582.9,118,05,c:mismatch
+611.0,123,06,c:cfail:workp.nim Error: cannot prove that result has been initialized [pass --verbose for the Final IR]
+622.1,125,GEN(generator false positive; fixed),c:mismatch
+1003.2,272,05(dup),c:mismatch
+1083.9,301,04(dup),c:mismatch
+1087.4,302,05(dup),c:mismatch
+1139.4,314,04(dup),c:mismatch

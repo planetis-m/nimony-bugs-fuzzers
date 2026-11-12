@@ -1,0 +1,47 @@
+elapsed_s=2702 programs=2174 cpu_s=3621
+f01 hits=399 c:compile:[Bug] could not find symbol: ID.N
+f02 hits=64 c:compile:Error: unhandled exception: coro_transform.nim(N, N) `state != -N`  [AssertionDefect]
+f03 hits=119 c:compile:Error: unhandled exception: duplifier.nim(N, N) `leType.typeKind != AutoT` could not compute type of: (tupat result.N N) [AssertionDefect]
+f04 hits=56 c:compile:[Bug] could not find symbol: `ii.N
+f05 hits=33 c:compile:[Bug] could not find symbol: `llTemp.N
+f06 hits=135 c:compile:Error: unhandled exception: Symbol not found in NIF module: `anonproc.N [AssertionDefect]
+f07 hits=53 c:compile:[Bug] could not find symbol: `lf.N
+f08 hits=40 c:compile:[Bug] capturing the locals of an enclosing iterator is not supported: `iir.N at prog.nim(N, N)
+f09 hits=29 c:compile:[Bug] could not find symbol: `coroResult.N
+f10 hits=66 c:compile:[Bug] envp should have been eliminated in lambdalifting.nim
+f11 hits=33 c:compile:Error: unhandled exception: Symbol not found in NIF module: `iir.N [AssertionDefect]
+f12 hits=41 c:compile:error: redefinition of ‘XNQanonproc_N_proucsNtN’
+f13 hits=9 c:compile:[Bug] `continue` outside of a `loop`
+f14 hits=4 c:compile:[Bug] lambdalifting treParams: captured param but no environment access at prog.nim(N, N)
+f15 hits=2 c:compile:error: invalid operands to binary + (have ‘NIN’ {aka ‘long int’} and ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’)
+f16 hits=6 c:compile:error: invalid initializer
+f17 hits=30 c:compile:[Bug] could not find symbol: `ep.N
+f18 hits=4 c:compile:Error: unhandled exception: nimony_model.nim(N, N) `n.isTagLit`  [AssertionDefect]
+f19 hits=10 c:compile:error: incompatible types when assigning to type ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ from type ‘long int’
+f20 hits=5 c:compile:error: invalid operands to binary + (have ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ and ‘long long int’)
+f21 hits=2 c:compile:error: incompatible types when assigning to type ‘NIN’ {aka ‘long int’} from type ‘XNQt_N_IAclosureXNupleAiSNZArefSXNootXNfbjNsysvqNaslZAiSNZAnimcallZAtrueZARNA
+f22 hits=1 c:exit-11:
+f23 hits=1 speed:exit-11:
+f24 hits=2 native:exit-11:
+f25 hits=1 c:compile:[Bug] could not find symbol: `this.N
+f26 hits=10 c:compile:Error: unhandled exception: duplifier.nim(N, N) `leType.typeKind != AutoT` could not compute type of: (dot
+f27 hits=4 c:compile:Error: unhandled exception: BUG eraiser trCall: callee type not params at prog.nim(N, N): (closureTuple
+f28 hits=2 c:compile:Error: unhandled exception: trackers.nim(N, N) `
+f29 hits=4 c:compile:error: passing argument N of ‘uNQ_itNXNQinit_N_proucsNtN’ from incompatible pointer type [-Wincompatible-pointer-types]
+f30 hits=2 c:compile:error: invalid operands to binary - (have ‘long int’ and ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’)
+f31 hits=1 c:compile:error: invalid operands to binary * (have ‘NIN’ {aka ‘long int’} and ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’)
+f32 hits=3 c:compile:error: incompatible type for argument N of ‘uNQ_itNXNQinit_N_proucsNtN’
+f33 hits=2 native:compile:compile-failed:FAILURE: nifmake --base:ID -j run --progress:N:N proucsNtN.final.build.nif
+f34 hits=1 c:compile:[Bug] statement not eliminated: for
+f35 hits=4 c:compile:error: incompatible types when assigning to type ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ from type ‘NIN’ {aka ‘long int’}
+f36 hits=4 c:compile:Error: unhandled exception: BUG eraiser callCanRaise: callee type not params at prog.nim(N, N): (closureTuple
+f37 hits=1 c:compile:Error: unhandled exception: BUG eraiser trCall: callee type not params at prog.nim(N, N): (i N) [AssertionDefect]
+f38 hits=2 c:compile:error: incompatible types when assigning to type ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ from type ‘long long int’
+f39 hits=5 c:compile:Error: unhandled exception: BUG eraiser trCall: callee type not params at prog.nim(N, N): ErrorCode.N [AssertionDefect]
+f40 hits=1 c:compile:error: incompatible type for argument N of ‘XNQiterVal_N_proucsNtN.ID’
+f41 hits=1 c:compile:error: invalid operands to binary * (have ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ and ‘NIN’ {aka ‘long int’})
+f42 hits=1 c:compile:error: incompatible types when assigning to type ‘seq_N_IuoNcw_proucsNtN’ from type ‘long int’
+f43 hits=1 c:compile:error: incompatible type for argument N of ‘XNQiirXNQinit_N_proucsNtN’
+f44 hits=1 c:compile:Error: unhandled exception: duplifier.nim(N, N) `leType.typeKind != AutoT` could not compute type of: (tupat
+f45 hits=1 c:compile:[Bug] could not find symbol: ID`ID.N
+f46 hits=1 c:compile:error: ‘XNQllRes_N’ undeclared (first use in this function); did you mean ‘XNQlf_N’?

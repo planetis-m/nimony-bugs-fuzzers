@@ -1,0 +1,264 @@
+[    0s #1] NEW f01 c:compile:[Bug] could not find symbol: ID.N
+[   15s #9] NEW f02 c:compile:Error: unhandled exception: coro_transform.nim(N, N) `state != -N`  [AssertionDefect]
+[   15s #10] NEW f03 c:compile:Error: unhandled exception: duplifier.nim(N, N) `leType.typeKind != AutoT` could not compute type of: (tupat result.N N) [AssertionDefect]
+[   15s] 10 programs, 3 sigs
+[   24s #18] NEW f04 c:compile:[Bug] could not find symbol: `ii.N
+[   30s] 20 programs, 4 sigs
+[   31s #21] NEW f05 c:compile:[Bug] could not find symbol: `llTemp.N
+[   32s #23] NEW f06 c:compile:Error: unhandled exception: Symbol not found in NIF module: `anonproc.N [AssertionDefect]
+[   37s #26] NEW f07 c:compile:[Bug] could not find symbol: `lf.N
+[   39s #30] NEW f08 c:compile:[Bug] capturing the locals of an enclosing iterator is not supported: `iir.N at prog.nim(N, N)
+[   39s] 30 programs, 8 sigs
+[   54s] 40 programs, 8 sigs
+[   60s #43] NEW f09 c:compile:[Bug] could not find symbol: `coroResult.N
+[   76s #49] NEW f10 c:compile:[Bug] envp should have been eliminated in lambdalifting.nim
+[   78s] 50 programs, 10 sigs
+[   84s #56] NEW f11 c:compile:Error: unhandled exception: Symbol not found in NIF module: `iir.N [AssertionDefect]
+[   90s] 60 programs, 11 sigs
+[   91s #61] NEW f12 c:compile:error: redefinition of ‘XNQanonproc_N_proucsNtN’
+[   91s #63] NEW f13 c:compile:[Bug] `continue` outside of a `loop`
+[   99s] 70 programs, 13 sigs
+[   99s #71] NEW f14 c:compile:[Bug] lambdalifting treParams: captured param but no environment access at prog.nim(N, N)
+[  111s #80] NEW f15 c:compile:error: invalid operands to binary + (have ‘NIN’ {aka ‘long int’} and ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’)
+[  111s] 80 programs, 15 sigs
+[  122s #86] NEW f16 c:compile:error: invalid initializer
+[  127s] 90 programs, 16 sigs
+[  137s] 100 programs, 16 sigs
+[  148s] 110 programs, 16 sigs
+[  148s #111] NEW f17 c:compile:[Bug] could not find symbol: `ep.N
+[  158s] 120 programs, 17 sigs
+[  166s #126] NEW f18 c:compile:Error: unhandled exception: nimony_model.nim(N, N) `n.isTagLit`  [AssertionDefect]
+[  168s #127] NEW f19 c:compile:error: incompatible types when assigning to type ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ from type ‘long int’
+[  168s] 130 programs, 19 sigs
+[  181s #140] NEW f20 c:compile:error: invalid operands to binary + (have ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ and ‘long long int’)
+[  181s] 140 programs, 20 sigs
+[  194s] 150 programs, 20 sigs
+[  202s] 160 programs, 20 sigs
+[  214s #166] NEW f21 c:compile:error: incompatible types when assigning to type ‘NIN’ {aka ‘long int’} from type ‘XNQt_N_IAclosureXNupleAiSNZArefSXNootXNfbjNsysvqNaslZAiSNZAnimcallZAtrueZARNA
+[  217s #167] NEW f22 c:exit-11:
+[  217s #167] NEW f23 speed:exit-11:
+[  217s #167] NEW f24 native:exit-11:
+[  223s] 170 programs, 24 sigs
+[  229s] 180 programs, 24 sigs
+[  242s] 190 programs, 24 sigs
+[  247s] 200 programs, 24 sigs
+[  257s] 210 programs, 24 sigs
+[  269s] 220 programs, 24 sigs
+[  285s] 230 programs, 24 sigs
+[  288s] 240 programs, 24 sigs
+[  299s] 250 programs, 24 sigs
+[  306s #258] NEW f25 c:compile:[Bug] could not find symbol: `this.N
+[  307s] 260 programs, 25 sigs
+[  322s] 270 programs, 25 sigs
+[  333s] 280 programs, 25 sigs
+[  349s] 290 programs, 25 sigs
+[  365s] 300 programs, 25 sigs
+[  379s] 310 programs, 25 sigs
+[  387s] 320 programs, 25 sigs
+[  399s] 330 programs, 25 sigs
+[  413s] 340 programs, 25 sigs
+[  431s] 350 programs, 25 sigs
+[  442s] 360 programs, 25 sigs
+[  457s] 370 programs, 25 sigs
+[  474s] 380 programs, 25 sigs
+[  498s] 390 programs, 25 sigs
+[  504s #397] NEW f26 c:compile:Error: unhandled exception: duplifier.nim(N, N) `leType.typeKind != AutoT` could not compute type of: (dot
+[  509s] 400 programs, 26 sigs
+[  514s #402] NEW f27 c:compile:Error: unhandled exception: BUG eraiser trCall: callee type not params at prog.nim(N, N): (closureTuple
+[  531s] 410 programs, 27 sigs
+[  549s] 420 programs, 27 sigs
+[  564s] 430 programs, 27 sigs
+[  565s #434] NEW f28 c:compile:Error: unhandled exception: trackers.nim(N, N) `
+[  570s] 440 programs, 28 sigs
+[  591s] 450 programs, 28 sigs
+[  607s] 460 programs, 28 sigs
+[  622s] 470 programs, 28 sigs
+[  638s] 480 programs, 28 sigs
+[  644s] 490 programs, 28 sigs
+[  661s] 500 programs, 28 sigs
+[  672s] 510 programs, 28 sigs
+[  679s] 520 programs, 28 sigs
+[  694s] 530 programs, 28 sigs
+[  705s] 540 programs, 28 sigs
+[  711s] 550 programs, 28 sigs
+[  726s] 560 programs, 28 sigs
+[  737s] 570 programs, 28 sigs
+[  750s] 580 programs, 28 sigs
+[  752s #582] NEW f29 c:compile:error: passing argument N of ‘uNQ_itNXNQinit_N_proucsNtN’ from incompatible pointer type [-Wincompatible-pointer-types]
+[  762s] 590 programs, 29 sigs
+[  777s] 600 programs, 29 sigs
+[  793s] 610 programs, 29 sigs
+[  810s] 620 programs, 29 sigs
+[  816s #628] NEW f30 c:compile:error: invalid operands to binary - (have ‘long int’ and ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’)
+[  821s] 630 programs, 30 sigs
+[  830s] 640 programs, 30 sigs
+[  846s] 650 programs, 30 sigs
+[  859s] 660 programs, 30 sigs
+[  871s] 670 programs, 30 sigs
+[  886s] 680 programs, 30 sigs
+[  893s #688] NEW f31 c:compile:error: invalid operands to binary * (have ‘NIN’ {aka ‘long int’} and ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’)
+[  898s] 690 programs, 31 sigs
+[  909s] 700 programs, 31 sigs
+[  919s] 710 programs, 31 sigs
+[  926s #716] NEW f32 c:compile:error: incompatible type for argument N of ‘uNQ_itNXNQinit_N_proucsNtN’
+[  932s] 720 programs, 32 sigs
+[  947s] 730 programs, 32 sigs
+[  953s] 740 programs, 32 sigs
+[  966s] 750 programs, 32 sigs
+[  980s] 760 programs, 32 sigs
+[  994s] 770 programs, 32 sigs
+[ 1008s] 780 programs, 32 sigs
+[ 1023s] 790 programs, 32 sigs
+[ 1030s #799] NEW f33 native:compile:compile-failed:FAILURE: nifmake --base:ID -j run --progress:N:N proucsNtN.final.build.nif
+[ 1031s] 800 programs, 33 sigs
+[ 1043s] 810 programs, 33 sigs
+[ 1056s] 820 programs, 33 sigs
+[ 1066s] 830 programs, 33 sigs
+[ 1085s] 840 programs, 33 sigs
+[ 1089s #845] NEW f34 c:compile:[Bug] statement not eliminated: for
+[ 1089s] 850 programs, 34 sigs
+[ 1101s] 860 programs, 34 sigs
+[ 1119s] 870 programs, 34 sigs
+[ 1130s] 880 programs, 34 sigs
+[ 1137s] 890 programs, 34 sigs
+[ 1154s] 900 programs, 34 sigs
+[ 1167s] 910 programs, 34 sigs
+[ 1168s #911] NEW f35 c:compile:error: incompatible types when assigning to type ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ from type ‘NIN’ {aka ‘long int’}
+[ 1181s] 920 programs, 35 sigs
+[ 1192s] 930 programs, 35 sigs
+[ 1209s] 940 programs, 35 sigs
+[ 1230s] 950 programs, 35 sigs
+[ 1245s] 960 programs, 35 sigs
+[ 1252s] 970 programs, 35 sigs
+[ 1261s] 980 programs, 35 sigs
+[ 1272s] 990 programs, 35 sigs
+[ 1282s #999] NEW f36 c:compile:Error: unhandled exception: BUG eraiser callCanRaise: callee type not params at prog.nim(N, N): (closureTuple
+[ 1282s] 1000 programs, 36 sigs
+[ 1297s] 1010 programs, 36 sigs
+[ 1305s] 1020 programs, 36 sigs
+[ 1319s] 1030 programs, 36 sigs
+[ 1334s] 1040 programs, 36 sigs
+[ 1345s] 1050 programs, 36 sigs
+[ 1350s #1057] NEW f37 c:compile:Error: unhandled exception: BUG eraiser trCall: callee type not params at prog.nim(N, N): (i N) [AssertionDefect]
+[ 1355s] 1060 programs, 37 sigs
+[ 1366s] 1070 programs, 37 sigs
+[ 1379s] 1080 programs, 37 sigs
+[ 1385s] 1090 programs, 37 sigs
+[ 1386s #1094] NEW f38 c:compile:error: incompatible types when assigning to type ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ from type ‘long long int’
+[ 1398s] 1100 programs, 38 sigs
+[ 1414s] 1110 programs, 38 sigs
+[ 1428s] 1120 programs, 38 sigs
+[ 1442s] 1130 programs, 38 sigs
+[ 1456s] 1140 programs, 38 sigs
+[ 1466s] 1150 programs, 38 sigs
+[ 1480s] 1160 programs, 38 sigs
+[ 1487s] 1170 programs, 38 sigs
+[ 1498s] 1180 programs, 38 sigs
+[ 1508s] 1190 programs, 38 sigs
+[ 1522s] 1200 programs, 38 sigs
+[ 1535s] 1210 programs, 38 sigs
+[ 1541s] 1220 programs, 38 sigs
+[ 1553s] 1230 programs, 38 sigs
+[ 1563s] 1240 programs, 38 sigs
+[ 1574s] 1250 programs, 38 sigs
+[ 1588s] 1260 programs, 38 sigs
+[ 1595s] 1270 programs, 38 sigs
+[ 1604s] 1280 programs, 38 sigs
+[ 1614s] 1290 programs, 38 sigs
+[ 1627s] 1300 programs, 38 sigs
+[ 1643s] 1310 programs, 38 sigs
+[ 1656s] 1320 programs, 38 sigs
+[ 1673s] 1330 programs, 38 sigs
+[ 1686s] 1340 programs, 38 sigs
+[ 1697s] 1350 programs, 38 sigs
+[ 1707s #1358] NEW f39 c:compile:Error: unhandled exception: BUG eraiser trCall: callee type not params at prog.nim(N, N): ErrorCode.N [AssertionDefect]
+[ 1712s] 1360 programs, 39 sigs
+[ 1723s] 1370 programs, 39 sigs
+[ 1733s] 1380 programs, 39 sigs
+[ 1741s] 1390 programs, 39 sigs
+[ 1751s] 1400 programs, 39 sigs
+[ 1766s] 1410 programs, 39 sigs
+[ 1777s] 1420 programs, 39 sigs
+[ 1785s] 1430 programs, 39 sigs
+[ 1791s] 1440 programs, 39 sigs
+[ 1801s] 1450 programs, 39 sigs
+[ 1801s #1451] NEW f40 c:compile:error: incompatible type for argument N of ‘XNQiterVal_N_proucsNtN.ID’
+[ 1806s] 1460 programs, 40 sigs
+[ 1811s] 1470 programs, 40 sigs
+[ 1820s] 1480 programs, 40 sigs
+[ 1831s] 1490 programs, 40 sigs
+[ 1840s] 1500 programs, 40 sigs
+[ 1850s] 1510 programs, 40 sigs
+[ 1862s] 1520 programs, 40 sigs
+[ 1872s #1525] NEW f41 c:compile:error: invalid operands to binary * (have ‘XNQt_N_IAtupleSXNrrorXNodeNsysvqNaslAiSN_proucsNtN’ and ‘NIN’ {aka ‘long int’})
+[ 1877s] 1530 programs, 41 sigs
+[ 1887s] 1540 programs, 41 sigs
+[ 1901s] 1550 programs, 41 sigs
+[ 1908s] 1560 programs, 41 sigs
+[ 1922s] 1570 programs, 41 sigs
+[ 1932s] 1580 programs, 41 sigs
+[ 1943s] 1590 programs, 41 sigs
+[ 1953s] 1600 programs, 41 sigs
+[ 1966s] 1610 programs, 41 sigs
+[ 1977s] 1620 programs, 41 sigs
+[ 1992s] 1630 programs, 41 sigs
+[ 2007s] 1640 programs, 41 sigs
+[ 2019s] 1650 programs, 41 sigs
+[ 2029s] 1660 programs, 41 sigs
+[ 2043s] 1670 programs, 41 sigs
+[ 2058s] 1680 programs, 41 sigs
+[ 2065s] 1690 programs, 41 sigs
+[ 2083s] 1700 programs, 41 sigs
+[ 2116s] 1710 programs, 41 sigs
+[ 2133s] 1720 programs, 41 sigs
+[ 2163s] 1730 programs, 41 sigs
+[ 2185s] 1740 programs, 41 sigs
+[ 2210s] 1750 programs, 41 sigs
+[ 2227s] 1760 programs, 41 sigs
+[ 2236s #1764] NEW f42 c:compile:error: incompatible types when assigning to type ‘seq_N_IuoNcw_proucsNtN’ from type ‘long int’
+[ 2253s] 1770 programs, 42 sigs
+[ 2255s #1772] NEW f43 c:compile:error: incompatible type for argument N of ‘XNQiirXNQinit_N_proucsNtN’
+[ 2264s] 1780 programs, 43 sigs
+[ 2276s] 1790 programs, 43 sigs
+[ 2288s] 1800 programs, 43 sigs
+[ 2307s] 1810 programs, 43 sigs
+[ 2312s #1813] NEW f44 c:compile:Error: unhandled exception: duplifier.nim(N, N) `leType.typeKind != AutoT` could not compute type of: (tupat
+[ 2318s] 1820 programs, 44 sigs
+[ 2334s] 1830 programs, 44 sigs
+[ 2341s] 1840 programs, 44 sigs
+[ 2351s] 1850 programs, 44 sigs
+[ 2362s] 1860 programs, 44 sigs
+[ 2365s #1862] NEW f45 c:compile:[Bug] could not find symbol: ID`ID.N
+[ 2377s] 1870 programs, 45 sigs
+[ 2389s] 1880 programs, 45 sigs
+[ 2397s] 1890 programs, 45 sigs
+[ 2406s] 1900 programs, 45 sigs
+[ 2412s] 1910 programs, 45 sigs
+[ 2427s] 1920 programs, 45 sigs
+[ 2438s] 1930 programs, 45 sigs
+[ 2448s] 1940 programs, 45 sigs
+[ 2464s] 1950 programs, 45 sigs
+[ 2472s #1960] NEW f46 c:compile:error: ‘XNQllRes_N’ undeclared (first use in this function); did you mean ‘XNQlf_N’?
+[ 2472s] 1960 programs, 46 sigs
+[ 2485s] 1970 programs, 46 sigs
+[ 2495s] 1980 programs, 46 sigs
+[ 2507s] 1990 programs, 46 sigs
+[ 2509s] 2000 programs, 46 sigs
+[ 2515s] 2010 programs, 46 sigs
+[ 2521s] 2020 programs, 46 sigs
+[ 2527s] 2030 programs, 46 sigs
+[ 2536s] 2040 programs, 46 sigs
+[ 2551s] 2050 programs, 46 sigs
+[ 2562s] 2060 programs, 46 sigs
+[ 2572s] 2070 programs, 46 sigs
+[ 2584s] 2080 programs, 46 sigs
+[ 2593s] 2090 programs, 46 sigs
+[ 2599s] 2100 programs, 46 sigs
+[ 2618s] 2110 programs, 46 sigs
+[ 2630s] 2120 programs, 46 sigs
+[ 2641s] 2130 programs, 46 sigs
+[ 2652s] 2140 programs, 46 sigs
+[ 2666s] 2150 programs, 46 sigs
+[ 2678s] 2160 programs, 46 sigs
+[ 2696s] 2170 programs, 46 sigs
+done: 2174 programs, 46 signatures, cpu 3621s

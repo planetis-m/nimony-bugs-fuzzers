@@ -1,0 +1,453 @@
+time_s,programs,finding_id,signature
+4,1,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+4,1,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+4,1,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+4,1,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+16,3,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+16,3,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+23,4,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+23,4,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+36,6,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+36,6,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+36,6,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+42,7,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+42,7,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+50,8,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+57,9,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a magic-division multiplie
+57,9,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+57,9,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+72,11,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+72,11,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+72,11,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+72,11,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+89,13,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+99,14,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+118,16,U-n,n:mismatch:
+118,16,01,j:mismatch:
+127,17,01,j:mismatch:
+133,18,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a sub-width operand in pro
+133,18,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+133,18,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+133,18,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+142,19,10,n:nativeCompileFails:[Error] at: array base and index occupy the same register (RAX) — distinct values aliased 
+142,19,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+142,19,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+142,19,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+150,20,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+150,20,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+156,21,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+156,21,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+166,22,10,n:nativeCompileFails:Error: unhandled exception: arkham x#: no staging register available for a late memory-loa
+166,22,01,j:mismatch:
+176,23,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+176,23,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+185,24,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+185,24,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+185,24,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+193,25,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+193,25,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+193,25,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+200,26,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+200,26,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+200,26,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+219,28,01,j:mismatch:
+227,29,08,n:mismatch:
+227,29,05,l:mismatch:
+227,29,01,j:mismatch:
+234,30,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+234,30,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+234,30,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+241,31,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+241,31,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+241,31,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+241,31,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+249,32,01,j:mismatch:
+256,33,01,j:mismatch:
+262,34,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+262,34,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+262,34,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+269,35,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+269,35,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+269,35,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+276,36,05,l:mismatch:
+276,36,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+276,36,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+286,37,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+286,37,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+294,38,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+294,38,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+301,39,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+307,40,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+307,40,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+324,42,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+324,42,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+333,43,01,j:mismatch:
+341,44,U-n,n:mismatch:
+341,44,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+347,45,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+347,45,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+347,45,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+356,46,01,j:mismatch:
+371,48,09,n:mismatch:
+371,48,01,j:mismatch:
+378,49,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+378,49,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+385,50,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a magic-division multiplie
+385,50,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+385,50,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+391,51,01,j:mismatch:
+397,52,01,j:mismatch:
+403,53,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+403,53,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+403,53,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+403,53,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+419,55,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+441,58,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+441,58,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+449,59,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+449,59,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+449,59,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+455,60,01,j:mismatch:
+462,61,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+462,61,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+462,61,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+470,62,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+470,62,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+487,64,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a sub-width operand in pro
+493,65,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+493,65,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+493,65,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+493,65,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+502,66,09,n:mismatch:
+502,66,01,j:mismatch:
+511,67,01,j:mismatch:
+518,68,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+518,68,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+518,68,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+534,70,01,j:mismatch:
+541,71,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+541,71,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+541,71,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+541,71,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+548,72,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+548,72,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+556,73,01,j:mismatch:
+564,74,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+564,74,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+564,74,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+573,75,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+573,75,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+581,76,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a magic-division multiplie
+581,76,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+581,76,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+592,77,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+592,77,01,j:mismatch:
+602,78,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+602,78,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+610,79,U-n,n:mismatch:
+610,79,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+610,79,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+619,80,09,n:mismatch:
+619,80,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+619,80,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+619,80,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+631,81,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+631,81,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+643,82,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+643,82,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+652,83,01,j:mismatch:
+661,84,01,j:mismatch:
+668,85,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+668,85,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+668,85,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+668,85,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+688,87,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+688,87,01,j:mismatch:
+697,88,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+697,88,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+706,89,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+706,89,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+706,89,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+716,90,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+716,90,01,j:mismatch:
+726,91,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+726,91,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+735,92,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+735,92,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+743,93,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+743,93,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+752,94,01,j:mismatch:
+760,95,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+760,95,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+760,95,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+778,97,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+778,97,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+786,98,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+786,98,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+786,98,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+794,99,01,j:mismatch:
+802,100,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+802,100,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+812,101,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+812,101,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+821,102,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+821,102,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+832,103,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+832,103,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+843,104,01,j:mismatch:
+851,105,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+851,105,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+851,105,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+862,106,01,j:mismatch:
+871,107,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+871,107,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+880,108,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RBP) — dropped source operand (staging/scr
+880,108,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+880,108,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+890,109,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+890,109,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+890,109,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+899,110,12,n:nativeRunFails:
+899,110,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+907,111,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+907,111,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+915,112,08,n:mismatch:
+915,112,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+915,112,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+915,112,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+943,114,01,j:mismatch:
+953,115,12,n:nativeRunFails:
+953,115,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+953,115,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+953,115,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+965,116,U-n,n:mismatch:
+965,116,01,j:mismatch:
+974,117,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+974,117,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+987,118,12,n:nativeRunFails:
+987,118,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+987,118,01,j:mismatch:
+1011,120,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1011,120,01,j:mismatch:
+1025,121,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1036,122,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a magic-division multiplie
+1036,122,01,j:mismatch:
+1045,123,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1045,123,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1045,123,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1055,124,09,n:mismatch:
+1055,124,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1055,124,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1067,125,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1067,125,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1067,125,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1078,126,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1078,126,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1103,128,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1103,128,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1103,128,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1115,129,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1115,129,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1125,130,K89,n:mismatch:
+1125,130,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1125,130,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1135,131,09,n:mismatch:
+1135,131,01,j:mismatch:
+1145,132,K201,n:nativeCompileFails:[Error] `and` with identical register operands (R#) — dropped source operand (staging/scra
+1145,132,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1145,132,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1167,134,08,n:mismatch:
+1167,134,01,j:mismatch:
+1180,135,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a magic-division multiplie
+1180,135,01,j:mismatch:
+1191,136,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1191,136,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1191,136,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1191,136,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1205,137,01,j:mismatch:
+1230,139,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1230,139,01,j:mismatch:
+1243,140,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1255,141,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1266,142,01,j:mismatch:
+1275,143,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1275,143,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1286,144,11,l:nativeCompileFails:[Error] node is not a type: (err)
+1286,144,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1286,144,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1309,146,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1309,146,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1319,147,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1319,147,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1330,148,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1330,148,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1330,148,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1339,149,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1339,149,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1339,149,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1339,149,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1349,150,01,j:mismatch:
+1372,152,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1372,152,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1391,154,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1391,154,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1391,154,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1401,155,01,j:mismatch:
+1411,156,01,j:mismatch:
+1418,157,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1418,157,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1418,157,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1427,158,09,n:mismatch:
+1427,158,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1427,158,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1435,159,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1435,159,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1444,160,09,n:mismatch:
+1444,160,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1444,160,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1452,161,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1452,161,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1460,162,K89,n:mismatch:
+1460,162,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1460,162,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1460,162,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1470,163,12,n:nativeRunFails:
+1479,164,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1479,164,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1479,164,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1487,165,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1487,165,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1496,166,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1496,166,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1506,167,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RBP) — dropped source operand (staging/scr
+1506,167,01,j:mismatch:
+1516,168,01,j:mismatch:
+1525,169,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1534,170,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1534,170,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1534,170,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1554,172,01,j:mismatch:
+1564,173,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1573,174,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1573,174,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1582,175,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1582,175,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1582,175,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1601,177,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1601,177,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1614,178,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1614,178,05,l:mismatch:
+1622,179,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1622,179,11,l:nativeCompileFails:[Error] node is not a type: (err)
+1630,180,06,l:nativeCompileFails:<path>:#:#: error: '%t#' defined with type 'i#' but expected 'i#'
+1630,180,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1630,180,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1641,181,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a magic-division multiplie
+1641,181,01,j:mismatch:
+1649,182,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1649,182,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1649,182,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1658,183,12,n:nativeRunFails:
+1658,183,01,j:mismatch:
+1666,184,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1666,184,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1676,185,01,j:mismatch:
+1685,186,01,j:mismatch:
+1696,187,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a magic-division multiplie
+1696,187,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1696,187,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1696,187,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1704,188,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1704,188,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1712,189,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1712,189,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1712,189,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1720,190,09,n:mismatch:
+1720,190,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1720,190,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1729,191,01,j:mismatch:
+1738,192,U-n,n:mismatch:
+1738,192,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1738,192,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1748,193,01,j:mismatch:
+1757,194,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1757,194,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1757,194,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1767,195,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1776,196,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1776,196,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1776,196,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1785,197,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1785,197,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1792,198,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1792,198,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1803,199,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1803,199,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1803,199,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1811,200,09,n:mismatch:
+1811,200,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1811,200,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1819,201,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1819,201,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1829,202,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1829,202,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1829,202,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1846,204,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1846,204,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1846,204,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1856,205,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+1865,206,01,j:mismatch:
+1873,207,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1873,207,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1883,208,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+1883,208,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1883,208,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1891,209,09,n:mismatch:
+1891,209,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1891,209,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1891,209,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1900,210,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1900,210,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1908,211,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1908,211,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1917,212,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1917,212,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1917,212,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1928,213,01,j:mismatch:
+1937,214,01,j:mismatch:
+1947,215,01,j:mismatch:
+1957,216,01,j:mismatch:
+1966,217,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1966,217,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+1984,219,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+1984,219,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1984,219,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+1994,220,08,n:mismatch:
+2001,221,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+2001,221,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+2001,221,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+2010,222,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2010,222,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2021,223,01,j:mismatch:
+2030,224,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+2030,224,04,j:nativeCompileFails:jorogumo: unsupported case label: TagLit
+2030,224,04,w:nativeCompileFails:jorogumo: unsupported case label: TagLit
+2040,225,01,j:mismatch:
+2047,226,10,n:nativeCompileFails:Error: unhandled exception: arkham x#n: no staging register for a magic-division multiplie
+2047,226,03,l:nativeCompileFails:<path>:#:#: error: case value is not a constant integer
+2047,226,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2047,226,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2059,227,K201,n:nativeCompileFails:[Error] `sub` with identical register operands (RDX) — dropped source operand (staging/scr
+2059,227,01,j:mismatch:
+2068,228,07,n:mismatch:
+2068,228,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2068,228,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2076,229,K90,n:nativeCompileFails:Error: unhandled exception: arkham x#n: keepovf for sub-#-bit type not yet supported (widt
+2076,229,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2076,229,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2087,230,01,j:mismatch:
+2095,231,02,j:nativeCompileFails:jorogumo: keepovf on unsupported op: suf
+2095,231,02,w:nativeCompileFails:jorogumo: keepovf on unsupported op: suf
+2105,232,02,j:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2105,232,02,w:nativeCompileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor
+2105,232,END,total programs 232; wall 2105s; CPU user 1980s + sys 335s (incl. all compiler children)

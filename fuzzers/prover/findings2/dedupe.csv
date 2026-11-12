@@ -1,0 +1,871 @@
+time_s,programs,finding_id,signature,bug
+4.4,48,unsound_2026171983339_33,unsound/A:assert:claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+4.4,48,unsound_2026171983339_52,unsound/A:idx:forbreak+negshr+abs+addr+try,dup-02 negative shr
+8.8,120,func-accepts-invalid_2026171983340_16,func-accepts-invalid:iter behind=True head=n: Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+8.8,120,func-accepts-invalid_2026171983340_30,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+9.1,136,func-other-error_2026171983341_28,func-other-error:func behind=True head=h: Holder let path=ffDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+10.4,152,unsound_2026171983342_41,unsound/A:assert:claim-n+forbreak+negshr+abs+addr+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+10.4,152,unsound_2026171983342_57,unsound/A:rng:claim-o+forbreak+negshr+abs+addr+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+17.8,296,func-accepts-invalid_2026171983346_9,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+17.8,296,func-accepts-invalid_2026171983346_24,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+17.8,296,func-rejects-valid_2026171983346_26,func-rejects-valid:proc behind=True head=p: var ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+22.3,400,unsound_2026171983351_76,unsound/A:assert:claim-n+claim-o+forbreak+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+22.3,400,unsound_2026171983351_138,unsound/A:assert:claim-q+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+27.1,488,func-accepts-invalid_2026171983353_5,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+27.1,488,func-accepts-invalid_2026171983353_12,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+27.1,488,func-accepts-invalid_2026171983353_36,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+31.4,576,unsound_2026171983357_78,unsound/A:assert:claim-gv,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+36.2,704,func-accepts-invalid_2026171983359_1,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+40.3,752,unsound_2026171983363_94,unsound/A:assert:claim-n+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+44.2,824,func-accepts-invalid_2026171983364_18,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+44.2,824,func-accepts-invalid_2026171983364_29,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+44.9,840,func-accepts-invalid_2026171983365_11,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+52.8,1000,func-rejects-valid_2026171983370_30,func-rejects-valid:fse behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+54.0,1056,func-accepts-invalid_2026171983371_6,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+54.0,1056,func-accepts-invalid_2026171983371_18,func-accepts-invalid:func behind=True head=n: var Node += path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+58.2,1104,unsound_2026171983375_21,unsound/A:assert:claim-n+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+63.1,1232,func-accepts-invalid_2026171983377_23,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+63.1,1232,func-accepts-invalid_2026171983377_31,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+70.5,1352,func-accepts-invalid_2026171983382_1,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+71.4,1408,func-accepts-invalid_2026171983383_17,func-accepts-invalid:iter behind=True head=h: var Holder inc path=ffRE,NEW-09 func writes a seq element behind a ref/ptr
+79.6,1528,func-accepts-invalid_2026171983388_20,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+79.6,1528,func-accepts-invalid_2026171983388_32,func-accepts-invalid:func behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+80.3,1544,func-rejects-valid_2026171983389_27,func-rejects-valid:proc behind=True head=s: var seq[Node] let path=EDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+80.3,1544,func-accepts-invalid_2026171983389_31,func-accepts-invalid:var-result nse behind=True expr varres-expr path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+83.1,1600,false-violation_2026171983391_170,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+84.6,1632,unsound_2026171983393_36,unsound/A:assert:claim-gv+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+88.5,1704,func-accepts-invalid_2026171983394_0,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+89.4,1760,func-accepts-invalid_2026171983395_7,func-accepts-invalid:nse behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+89.4,1760,func-accepts-invalid_2026171983395_10,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+98.0,1896,func-accepts-invalid_2026171983401_34,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+102.4,1984,unsound_2026171983405_60,unsound/A:assert:claim-n+forbreak+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+106.5,2056,func-accepts-invalid_2026171983406_22,func-accepts-invalid:func behind=True head=n: Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+110.2,2128,false-violation_2026171983409_52,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+125.2,2424,func-rejects-valid_2026171983419_0,func-rejects-valid:proc behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+129.4,2512,unsound_2026171983423_7,unsound/A:idx:claim-o+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+134.1,2600,func-accepts-invalid_2026171983425_0,func-accepts-invalid:nse behind=True head=n: Node inc path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+134.1,2600,func-accepts-invalid_2026171983425_8,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+134.1,2600,func-accepts-invalid_2026171983425_25,func-accepts-invalid:nse behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+142.1,2760,func-accepts-invalid_2026171983430_7,func-accepts-invalid:var-result nse behind=True result varres-result path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+142.1,2760,func-accepts-invalid_2026171983430_12,func-accepts-invalid:var-result nse behind=True return varres-return path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+142.1,2760,func-accepts-invalid_2026171983430_21,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+142.4,2776,func-accepts-invalid_2026171983431_20,func-accepts-invalid:func behind=True head=s: var seq[Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+142.4,2776,func-accepts-invalid_2026171983431_25,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+142.4,2776,func-accepts-invalid_2026171983431_28,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+143.7,2792,unsound_2026171983432_208,unsound/A:assert:claim-gs+claim-n+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+150.9,2936,func-accepts-invalid_2026171983437_1,func-accepts-invalid:func behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+150.9,2936,func-accepts-invalid_2026171983437_2,func-accepts-invalid:func behind=True head=h: Holder swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+150.9,2936,func-accepts-invalid_2026171983437_7,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+150.9,2936,func-accepts-invalid_2026171983437_17,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+150.9,2936,func-accepts-invalid_2026171983437_23,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+151.2,2952,func-accepts-invalid_2026171983436_6,func-accepts-invalid:func behind=True head=n: var Node inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+151.2,2952,func-accepts-invalid_2026171983436_28,func-accepts-invalid:iter behind=True head=n: var Node swap path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+152.8,3008,unsound_2026171983438_82,unsound/A:assert:claim-n+claim-t+forbreak+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+159.8,3112,func-accepts-invalid_2026171983443_25,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+162.0,3184,unsound_2026171983444_66,unsound/A:assert:claim-q+claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+163.9,3200,unsound_2026171983447_64,unsound/A:idx:claim-o+forbreak+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+168.7,3288,func-accepts-invalid_2026171983449_35,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+169.2,3304,func-accepts-invalid_2026171983448_1,func-accepts-invalid:func behind=True head=h: Holder swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+170.7,3360,unsound_2026171983450_49,unsound/A:assert:claim-gs+claim-q+forbreak+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+172.8,3376,unsound_2026171983453_136,unsound/A:assert:claim-gv+claim-t+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+177.3,3424,false-violation_2026171983454_42,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+178.2,3480,func-accepts-invalid_2026171983454_1,func-accepts-invalid:func behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+178.2,3480,func-accepts-invalid_2026171983454_22,func-accepts-invalid:func behind=True head=h: var Holder inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+179.7,3536,unsound_2026171983456_65,unsound/A:assert:claim-tv+forbreak+abs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+186.3,3640,func-accepts-invalid_2026171983461_39,func-accepts-invalid:nse behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+187.7,3696,func-accepts-invalid_2026171983460_15,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+189.3,3712,unsound_2026171983462_94,unsound/A:assert:claim-q+claim-t+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+189.3,3712,unsound_2026171983462_113,unsound/A:assert:claim-go+claim-q+try,NEW-11 var params not shared (aliasing; spec not implemented)
+190.5,3728,unsound_2026171983465_135,unsound/A:assert:claim-gv+claim-gs+forbreak+abs+addr+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+195.1,3816,func-accepts-invalid_2026171983467_22,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+195.1,3816,func-accepts-invalid_2026171983467_26,func-accepts-invalid:nse behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+195.1,3816,func-accepts-invalid_2026171983467_34,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+198.4,3888,unsound_2026171983468_60,unsound/A:assert:claim-gv+stash,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+199.3,3904,unsound_2026171983471_114,unsound/A:assert:claim-gv+claim-t,NEW-11 var params not shared (aliasing; spec not implemented)
+204.4,3992,func-accepts-invalid_2026171983473_10,func-accepts-invalid:var-result func behind=True expr varres-expr path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+204.4,3992,func-accepts-invalid_2026171983473_21,func-accepts-invalid:iter behind=True head=h: var Holder swap path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+206.3,4048,func-accepts-invalid_2026171983472_7,func-accepts-invalid:iter behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+206.3,4048,func-accepts-invalid_2026171983472_26,func-accepts-invalid:nse behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+208.0,4064,unsound_2026171983474_13,unsound/A:assert:claim-gv+claim-tv+claim-gs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+208.0,4064,unsound_2026171983474_135,unsound/A:assert:claim-go+forbreak+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+208.6,4080,unsound_2026171983477_84,unsound/A:assert:claim-q+claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+213.4,4168,func-accepts-invalid_2026171983479_16,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+213.4,4168,func-accepts-invalid_2026171983479_20,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+213.4,4168,func-rejects-valid_2026171983479_21,func-rejects-valid:castfunc behind=True head=p: var ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+216.9,4240,unsound_2026171983480_2,unsound/A:idx:claim-go+claim-n+abs+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+216.9,4240,unsound_2026171983480_57,unsound/A:assert:claim-gv,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+223.0,4344,func-accepts-invalid_2026171983485_2,func-accepts-invalid:func behind=True head=n: Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+223.0,4344,func-accepts-invalid_2026171983485_24,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+223.0,4344,func-accepts-invalid_2026171983485_29,func-accepts-invalid:iter behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+223.0,4344,func-other-error_2026171983485_34,func-other-error:func behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+224.4,4400,func-accepts-invalid_2026171983484_3,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+227.1,4432,unsound_2026171983489_140,unsound/A:idx:claim-gv+claim-t,NEW-11 var params not shared (aliasing; spec not implemented)
+231.8,4520,func-accepts-invalid_2026171983491_22,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+231.8,4520,func-accepts-invalid_2026171983491_24,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+231.8,4520,func-accepts-invalid_2026171983491_28,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+233.5,4576,func-accepts-invalid_2026171983490_2,func-accepts-invalid:func behind=True head=n: var Node swap path=DffE,NEW-09 func writes a seq element behind a ref/ptr
+235.1,4592,unsound_2026171983492_6,unsound/A:assert:claim-gv+addr+stash,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+235.1,4592,unsound_2026171983492_13,unsound/A:assert:claim-q+claim-t+addr+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+236.2,4608,unsound_2026171983495_131,unsound/A:assert:addr+try,dup-04 addr write
+242.3,4752,func-accepts-invalid_2026171983496_12,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+242.3,4752,func-accepts-invalid_2026171983496_20,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+242.3,4752,func-accepts-invalid_2026171983496_35,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+249.8,4872,func-accepts-invalid_2026171983503_0,func-accepts-invalid:nse behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+249.8,4872,func-accepts-invalid_2026171983503_15,func-accepts-invalid:func behind=True head=t: var Tup fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+251.2,4928,func-accepts-invalid_2026171983502_0,func-accepts-invalid:iter behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+251.2,4928,func-accepts-invalid_2026171983502_9,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+251.2,4928,func-other-error_2026171983502_12,func-other-error:func behind=True head=n: var Node let path=Dff:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+251.2,4928,func-accepts-invalid_2026171983502_15,func-accepts-invalid:func behind=True head=n: var Node inc path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+251.2,4928,func-accepts-invalid_2026171983502_32,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+252.8,4944,unsound_2026171983504_21,unsound/A:assert:claim-q+forbreak+abs+addr+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+256.4,4992,unsound_2026171983509_102,unsound/C:idx:claim-t,dup-02 negative shr (non-literal operand)
+260.0,5104,func-accepts-invalid_2026171983508_2,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+261.5,5120,unsound_2026171983510_70,unsound/A:assert:claim-go+claim-gs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+268.6,5280,func-accepts-invalid_2026171983514_6,func-accepts-invalid:iter behind=True head=n: Node += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+268.6,5280,func-accepts-invalid_2026171983514_12,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+275.4,5400,func-accepts-invalid_2026171983521_25,func-accepts-invalid:nse behind=True head=a: var array[2; Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+277.4,5456,func-accepts-invalid_2026171983520_5,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+277.4,5456,func-accepts-invalid_2026171983520_29,func-accepts-invalid:func behind=True head=t: var Tup swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+286.0,5632,func-accepts-invalid_2026171983526_5,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+287.6,5648,unsound_2026171983528_25,unsound/A:assert:claim-go+claim-t+forbreak+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+288.5,5664,unsound_2026171983531_53,unsound/A:assert:claim-n+negshr+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+293.2,5752,func-accepts-invalid_2026171983533_2,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+293.2,5752,func-accepts-invalid_2026171983533_8,func-accepts-invalid:var-result nse behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+293.2,5752,func-accepts-invalid_2026171983533_13,func-accepts-invalid:func behind=True head=n: Node += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+294.2,5808,func-accepts-invalid_2026171983532_9,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+294.2,5808,func-accepts-invalid_2026171983532_28,func-accepts-invalid:func behind=True head=p: ptr Plain += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+294.2,5808,func-accepts-invalid_2026171983532_30,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+294.2,5808,func-accepts-invalid_2026171983532_38,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+297.4,5840,unsound_2026171983537_52,unsound/A:idx:forbreak+negshr+addr,dup-02 negative shr
+297.4,5840,unsound_2026171983537_131,unsound/A:assert:claim-tv+claim-t+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+302.1,5928,func-accepts-invalid_2026171983539_12,func-accepts-invalid:iter behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+302.1,5928,func-accepts-invalid_2026171983539_27,func-accepts-invalid:func behind=True head=n: var Node inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+302.1,5928,func-accepts-invalid_2026171983539_32,func-accepts-invalid:func behind=True head=n: Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+302.1,5928,func-rejects-valid_2026171983539_34,func-rejects-valid:fse behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+303.2,5984,func-accepts-invalid_2026171983538_1,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+303.2,5984,func-accepts-invalid_2026171983538_39,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+306.4,6016,unsound_2026171983543_6,unsound/A:assert:claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+306.4,6016,unsound_2026171983543_50,unsound/A:assert:claim-gv+addr+stash+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+306.4,6016,unsound_2026171983543_136,unsound/A:assert:claim-gs+forbreak+addr+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+311.5,6104,func-accepts-invalid_2026171983545_21,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+312.1,6120,func-accepts-invalid_2026171983544_3,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+312.1,6120,func-accepts-invalid_2026171983544_23,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+319.9,6280,func-accepts-invalid_2026171983551_18,func-accepts-invalid:var-result func behind=True result varres-result path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+319.9,6280,func-accepts-invalid_2026171983551_22,func-accepts-invalid:func behind=True head=n: Node += path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+324.1,6368,unsound_2026171983555_18,unsound/A:assert:claim-go,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+324.1,6368,unsound_2026171983555_28,unsound/A:assert:addr,dup-04 addr write
+324.1,6368,unsound_2026171983555_30,unsound/A:assert:addr,dup-04 addr write
+324.1,6368,unsound_2026171983555_50,unsound/A:idx:claim-q+claim-cx+claim-t+abs+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+328.7,6456,func-accepts-invalid_2026171983557_33,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+330.4,6512,func-accepts-invalid_2026171983556_19,func-accepts-invalid:nse behind=True head=n: Node swap path=DffE,NEW-09 func writes a seq element behind a ref/ptr
+330.4,6512,func-accepts-invalid_2026171983556_22,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+331.9,6528,unsound_2026171983558_80,unsound/A:assert:claim-n+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+342.0,6720,unsound_2026171983567_51,unsound/A:assert:claim-tv+forbreak+abs+addr+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+351.0,6880,false-violation_2026171983570_146,false-violation:idx:contract violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+351.0,6896,unsound_2026171983573_88,unsound/A:assert:claim-n+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+355.7,6984,func-accepts-invalid_2026171983575_27,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+356.7,7040,func-rejects-valid_2026171983574_0,func-rejects-valid:fse behind=True head=p: var ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+364.8,7160,func-accepts-invalid_2026171983581_26,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+364.8,7160,func-accepts-invalid_2026171983581_38,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+365.9,7216,func-accepts-invalid_2026171983580_2,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+365.9,7216,func-accepts-invalid_2026171983580_16,func-accepts-invalid:iter behind=True head=n: Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+365.9,7216,func-accepts-invalid_2026171983580_36,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+365.9,7216,func-rejects-valid_2026171983580_37,func-rejects-valid:castfunc behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+369.3,7248,unsound_2026171983585_110,unsound/A:assert:claim-n+abs+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+384.5,7528,func-accepts-invalid_2026171983592_1,func-accepts-invalid:iter behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+384.5,7528,func-accepts-invalid_2026171983592_13,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+386.1,7584,unsound_2026171983594_106,unsound/A:assert:claim-go,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+393.1,7688,func-accepts-invalid_2026171983599_4,func-accepts-invalid:nse behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+393.1,7688,func-accepts-invalid_2026171983599_7,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+393.1,7688,func-accepts-invalid_2026171983599_21,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+393.1,7688,func-accepts-invalid_2026171983599_25,func-accepts-invalid:func behind=True head=h: var Holder fb path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+394.3,7744,func-accepts-invalid_2026171983598_7,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+395.8,7760,unsound_2026171983600_4,unsound/A:assert:claim-o+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+397.5,7776,unsound_2026171983603_149,unsound/A:assert:claim-gv+abs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+402.4,7864,func-accepts-invalid_2026171983605_2,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+402.4,7864,func-accepts-invalid_2026171983605_14,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+407.6,7952,false-violation_2026171983609_62,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+411.0,8040,func-accepts-invalid_2026171983611_17,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+419.8,8216,func-accepts-invalid_2026171983617_26,func-accepts-invalid:func behind=True head=h: var Holder += path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+424.4,8304,unsound_2026171983621_85,unsound/A:assert:claim-q+abs+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+429.7,8392,func-accepts-invalid_2026171983623_30,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+431.3,8448,func-accepts-invalid_2026171983622_29,func-accepts-invalid:iter behind=True head=h: var Holder inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+434.2,8480,unsound_2026171983627_188,unsound/A:assert:claim-q+negshr+addr+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+449.1,8744,func-accepts-invalid_2026171983635_37,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+449.5,8760,func-accepts-invalid_2026171983634_18,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+449.5,8760,func-accepts-invalid_2026171983634_35,func-accepts-invalid:iter behind=True head=n: var Node fb path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+451.1,8816,unsound_2026171983636_67,unsound/A:assert:claim-gs+claim-n+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+458.1,8920,func-accepts-invalid_2026171983641_3,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+458.1,8920,func-rejects-valid_2026171983641_21,func-rejects-valid:fse behind=True head=a: var array[2; Node] let path=EDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+458.1,8920,func-accepts-invalid_2026171983641_36,func-accepts-invalid:iter behind=True head=h: var Holder += path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+460.1,8992,unsound_2026171983642_52,unsound/A:assert:claim-o+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+467.9,9152,func-accepts-invalid_2026171983646_7,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+467.9,9152,func-accepts-invalid_2026171983646_8,func-accepts-invalid:func behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+467.9,9152,func-accepts-invalid_2026171983646_32,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+471.2,9184,unsound_2026171983651_39,unsound/A:idx:claim-gv+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+475.9,9272,func-accepts-invalid_2026171983653_20,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+476.6,9288,func-accepts-invalid_2026171983652_35,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+476.6,9288,func-accepts-invalid_2026171983652_36,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+480.0,9360,unsound_2026171983657_0,unsound/A:assert:claim-gv+claim-gs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+480.0,9360,unsound_2026171983657_59,unsound/A:rng:negshr,dup-02 negative shr
+485.4,9464,func-accepts-invalid_2026171983658_14,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+485.4,9464,func-accepts-invalid_2026171983658_34,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+493.9,9624,func-accepts-invalid_2026171983665_6,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+493.9,9624,func-accepts-invalid_2026171983665_13,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+493.9,9624,func-accepts-invalid_2026171983665_22,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+493.9,9624,func-accepts-invalid_2026171983665_33,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+494.4,9640,func-accepts-invalid_2026171983664_14,func-accepts-invalid:nse behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+494.4,9640,func-accepts-invalid_2026171983664_30,func-accepts-invalid:func behind=True head=t: var Tup += path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+496.1,9696,unsound_2026171983666_55,unsound/A:assert:claim-q+forbreak+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+496.1,9696,unsound_2026171983666_57,unsound/A:idx:claim-go+claim-q+forbreak+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+502.6,9816,func-accepts-invalid_2026171983670_4,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+502.6,9816,func-accepts-invalid_2026171983670_29,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+502.8,9800,func-accepts-invalid_2026171983671_34,func-accepts-invalid:func behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+511.7,9992,func-accepts-invalid_2026171983677_19,func-accepts-invalid:func behind=True head=t: var Tup fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+511.7,9992,func-accepts-invalid_2026171983677_28,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+515.8,10080,unsound_2026171983681_89,unsound/A:assert:claim-gv+claim-q,NEW-11 var params not shared (aliasing; spec not implemented)
+519.6,10152,func-accepts-invalid_2026171983682_31,func-accepts-invalid:nse behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+519.6,10152,func-accepts-invalid_2026171983682_35,func-accepts-invalid:func behind=True head=n: var Node swap path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+520.5,10208,func-accepts-invalid_2026171983683_15,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+521.1,10168,unsound_2026171983684_5,unsound/A:assert:claim-q,NEW-11 var params not shared (aliasing; spec not implemented)
+524.6,10256,unsound_2026171983687_87,unsound/A:assert:claim-gv+abs+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+529.3,10384,func-accepts-invalid_2026171983689_10,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+529.3,10384,func-accepts-invalid_2026171983689_33,func-accepts-invalid:func behind=True head=n: var Node swap path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+529.8,10344,unsound_2026171983690_12,unsound/A:assert:claim-o+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+529.8,10344,unsound_2026171983690_85,unsound/A:assert:claim-gs+claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+537.3,10504,func-accepts-invalid_2026171983694_21,func-accepts-invalid:nse behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+538.1,10520,func-accepts-invalid_2026171983695_9,func-accepts-invalid:var-result nse behind=True result varres-result path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+538.7,10536,unsound_2026171983696_71,unsound/A:assert:claim-n+claim-q+abs+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+554.4,10856,func-accepts-invalid_2026171983706_37,func-accepts-invalid:var-result nse behind=True result varres-result path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+555.3,10912,func-accepts-invalid_2026171983707_34,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+555.9,10872,unsound_2026171983708_81,unsound/A:assert:claim-gv+claim-o+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+555.9,10872,unsound_2026171983708_88,unsound/A:assert:claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+563.2,11032,func-accepts-invalid_2026171983712_2,func-accepts-invalid:nse behind=True head=n: var Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+563.2,11032,func-accepts-invalid_2026171983712_15,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+564.2,11088,func-accepts-invalid_2026171983713_3,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+568.4,11136,unsound_2026171983717_128,unsound/A:assert:claim-gv+claim-q+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+568.4,11136,unsound_2026171983717_138,unsound/A:assert:forbreak+abs,dup-01 for/break
+571.4,11208,func-accepts-invalid_2026171983718_7,func-accepts-invalid:func behind=True head=h: var Holder swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+571.4,11208,func-accepts-invalid_2026171983718_36,func-accepts-invalid:var-result nse behind=True result varres-result path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+572.9,11224,unsound_2026171983720_61,unsound/A:assert:claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+573.1,11264,func-accepts-invalid_2026171983719_37,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+573.1,11264,func-other-error_2026171983719_39,func-other-error:func behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+580.2,11384,func-accepts-invalid_2026171983724_3,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+580.2,11384,func-accepts-invalid_2026171983724_9,func-accepts-invalid:func behind=True head=n: Node inc path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+581.7,11440,func-accepts-invalid_2026171983725_23,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+588.7,11560,func-other-error_2026171983730_7,func-other-error:func behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+588.7,11560,func-accepts-invalid_2026171983730_16,func-accepts-invalid:iter behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+590.0,11576,unsound_2026171983732_37,unsound/A:assert:claim-tv+abs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+590.5,11616,func-accepts-invalid_2026171983731_6,func-accepts-invalid:var-result func behind=True return varres-return path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+598.5,11752,unsound_2026171983738_125,unsound/A:assert:claim-tv+claim-q+forbreak+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+599.1,11792,func-accepts-invalid_2026171983737_11,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+605.7,11912,func-accepts-invalid_2026171983742_1,func-accepts-invalid:var-result func behind=True result varres-result path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+605.7,11912,func-accepts-invalid_2026171983742_23,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+605.7,11912,func-accepts-invalid_2026171983742_32,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+611.9,12016,unsound_2026171983747_122,unsound/A:assert:claim-n+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+623.0,12264,func-accepts-invalid_2026171983754_33,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+625.2,12320,func-accepts-invalid_2026171983755_10,func-accepts-invalid:var-result nse behind=True return varres-return path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+634.0,12496,func-accepts-invalid_2026171983761_5,func-accepts-invalid:func behind=True head=t: var Tup += path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+634.0,12496,func-accepts-invalid_2026171983761_19,func-accepts-invalid:nse behind=True head=p: var ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+641.1,12616,func-accepts-invalid_2026171983766_11,func-accepts-invalid:func behind=True head=h: var Holder inc path=ffRE,NEW-09 func writes a seq element behind a ref/ptr
+641.1,12616,func-accepts-invalid_2026171983766_12,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+641.1,12616,func-other-error_2026171983766_35,func-other-error:func behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+643.1,12672,func-other-error_2026171983767_26,func-other-error:iter behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+647.2,12720,unsound_2026171983771_113,unsound/A:assert:claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+650.1,12792,func-accepts-invalid_2026171983772_5,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+650.1,12792,func-accepts-invalid_2026171983772_13,func-accepts-invalid:var-result nse behind=True expr varres-expr path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+650.1,12792,func-accepts-invalid_2026171983772_19,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+651.6,12808,unsound_2026171983774_98,unsound/A:condidx:claim-q+forbreak+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+659.5,12968,func-accepts-invalid_2026171983778_12,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+659.5,12968,func-accepts-invalid_2026171983778_31,func-accepts-invalid:iter behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+661.3,13024,func-accepts-invalid_2026171983779_22,func-accepts-invalid:iter behind=True head=n: Node += path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+665.6,13072,unsound_2026171983783_132,unsound/A:idx:claim-gv+claim-n+forbreak+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+668.1,13144,func-accepts-invalid_2026171983784_17,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+669.6,13160,unsound_2026171983786_87,unsound/A:assert:claim-o+abs+try,NEW-11 var params not shared (aliasing; spec not implemented)
+670.2,13200,func-accepts-invalid_2026171983785_21,func-accepts-invalid:nse behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+676.9,13320,func-accepts-invalid_2026171983790_16,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+678.2,13336,unsound_2026171983792_60,unsound/A:assert:claim-go+forbreak,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+679.0,13376,func-accepts-invalid_2026171983791_33,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+683.0,13424,unsound_2026171983795_19,unsound/A:assert:claim-gs+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+683.0,13424,unsound_2026171983795_36,unsound/A:assert:claim-n+forbreak+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+685.4,13496,func-rejects-valid_2026171983796_6,func-rejects-valid:castfunc behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+685.4,13496,func-accepts-invalid_2026171983796_8,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+687.9,13552,func-accepts-invalid_2026171983797_12,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+687.9,13552,func-accepts-invalid_2026171983797_15,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+688.3,13512,false-violation_2026171983798_71,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+694.2,13656,func-accepts-invalid_2026171983802_17,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+694.2,13656,func-accepts-invalid_2026171983802_27,func-accepts-invalid:nse behind=True head=a: var array[2; Node] swap path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+696.9,13728,func-accepts-invalid_2026171983803_0,func-accepts-invalid:iter behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+696.9,13728,func-other-error_2026171983803_11,func-other-error:nse behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+696.9,13728,func-accepts-invalid_2026171983803_19,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+703.2,13848,func-accepts-invalid_2026171983808_17,func-accepts-invalid:iter behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+703.2,13848,func-accepts-invalid_2026171983808_28,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+704.6,13864,unsound_2026171983810_40,unsound/A:assert:claim-tv+addr+stash,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+705.6,13904,func-accepts-invalid_2026171983809_26,func-accepts-invalid:var-result nse behind=True expr varres-expr path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+713.4,14040,unsound_2026171983816_85,unsound/A:assert:claim-o+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+720.5,14184,func-accepts-invalid_2026171983820_11,func-accepts-invalid:func behind=True head=h: Holder inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+720.5,14184,func-accepts-invalid_2026171983820_29,func-accepts-invalid:nse behind=True head=n: Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+720.5,14184,func-accepts-invalid_2026171983820_36,func-accepts-invalid:nse behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+720.5,14184,func-accepts-invalid_2026171983820_38,func-accepts-invalid:func behind=True head=h: var Holder inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+723.7,14256,func-accepts-invalid_2026171983821_2,func-accepts-invalid:iter behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+729.9,14360,func-accepts-invalid_2026171983826_28,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+732.6,14432,func-accepts-invalid_2026171983827_14,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+739.2,14552,func-accepts-invalid_2026171983832_1,func-accepts-invalid:nse behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+739.2,14552,func-accepts-invalid_2026171983832_3,func-accepts-invalid:func behind=True head=n: Node fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+739.2,14552,func-accepts-invalid_2026171983832_7,func-accepts-invalid:nse behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+741.5,14608,func-accepts-invalid_2026171983833_14,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+741.5,14608,func-accepts-invalid_2026171983833_18,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+750.8,14784,func-accepts-invalid_2026171983839_17,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+750.8,14784,func-accepts-invalid_2026171983839_18,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+760.0,14960,func-accepts-invalid_2026171983845_13,func-accepts-invalid:iter behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+760.0,14960,func-accepts-invalid_2026171983845_36,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+766.7,15080,func-accepts-invalid_2026171983850_22,func-accepts-invalid:nse behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+769.3,15136,func-accepts-invalid_2026171983851_10,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+769.3,15136,func-accepts-invalid_2026171983851_18,func-accepts-invalid:iter behind=True head=p: var ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+769.3,15136,func-accepts-invalid_2026171983851_19,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+769.3,15136,func-accepts-invalid_2026171983851_25,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+769.3,15136,func-accepts-invalid_2026171983851_34,func-accepts-invalid:func behind=True head=n: var Node fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+769.3,15136,func-accepts-invalid_2026171983851_39,func-accepts-invalid:func behind=True head=n: Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+773.7,15184,unsound_2026171983855_122,unsound/A:assert:claim-gv+abs+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+773.7,15184,unsound_2026171983855_190,unsound/A:idx:claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+776.2,15256,func-accepts-invalid_2026171983856_1,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERfE,NEW-09 func writes a seq element behind a ref/ptr
+776.2,15256,func-accepts-invalid_2026171983856_18,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+776.2,15256,func-accepts-invalid_2026171983856_26,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+776.2,15256,func-other-error_2026171983856_33,func-other-error:iter behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+778.7,15312,func-accepts-invalid_2026171983857_1,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+782.8,15360,unsound_2026171983861_76,unsound/A:assert:claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+785.3,15432,func-accepts-invalid_2026171983862_13,func-accepts-invalid:func behind=True head=n: Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+787.6,15488,func-accepts-invalid_2026171983863_32,func-accepts-invalid:iter behind=True head=s: var seq[Node] inc path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+794.1,15608,func-accepts-invalid_2026171983868_20,func-accepts-invalid:var-result nse behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+795.6,15624,unsound_2026171983870_72,unsound/A:idx:claim-q+claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+796.4,15664,func-accepts-invalid_2026171983869_21,func-accepts-invalid:nse behind=True head=n: Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+800.5,15712,unsound_2026171983873_96,unsound/A:assert:claim-n+abs+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+802.9,15784,func-accepts-invalid_2026171983874_20,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+805.1,15840,func-accepts-invalid_2026171983875_5,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+805.1,15840,func-accepts-invalid_2026171983875_22,func-accepts-invalid:var-result func behind=True result varres-result path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+813.3,15976,unsound_2026171983882_123,unsound/A:assert:claim-gv+claim-o+forbreak+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+813.4,16016,func-accepts-invalid_2026171983881_29,func-accepts-invalid:nse behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+820.6,16136,func-accepts-invalid_2026171983886_28,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+820.6,16136,func-accepts-invalid_2026171983886_32,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+822.2,16152,unsound_2026171983888_154,unsound/A:assert:claim-q+claim-o+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+822.6,16192,func-accepts-invalid_2026171983887_6,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+826.6,16240,unsound_2026171983891_58,unsound/A:assert:claim-o+claim-t+abs+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+829.9,16312,func-accepts-invalid_2026171983892_0,func-accepts-invalid:nse behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+831.3,16368,func-accepts-invalid_2026171983893_14,func-accepts-invalid:nse behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+835.1,16416,unsound_2026171983897_40,unsound/A:assert:claim-gv+claim-t+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+839.1,16488,func-accepts-invalid_2026171983898_0,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+839.1,16488,func-accepts-invalid_2026171983898_23,func-accepts-invalid:var-result nse behind=True expr varres-expr path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+839.5,16504,func-accepts-invalid_2026171983899_18,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+839.5,16504,func-accepts-invalid_2026171983899_28,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+840.6,16520,unsound_2026171983900_75,unsound/A:assert:claim-gv+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+844.0,16592,unsound_2026171983903_5,unsound/A:assert:claim-gv+claim-t+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+848.1,16664,func-rejects-valid_2026171983904_17,func-rejects-valid:castfunc behind=True head=s: var seq[Node] let path=EDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+848.1,16664,func-accepts-invalid_2026171983904_26,func-accepts-invalid:func behind=True head=n: var Node inc path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+848.1,16664,func-accepts-invalid_2026171983904_28,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+848.8,16680,func-accepts-invalid_2026171983905_5,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+848.8,16680,func-accepts-invalid_2026171983905_26,func-accepts-invalid:func behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+849.6,16696,unsound_2026171983906_108,unsound/A:assert:claim-q+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+849.6,16696,unsound_2026171983906_137,unsound/A:assert:claim-q+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+852.7,16768,unsound_2026171983909_66,unsound/A:assert:claim-q+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+858.5,16872,unsound_2026171983912_95,unsound/A:assert:claim-q+try,NEW-11 var params not shared (aliasing; spec not implemented)
+861.1,16928,unsound_2026171983915_11,unsound/A:assert:claim-q+forbreak+addr+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+865.8,17016,func-other-error_2026171983917_20,func-other-error:func behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+865.8,17016,func-other-error_2026171983917_22,func-other-error:func behind=True head=a: var array[2; Node] let path=EDff:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+866.0,17032,func-accepts-invalid_2026171983916_35,func-accepts-invalid:var-result nse behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+870.1,17104,unsound_2026171983921_60,unsound/A:assert:claim-q+forbreak+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+874.8,17192,func-accepts-invalid_2026171983923_2,func-accepts-invalid:func behind=True head=n: Node inc path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+874.8,17192,func-accepts-invalid_2026171983923_10,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+878.9,17280,unsound_2026171983927_26,unsound/A:assert:claim-go,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+878.9,17280,unsound_2026171983927_84,unsound/A:assert:claim-n+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+884.4,17384,func-accepts-invalid_2026171983928_1,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+884.4,17384,func-accepts-invalid_2026171983928_33,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+884.4,17384,func-accepts-invalid_2026171983928_38,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+886.0,17440,unsound_2026171983930_82,unsound/A:ensures:abs+stash+try,dup-08 except state
+888.2,17456,unsound_2026171983933_5,unsound/A:assert:claim-n+claim-t+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+892.9,17544,func-accepts-invalid_2026171983935_9,func-accepts-invalid:nse behind=True head=h: var Holder fb path=fRfE,NEW-09 func writes a seq element behind a ref/ptr
+892.9,17544,func-accepts-invalid_2026171983935_21,func-accepts-invalid:func behind=True head=n: var Node fb path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+893.6,17560,func-accepts-invalid_2026171983934_18,func-accepts-invalid:var-result nse behind=True result varres-result path=ERfE,NEW-09 func writes a seq element behind a ref/ptr
+893.6,17560,func-accepts-invalid_2026171983934_22,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+901.6,17720,func-accepts-invalid_2026171983941_12,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+910.5,17912,func-accepts-invalid_2026171983946_29,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ffRE,NEW-09 func writes a seq element behind a ref/ptr
+912.1,17968,unsound_2026171983948_13,unsound/A:assert:claim-go+claim-t,NEW-11 var params not shared (aliasing; spec not implemented)
+914.3,17984,unsound_2026171983951_100,unsound/A:idx:claim-n+claim-q+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+918.7,18072,func-accepts-invalid_2026171983953_15,func-accepts-invalid:func behind=True head=h: var Holder inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+919.4,18088,func-rejects-valid_2026171983952_10,func-rejects-valid:fse behind=True head=n: Node let path=Dff:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+927.2,18248,func-rejects-valid_2026171983959_8,func-rejects-valid:proc behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+928.0,18264,func-accepts-invalid_2026171983958_13,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+928.0,18264,func-accepts-invalid_2026171983958_14,func-accepts-invalid:func behind=True head=h: Holder += path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+928.0,18264,func-accepts-invalid_2026171983958_25,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+936.0,18424,func-accepts-invalid_2026171983965_25,func-accepts-invalid:func behind=True head=h: var Holder swap path=ffRE,NEW-09 func writes a seq element behind a ref/ptr
+936.0,18424,func-accepts-invalid_2026171983965_34,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+943.8,18600,func-accepts-invalid_2026171983971_21,func-accepts-invalid:nse behind=True head=h: var Holder swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+943.8,18600,func-accepts-invalid_2026171983971_39,func-accepts-invalid:var-result nse behind=True return varres-return path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+946.1,18656,func-accepts-invalid_2026171983970_5,func-accepts-invalid:func behind=True head=h: var Holder swap path=ffRE,NEW-09 func writes a seq element behind a ref/ptr
+946.1,18656,func-rejects-valid_2026171983970_16,func-rejects-valid:fse behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+946.1,18656,func-accepts-invalid_2026171983970_21,func-accepts-invalid:func behind=True head=n: Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+946.1,18656,func-accepts-invalid_2026171983970_29,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+946.1,18656,func-accepts-invalid_2026171983970_32,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+946.1,18656,func-accepts-invalid_2026171983970_37,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+946.1,18656,func-accepts-invalid_2026171983970_39,func-accepts-invalid:nse behind=True head=s: var seq[Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+947.7,18672,unsound_2026171983972_91,unsound/A:assert:claim-n+claim-t+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+952.4,18776,func-accepts-invalid_2026171983977_5,func-accepts-invalid:var-result func behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+952.4,18776,func-accepts-invalid_2026171983977_10,func-accepts-invalid:var-result func behind=True return varres-return path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+952.4,18776,func-rejects-valid_2026171983977_26,func-rejects-valid:proc behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+954.9,18832,func-accepts-invalid_2026171983976_37,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+961.2,18936,func-accepts-invalid_2026171983983_6,func-accepts-invalid:func behind=True head=h: var Holder += path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+961.2,18936,func-accepts-invalid_2026171983983_14,func-accepts-invalid:var-result nse behind=True result varres-result path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+961.2,18936,func-accepts-invalid_2026171983983_28,func-accepts-invalid:nse behind=True head=h: Holder += path=ffRE,NEW-09 func writes a seq element behind a ref/ptr
+970.2,19112,func-accepts-invalid_2026171983989_2,func-accepts-invalid:nse behind=True head=h: var Holder swap path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+979.2,19288,func-accepts-invalid_2026171983995_0,func-accepts-invalid:iter behind=True head=n: Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+979.2,19288,func-accepts-invalid_2026171983995_11,func-accepts-invalid:iter behind=True head=s: var seq[Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+979.2,19288,func-accepts-invalid_2026171983995_16,func-accepts-invalid:func behind=True head=n: var Node fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+979.2,19288,func-accepts-invalid_2026171983995_17,func-accepts-invalid:var-result func behind=True return varres-return path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+979.2,19288,func-accepts-invalid_2026171983995_23,func-accepts-invalid:func behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+983.7,19392,unsound_2026171983996_32,unsound/A:idx:claim-cx+claim-o+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+983.7,19392,unsound_2026171983996_146,unsound/A:assert:claim-q+forbreak,NEW-11 var params not shared (aliasing; spec not implemented)
+991.4,19536,func-accepts-invalid_2026171984000_19,func-accepts-invalid:func behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+991.4,19536,func-accepts-invalid_2026171984000_20,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+996.7,19640,func-accepts-invalid_2026171984007_25,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1005.6,19816,func-other-error_2026171984013_5,func-other-error:func behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1009.0,19888,func-rejects-valid_2026171984012_35,func-rejects-valid:castfunc behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1014.6,19992,func-other-error_2026171984019_3,func-other-error:func behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1014.6,19992,func-accepts-invalid_2026171984019_32,func-accepts-invalid:nse behind=True head=n: Node inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1017.8,20064,func-accepts-invalid_2026171984018_20,func-accepts-invalid:func behind=True head=n: var Node inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1017.8,20064,func-accepts-invalid_2026171984018_26,func-accepts-invalid:func behind=True head=h: Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1017.8,20064,func-accepts-invalid_2026171984018_27,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1018.8,20056,unsound_2026171984023_49,unsound/A:assert:claim-cx+forbreak+abs+addr,dup-#6 captured local
+1019.4,20096,unsound_2026171984020_150,unsound/A:idx:claim-o+abs+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1023.7,20168,func-accepts-invalid_2026171984025_26,func-accepts-invalid:nse behind=True head=s: var seq[Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1026.6,20240,func-accepts-invalid_2026171984024_39,func-accepts-invalid:var-result nse behind=True result varres-result path=fRfE,NEW-09 func writes a seq element behind a ref/ptr
+1032.4,20344,func-accepts-invalid_2026171984031_1,func-accepts-invalid:func behind=True head=n: Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1032.4,20344,func-accepts-invalid_2026171984031_17,func-accepts-invalid:func behind=True head=n: var Node += path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1035.1,20416,func-accepts-invalid_2026171984030_26,func-accepts-invalid:var-result func behind=True result varres-result path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+1041.7,20536,func-accepts-invalid_2026171984037_2,func-accepts-invalid:var-result func behind=True expr varres-expr path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1051.6,20712,func-accepts-invalid_2026171984043_8,func-accepts-invalid:nse behind=True head=n: Node fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1051.6,20712,func-accepts-invalid_2026171984043_12,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1051.6,20712,func-other-error_2026171984043_21,func-other-error:func behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1055.0,20768,func-accepts-invalid_2026171984042_3,func-accepts-invalid:var-result func behind=True return varres-return path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1056.7,20800,unsound_2026171984047_128,unsound/A:assert:claim-go+claim-t,NEW-11 var params not shared (aliasing; spec not implemented)
+1061.4,20888,func-accepts-invalid_2026171984049_10,func-accepts-invalid:iter behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1061.4,20888,func-accepts-invalid_2026171984049_23,func-accepts-invalid:var-result func behind=True return varres-return path=fRfE,NEW-09 func writes a seq element behind a ref/ptr
+1064.1,20944,func-other-error_2026171984048_23,func-other-error:func behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1064.1,20944,func-accepts-invalid_2026171984048_29,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1064.1,20944,func-accepts-invalid_2026171984048_36,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1071.1,21048,func-accepts-invalid_2026171984055_4,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1071.1,21048,func-accepts-invalid_2026171984055_15,func-accepts-invalid:func behind=True head=h: Holder inc path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+1071.1,21048,func-accepts-invalid_2026171984055_36,func-accepts-invalid:var-result nse behind=True return varres-return path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+1073.0,21120,func-accepts-invalid_2026171984054_6,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1073.0,21120,func-accepts-invalid_2026171984054_35,func-accepts-invalid:func behind=True head=h: var Holder fb path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+1074.7,21136,unsound_2026171984056_87,unsound/A:assert:claim-q+claim-cx+abs+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+1074.7,21136,unsound_2026171984056_190,unsound/A:idx:claim-o+forbreak+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1075.2,21152,unsound_2026171984059_31,unsound/A:assert:claim-q+claim-o+forbreak+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+1080.9,21240,func-accepts-invalid_2026171984061_12,func-accepts-invalid:var-result func behind=True result varres-result path=ERfE,NEW-09 func writes a seq element behind a ref/ptr
+1083.0,21296,func-accepts-invalid_2026171984060_13,func-accepts-invalid:func behind=True head=n: Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1083.0,21296,func-accepts-invalid_2026171984060_25,func-accepts-invalid:func behind=True head=h: var Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1090.3,21416,func-accepts-invalid_2026171984067_18,func-accepts-invalid:func behind=True head=n: Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1092.1,21472,func-accepts-invalid_2026171984066_16,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1092.1,21472,func-accepts-invalid_2026171984066_19,func-accepts-invalid:var-result func behind=True expr varres-expr path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1099.4,21592,func-accepts-invalid_2026171984073_26,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1102.6,21608,false-violation_2026171984075_71,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+1103.9,21664,unsound_2026171984074_149,unsound/A:assert:claim-n+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1104.2,21680,unsound_2026171984077_26,unsound/A:assert:claim-cx+forbreak+try,dup-#6 captured local
+1109.3,21768,func-accepts-invalid_2026171984079_34,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1111.8,21824,func-accepts-invalid_2026171984078_38,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+1111.8,21824,func-accepts-invalid_2026171984078_39,func-accepts-invalid:nse behind=True head=h: Holder fb path=fRfE,NEW-09 func writes a seq element behind a ref/ptr
+1113.3,21856,unsound_2026171984083_5,unsound/A:assert:claim-q+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1122.0,21928,func-accepts-invalid_2026171984085_0,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1122.0,21928,func-accepts-invalid_2026171984085_29,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1125.9,22016,unsound_2026171984086_11,unsound/A:assert:claim-o+claim-t,NEW-11 var params not shared (aliasing; spec not implemented)
+1125.9,22016,unsound_2026171984086_69,unsound/A:assert:claim-gv,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1126.6,22032,unsound_2026171984089_112,unsound/A:idx:claim-gv+stash+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1133.2,22120,func-other-error_2026171984091_1,func-other-error:iter behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1133.2,22120,func-other-error_2026171984091_28,func-other-error:nse behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1137.8,22208,unsound_2026171984095_140,unsound/A:assert:claim-gv+abs+addr+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1145.2,22296,func-accepts-invalid_2026171984097_29,func-accepts-invalid:func behind=True head=n: Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1147.1,22352,func-accepts-invalid_2026171984096_11,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1149.8,22384,unsound_2026171984101_36,unsound/A:idx:claim-gv+claim-q+forbreak+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+1155.5,22472,func-accepts-invalid_2026171984103_25,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1158.2,22528,func-rejects-valid_2026171984102_21,func-rejects-valid:proc behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1161.0,22560,unsound_2026171984104_81,unsound/A:assert:claim-q+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+1167.7,22648,func-accepts-invalid_2026171984109_19,func-accepts-invalid:func behind=True head=n: Node inc path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1167.7,22648,func-accepts-invalid_2026171984109_37,func-accepts-invalid:var-result nse behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1167.7,22648,func-accepts-invalid_2026171984109_39,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1170.3,22704,func-accepts-invalid_2026171984108_26,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1177.9,22824,func-accepts-invalid_2026171984115_10,func-accepts-invalid:func behind=True head=n: Node fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1183.9,22872,unsound_2026171984119_77,unsound/A:assert:claim-n+forbreak+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+1196.5,23072,func-accepts-invalid_2026171984120_36,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1215.8,23320,func-accepts-invalid_2026171984133_3,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1215.8,23320,func-accepts-invalid_2026171984133_28,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1227.4,23496,func-accepts-invalid_2026171984139_13,func-accepts-invalid:var-result nse behind=True expr varres-expr path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1227.4,23496,func-accepts-invalid_2026171984139_16,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1231.5,23560,unsound_2026171984143_36,unsound/A:assert:claim-gv+forbreak,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1231.5,23560,unsound_2026171984143_54,unsound/A:assert:claim-n+claim-t,NEW-11 var params not shared (aliasing; spec not implemented)
+1232.6,23600,func-other-error_2026171984138_14,func-other-error:iter behind=True head=s: var seq[Node] let path=EDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1236.5,23632,false-violation_2026171984145_1,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+1237.4,23688,func-accepts-invalid_2026171984145_14,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1243.3,23736,unsound_2026171984149_37,unsound/A:assert:claim-q+abs+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+1244.1,23776,func-accepts-invalid_2026171984144_11,func-accepts-invalid:var-result func behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1244.1,23776,func-accepts-invalid_2026171984144_22,func-accepts-invalid:var-result func behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1245.7,23792,unsound_2026171984146_102,unsound/A:assert:claim-tv,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1248.0,23864,func-accepts-invalid_2026171984151_2,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1248.0,23864,func-rejects-valid_2026171984151_30,func-rejects-valid:castfunc behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1248.0,23864,func-other-error_2026171984151_35,func-other-error:nse behind=True head=h: var Holder let path=fEDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1252.3,23912,unsound_2026171984155_9,unsound/A:idx:claim-tv+claim-t+abs+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1252.9,23952,func-accepts-invalid_2026171984150_34,func-accepts-invalid:func behind=True head=t: var Tup swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1257.2,24040,func-accepts-invalid_2026171984157_8,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1257.2,24040,func-accepts-invalid_2026171984157_20,func-accepts-invalid:func behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1261.4,24088,unsound_2026171984161_4,unsound/A:idx:claim-tv+claim-o+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1270.0,24264,unsound_2026171984167_45,unsound/A:assert:claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+1274.0,24336,unsound_2026171984164_18,unsound/A:assert:claim-gv+abs+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1280.8,24440,unsound_2026171984173_18,unsound/A:assert:claim-gv+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1283.4,24480,func-accepts-invalid_2026171984168_15,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1283.4,24480,func-accepts-invalid_2026171984168_37,func-accepts-invalid:func behind=True head=n: var Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1286.2,24552,func-accepts-invalid_2026171984175_3,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1292.7,24672,func-accepts-invalid_2026171984174_38,func-accepts-invalid:func behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1297.8,24728,func-accepts-invalid_2026171984181_37,func-accepts-invalid:var-result func behind=True expr varres-expr path=ffRE,NEW-09 func writes a seq element behind a ref/ptr
+1304.8,24832,func-accepts-invalid_2026171984180_19,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1308.6,24904,func-accepts-invalid_2026171984187_9,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1313.9,25008,func-accepts-invalid_2026171984186_17,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1317.8,25096,func-other-error_2026171984193_38,func-other-error:func behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1323.1,25184,func-accepts-invalid_2026171984192_13,func-accepts-invalid:iter behind=True head=p: ptr Plain inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1323.1,25184,func-accepts-invalid_2026171984192_17,func-accepts-invalid:iter behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1324.9,25200,unsound_2026171984194_6,unsound/A:assert:claim-q+forbreak+abs+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1327.2,25256,func-accepts-invalid_2026171984199_2,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1327.2,25256,func-accepts-invalid_2026171984199_9,func-accepts-invalid:func behind=True head=n: var Node inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1327.2,25256,func-rejects-valid_2026171984199_20,func-rejects-valid:castfunc behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1327.2,25256,func-accepts-invalid_2026171984199_28,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1333.0,25360,func-accepts-invalid_2026171984198_16,func-accepts-invalid:var-result func behind=True expr varres-expr path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1336.3,25432,func-accepts-invalid_2026171984205_27,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1340.9,25496,unsound_2026171984209_53,unsound/A:assert:claim-gv+addr+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1340.9,25496,unsound_2026171984209_88,unsound/A:assert:claim-cx+forbreak+addr+stash,dup-#6 captured local
+1344.2,25536,func-accepts-invalid_2026171984204_5,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1344.2,25536,func-accepts-invalid_2026171984204_24,func-accepts-invalid:var-result func behind=True expr varres-expr path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1350.3,25608,func-accepts-invalid_2026171984211_24,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1360.2,25744,unsound_2026171984212_9,unsound/A:assert:claim-go+claim-gs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1360.2,25744,unsound_2026171984212_11,unsound/A:assert:claim-go+claim-gs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1361.1,25784,func-accepts-invalid_2026171984217_11,func-accepts-invalid:iter behind=True head=h: Holder swap path=fRfE,NEW-09 func writes a seq element behind a ref/ptr
+1361.1,25784,func-accepts-invalid_2026171984217_38,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1366.5,25832,unsound_2026171984221_99,unsound/A:assert:claim-n+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+1366.5,25832,unsound_2026171984221_153,unsound/A:idx:claim-q+claim-cx+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1371.7,25904,func-accepts-invalid_2026171984216_8,func-accepts-invalid:iter behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1371.7,25904,func-accepts-invalid_2026171984216_22,func-accepts-invalid:func behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1371.7,25904,func-accepts-invalid_2026171984216_27,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1374.0,25960,func-accepts-invalid_2026171984223_33,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1378.5,26008,unsound_2026171984227_152,unsound/A:assert:claim-gs+claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+1378.5,26008,unsound_2026171984227_182,unsound/A:rng:forbreak+addr+stash+try,dup-04 addr write
+1384.5,26080,func-accepts-invalid_2026171984222_10,func-accepts-invalid:var-result func behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1384.5,26080,func-accepts-invalid_2026171984222_35,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1386.3,26096,unsound_2026171984224_51,unsound/A:assert:claim-gv+claim-t+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1386.9,26136,func-accepts-invalid_2026171984229_29,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1386.9,26136,func-accepts-invalid_2026171984229_31,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1398.2,26312,func-accepts-invalid_2026171984235_2,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1398.2,26312,func-accepts-invalid_2026171984235_38,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1409.0,26400,func-rejects-valid_2026171984241_27,func-rejects-valid:castfunc behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1421.7,26488,func-accepts-invalid_2026171984247_4,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1432.7,26576,func-accepts-invalid_2026171984253_23,func-accepts-invalid:nse behind=True head=s: var seq[Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1443.4,26664,func-other-error_2026171984259_19,func-other-error:nse behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1448.0,26696,unsound_2026171984263_186,unsound/A:idx:claim-gv+claim-gs+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1452.6,26752,func-accepts-invalid_2026171984265_2,func-accepts-invalid:func behind=True head=n: var Node += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1454.5,26272,odd_2026171984230_x,odd:oracle-timeout,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+1460.6,26872,func-rejects-valid_2026171984234_0,func-rejects-valid:fse behind=True head=a: var array[2; Node] let path=EDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1460.6,26872,func-accepts-invalid_2026171984234_13,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1460.6,26872,func-accepts-invalid_2026171984234_38,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1465.4,26976,unsound_2026171984275_128,unsound/A:assert:claim-go+forbreak+stash+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1465.4,26976,unsound_2026171984275_148,unsound/A:assert:claim-go+forbreak+stash+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1469.2,27048,func-accepts-invalid_2026171984240_29,func-accepts-invalid:func behind=True head=h: Holder += path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1470.1,27104,func-accepts-invalid_2026171984277_29,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1470.1,27104,func-accepts-invalid_2026171984277_38,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1470.7,27064,unsound_2026171984242_138,unsound/A:assert:claim-o+claim-t+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1478.7,27224,func-accepts-invalid_2026171984246_22,func-accepts-invalid:func behind=True head=n: Node inc path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1478.7,27224,func-accepts-invalid_2026171984246_23,func-accepts-invalid:func behind=True head=h: Holder fb path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1478.7,27224,func-accepts-invalid_2026171984246_33,func-accepts-invalid:func behind=True head=h: var Holder fb path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+1478.7,27224,func-rejects-valid_2026171984246_35,func-rejects-valid:fse behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1479.9,27280,func-accepts-invalid_2026171984283_14,func-accepts-invalid:func behind=True head=h: var Holder += path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1479.9,27280,func-accepts-invalid_2026171984283_19,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1480.3,27240,unsound_2026171984248_2,unsound/A:assert:claim-n+forbreak,NEW-11 var params not shared (aliasing; spec not implemented)
+1480.3,27240,unsound_2026171984248_85,unsound/A:assert:claim-gs+claim-q,NEW-11 var params not shared (aliasing; spec not implemented)
+1485.2,27328,unsound_2026171984287_109,unsound/A:assert:claim-q,NEW-11 var params not shared (aliasing; spec not implemented)
+1489.3,27400,func-accepts-invalid_2026171984252_26,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1489.3,27400,func-accepts-invalid_2026171984252_30,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1490.6,27456,func-accepts-invalid_2026171984289_23,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1494.8,27504,unsound_2026171984293_2,unsound/A:assert:claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+1494.8,27504,unsound_2026171984293_58,unsound/A:assert:claim-go+claim-t+forbreak,NEW-11 var params not shared (aliasing; spec not implemented)
+1494.8,27504,unsound_2026171984293_61,unsound/A:idx:claim-go+claim-q+claim-t+forbreak,NEW-11 var params not shared (aliasing; spec not implemented)
+1500.2,27576,func-accepts-invalid_2026171984258_20,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1502.1,27608,unsound_2026171984260_171,unsound/A:assert:claim-go,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1509.8,27752,func-accepts-invalid_2026171984264_20,func-accepts-invalid:func behind=True head=h: var Holder swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1509.8,27752,func-accepts-invalid_2026171984264_23,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+1509.8,27752,func-accepts-invalid_2026171984264_25,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1509.8,27752,func-accepts-invalid_2026171984264_30,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1510.7,27808,func-accepts-invalid_2026171984301_5,func-accepts-invalid:func behind=True head=n: var Node += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1514.5,27856,unsound_2026171984305_93,unsound/A:assert:claim-gs+claim-o+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1522.7,28032,unsound_2026171984311_80,unsound/A:assert:claim-q+claim-t+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1536.0,28296,func-accepts-invalid_2026171984319_5,func-accepts-invalid:func behind=True head=h: var Holder += path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1536.0,28296,func-accepts-invalid_2026171984319_33,func-accepts-invalid:func behind=True head=n: Node swap path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1536.8,28312,unsound_2026171984284_8,unsound/A:idx:claim-tv+claim-o+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1544.9,28512,func-accepts-invalid_2026171984325_39,func-accepts-invalid:var-result func behind=True expr varres-expr path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+1548.8,28560,unsound_2026171984329_39,unsound/A:assert:claim-gv+abs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1552.9,28632,func-accepts-invalid_2026171984294_0,func-accepts-invalid:func behind=True head=n: var Node inc path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1553.7,28648,func-accepts-invalid_2026171984331_9,func-accepts-invalid:func behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1553.7,28648,func-other-error_2026171984331_38,func-other-error:iter behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1557.9,28736,unsound_2026171984335_35,unsound/A:assert:claim-q+claim-o+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1557.9,28736,unsound_2026171984335_153,unsound/A:assert:claim-gv,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1562.7,28864,func-accepts-invalid_2026171984337_10,func-accepts-invalid:iter behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1570.9,28984,func-accepts-invalid_2026171984306_35,func-accepts-invalid:func behind=True head=s: var seq[Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1570.9,28984,func-accepts-invalid_2026171984306_38,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1571.4,29000,func-accepts-invalid_2026171984343_30,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1579.7,29160,func-accepts-invalid_2026171984312_13,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1580.2,29176,func-other-error_2026171984349_38,func-other-error:func behind=True head=h: Holder let path=fDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1584.2,29264,unsound_2026171984353_64,unsound/A:assert:claim-tv+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1588.8,29352,func-accepts-invalid_2026171984355_10,func-accepts-invalid:var-result nse behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1588.8,29352,func-accepts-invalid_2026171984355_34,func-accepts-invalid:nse behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1590.0,29368,unsound_2026171984320_52,unsound/A:assert:addr,dup-04 addr write
+1592.7,29440,unsound_2026171984359_35,unsound/A:assert:claim-gv+abs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1597.1,29512,func-accepts-invalid_2026171984361_4,func-accepts-invalid:var-result func behind=True result varres-result path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1597.1,29512,func-accepts-invalid_2026171984361_34,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1597.4,29528,func-accepts-invalid_2026171984324_12,func-accepts-invalid:nse behind=True head=t: var Tup inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1605.4,29688,func-accepts-invalid_2026171984367_7,func-accepts-invalid:iter behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1605.4,29688,func-accepts-invalid_2026171984367_25,func-accepts-invalid:func behind=True head=n: var Node swap path=DffE,NEW-09 func writes a seq element behind a ref/ptr
+1605.6,29704,func-accepts-invalid_2026171984330_16,func-accepts-invalid:iter behind=True head=n: Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1605.6,29704,func-accepts-invalid_2026171984330_26,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1605.6,29704,func-accepts-invalid_2026171984330_34,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1607.2,29760,unsound_2026171984332_101,unsound/A:assert:claim-q+abs+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1607.2,29760,unsound_2026171984332_125,unsound/A:assert:claim-gs+addr+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1608.6,29760,false-violation_2026171984332_99,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+1614.1,29864,func-accepts-invalid_2026171984373_21,func-accepts-invalid:nse behind=True head=t: var Tup inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1614.6,29880,func-accepts-invalid_2026171984336_12,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1616.2,29936,unsound_2026171984338_163,unsound/A:assert:claim-n+forbreak,NEW-11 var params not shared (aliasing; spec not implemented)
+1616.2,29936,unsound_2026171984338_166,unsound/A:assert:claim-n+forbreak,NEW-11 var params not shared (aliasing; spec not implemented)
+1617.9,29952,unsound_2026171984377_142,unsound/A:assert:claim-gv+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1622.5,30040,func-other-error_2026171984379_38,func-other-error:iter behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1623.5,30096,func-other-error_2026171984342_12,func-other-error:iter behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1623.5,30096,func-accepts-invalid_2026171984342_25,func-accepts-invalid:var-result nse behind=True expr varres-expr path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1623.5,30096,func-accepts-invalid_2026171984342_29,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1623.5,30096,func-other-error_2026171984342_35,func-other-error:iter behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1625.0,30112,unsound_2026171984344_5,unsound/A:assert:claim-q+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1625.0,30112,unsound_2026171984344_93,unsound/A:assert:claim-n+claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+1631.2,30216,func-accepts-invalid_2026171984385_1,func-accepts-invalid:func behind=True head=t: var Tup swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1631.2,30216,func-accepts-invalid_2026171984385_10,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1631.2,30216,func-accepts-invalid_2026171984385_22,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1632.1,30272,func-accepts-invalid_2026171984348_0,func-accepts-invalid:func behind=True head=h: Holder inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1639.7,30392,func-rejects-valid_2026171984391_2,func-rejects-valid:fse behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1639.7,30392,func-accepts-invalid_2026171984391_21,func-accepts-invalid:func behind=True head=n: var Node += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1641.9,30464,unsound_2026171984356_77,unsound/A:assert:claim-q+forbreak+abs+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1641.9,30464,unsound_2026171984356_109,unsound/A:assert:claim-n+claim-q+forbreak+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1643.7,30480,unsound_2026171984395_114,unsound/A:assert:claim-q,NEW-11 var params not shared (aliasing; spec not implemented)
+1648.1,30568,func-accepts-invalid_2026171984397_4,func-accepts-invalid:func behind=True head=n: Node fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1648.8,30584,func-accepts-invalid_2026171984360_13,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1648.8,30584,func-other-error_2026171984360_36,func-other-error:func behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1650.2,30640,unsound_2026171984362_91,unsound/A:assert:claim-t+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1652.5,30656,unsound_2026171984401_138,unsound/A:assert:claim-q+claim-t,NEW-11 var params not shared (aliasing; spec not implemented)
+1652.5,30656,unsound_2026171984401_217,unsound/A:idx:claim-cx+abs,dup-#6 captured local
+1657.1,30744,func-other-error_2026171984366_13,func-other-error:func behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1657.1,30760,func-accepts-invalid_2026171984403_25,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1657.1,30760,func-accepts-invalid_2026171984403_29,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1665.4,30920,func-accepts-invalid_2026171984372_23,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1665.6,30936,func-accepts-invalid_2026171984409_16,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1666.8,30952,unsound_2026171984374_72,unsound/A:assert:claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+1673.6,31096,func-accepts-invalid_2026171984378_20,func-accepts-invalid:func behind=True head=t: var Tup swap path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+1674.0,31112,func-accepts-invalid_2026171984415_3,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1674.0,31112,func-accepts-invalid_2026171984415_33,func-accepts-invalid:iter behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1674.0,31112,func-accepts-invalid_2026171984415_35,func-accepts-invalid:nse behind=True head=s: var seq[Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1675.2,31128,unsound_2026171984380_40,unsound/A:assert:claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+1682.2,31272,func-other-error_2026171984384_13,func-other-error:func behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1682.2,31272,func-accepts-invalid_2026171984384_15,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERfE,NEW-09 func writes a seq element behind a ref/ptr
+1682.2,31272,func-accepts-invalid_2026171984384_31,func-accepts-invalid:nse behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1682.4,31288,func-accepts-invalid_2026171984421_19,func-accepts-invalid:var-result func behind=True return varres-return path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1691.1,31464,func-accepts-invalid_2026171984427_38,func-accepts-invalid:var-result nse behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1695.3,31552,unsound_2026171984431_119,unsound/A:assert:claim-gv+claim-gs,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1699.0,31624,func-accepts-invalid_2026171984396_9,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1699.0,31624,func-accepts-invalid_2026171984396_35,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1699.0,31624,func-accepts-invalid_2026171984396_37,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1699.8,31680,func-accepts-invalid_2026171984433_19,func-accepts-invalid:func behind=True head=n: var Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1707.5,31800,func-accepts-invalid_2026171984402_34,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1708.1,31816,func-accepts-invalid_2026171984439_3,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1715.9,31976,func-accepts-invalid_2026171984408_27,func-accepts-invalid:func behind=True head=n: var Node swap path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1720.4,32080,unsound_2026171984449_10,unsound/A:assert:claim-gv+claim-q,NEW-11 var params not shared (aliasing; spec not implemented)
+1724.3,32152,func-accepts-invalid_2026171984414_2,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1724.3,32152,func-accepts-invalid_2026171984414_10,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1724.9,32168,func-accepts-invalid_2026171984451_13,func-accepts-invalid:nse behind=True head=t: var Tup += path=fRfE,NEW-09 func writes a seq element behind a ref/ptr
+1732.9,32328,func-accepts-invalid_2026171984420_2,func-accepts-invalid:var-result nse behind=True result varres-result path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+1741.4,32504,func-accepts-invalid_2026171984426_0,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1741.4,32504,func-accepts-invalid_2026171984426_27,func-accepts-invalid:iter behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1741.9,32520,func-accepts-invalid_2026171984463_17,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1749.7,32680,func-other-error_2026171984432_14,func-other-error:func behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1749.7,32680,func-accepts-invalid_2026171984432_35,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1751.1,32696,unsound_2026171984434_125,unsound/A:idx:claim-q+claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+1758.7,32856,func-accepts-invalid_2026171984438_2,func-accepts-invalid:nse behind=True head=p: var ptr Plain fb path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1758.7,32856,func-accepts-invalid_2026171984438_27,func-accepts-invalid:var-result nse behind=True result varres-result path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1758.7,32856,func-accepts-invalid_2026171984438_30,func-accepts-invalid:func behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1759.3,32872,func-accepts-invalid_2026171984475_25,func-accepts-invalid:var-result func behind=True result varres-result path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1760.1,32888,unsound_2026171984440_42,unsound/A:assert:claim-gs+claim-n+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1763.2,32960,unsound_2026171984479_143,unsound/A:assert:claim-n+claim-q+abs+addr+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1767.0,33032,func-rejects-valid_2026171984444_18,func-rejects-valid:castfunc behind=True head=a: var array[2; Node] let path=EDff:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1767.0,33032,func-rejects-valid_2026171984444_29,func-rejects-valid:fse behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1771.7,33136,unsound_2026171984485_116,unsound/A:idx:claim-q+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1776.4,33264,func-accepts-invalid_2026171984487_4,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1776.4,33264,func-rejects-valid_2026171984487_25,func-rejects-valid:proc behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1776.4,33264,func-accepts-invalid_2026171984487_35,func-accepts-invalid:var-result nse behind=True expr varres-expr path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1776.8,33224,unsound_2026171984452_61,unsound/A:assert:claim-n+abs+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1784.9,33384,func-accepts-invalid_2026171984493_14,func-accepts-invalid:iter behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1784.9,33384,func-accepts-invalid_2026171984493_29,func-accepts-invalid:iter behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1808.0,33328,odd_2026171984456_x,odd:oracle-fail,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+1808.7,33416,unsound_2026171984497_52,unsound/A:assert:claim-gv+claim-t+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+1808.7,33416,unsound_2026171984497_156,unsound/A:assert:claim-cx,dup-#6 captured local
+1808.7,33456,func-accepts-invalid_2026171984456_14,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1808.7,33456,func-accepts-invalid_2026171984456_31,func-accepts-invalid:func behind=True head=n: var Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1817.4,33632,func-accepts-invalid_2026171984462_13,func-accepts-invalid:func behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1817.4,33632,func-accepts-invalid_2026171984462_29,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1818.9,33648,unsound_2026171984464_59,unsound/A:assert:claim-cx+abs,dup-#6 captured local
+1818.9,33648,unsound_2026171984464_63,unsound/A:assert:claim-tv+forbreak+stash,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1825.2,33768,unsound_2026171984509_38,unsound/A:assert:claim-gv+claim-gs+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1826.0,33808,func-accepts-invalid_2026171984468_17,func-accepts-invalid:func behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1826.0,33808,func-accepts-invalid_2026171984468_23,func-accepts-invalid:var-result func behind=True result varres-result path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1830.1,33896,func-accepts-invalid_2026171984511_14,func-accepts-invalid:iter behind=True head=s: var seq[Node] inc path=ERfE,NEW-09 func writes a seq element behind a ref/ptr
+1834.2,33984,func-accepts-invalid_2026171984474_4,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1834.2,33984,func-accepts-invalid_2026171984474_19,func-accepts-invalid:var-result func behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1834.2,33984,func-accepts-invalid_2026171984474_21,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1835.7,34000,unsound_2026171984476_40,unsound/A:assert:claim-cx+claim-o+forbreak+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1842.7,34160,func-accepts-invalid_2026171984480_0,func-accepts-invalid:iter behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1842.7,34160,func-accepts-invalid_2026171984480_20,func-accepts-invalid:func behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1842.7,34160,func-accepts-invalid_2026171984480_39,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1844.1,34176,unsound_2026171984482_68,unsound/A:assert:claim-gs+claim-q+abs+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+1856.2,34424,func-accepts-invalid_2026171984529_0,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1859.6,34512,func-accepts-invalid_2026171984492_12,func-accepts-invalid:iter behind=True head=n: var Node fb path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+1861.0,34528,unsound_2026171984494_25,unsound/A:assert:claim-q+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+1864.6,34600,func-other-error_2026171984535_14,func-other-error:iter behind=True head=p: ptr Plain let path=DfE:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1868.0,34688,func-accepts-invalid_2026171984498_14,func-accepts-invalid:var-result func behind=True expr varres-expr path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1868.0,34688,func-accepts-invalid_2026171984498_17,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1868.0,34688,func-accepts-invalid_2026171984498_20,func-accepts-invalid:nse behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1868.0,34688,func-accepts-invalid_2026171984498_28,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1881.4,34952,func-accepts-invalid_2026171984547_2,func-accepts-invalid:nse behind=True head=n: Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1885.6,35040,func-accepts-invalid_2026171984510_11,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1889.7,35128,func-accepts-invalid_2026171984553_24,func-accepts-invalid:iter behind=True head=s: var seq[Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1893.6,35176,unsound_2026171984557_6,unsound/A:assert:claim-n,NEW-11 var params not shared (aliasing; spec not implemented)
+1894.3,35216,func-accepts-invalid_2026171984516_36,func-accepts-invalid:var-result nse behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1898.3,35304,func-accepts-invalid_2026171984559_30,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1898.3,35304,func-accepts-invalid_2026171984559_37,func-accepts-invalid:func behind=True head=p: var ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1902.9,35392,func-accepts-invalid_2026171984522_39,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1919.9,35704,unsound_2026171984575_28,unsound/A:assert:claim-go+forbreak+abs+addr+stash+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1920.2,35744,func-accepts-invalid_2026171984534_0,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1920.2,35744,func-accepts-invalid_2026171984534_26,func-accepts-invalid:var-result nse behind=True return varres-return path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1924.3,35832,func-accepts-invalid_2026171984577_24,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1928.6,35920,func-rejects-valid_2026171984540_38,func-rejects-valid:castfunc behind=True head=s: var seq[Node] let path=EDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1933.4,36008,func-accepts-invalid_2026171984583_5,func-accepts-invalid:nse behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1933.4,36008,func-accepts-invalid_2026171984583_31,func-accepts-invalid:var-result func behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1936.3,36040,false-violation_2026171984546_22,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+1937.1,36096,func-accepts-invalid_2026171984546_3,func-accepts-invalid:nse behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1937.1,36096,func-accepts-invalid_2026171984546_5,func-accepts-invalid:func behind=True head=n: Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1941.7,36184,func-accepts-invalid_2026171984589_12,func-accepts-invalid:var-result nse behind=True result varres-result path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1941.7,36184,func-accepts-invalid_2026171984589_16,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1945.5,36272,func-accepts-invalid_2026171984552_33,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1945.6,36232,unsound_2026171984593_19,unsound/A:assert:claim-q+forbreak+abs+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+1945.6,36232,unsound_2026171984593_43,unsound/A:assert:claim-gv+forbreak+abs+stash,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+1947.0,36288,unsound_2026171984554_93,unsound/A:assert:claim-q+claim-o+addr+stash+try,NEW-11 var params not shared (aliasing; spec not implemented)
+1950.2,36360,func-accepts-invalid_2026171984595_20,func-accepts-invalid:var-result nse behind=True return varres-return path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1950.2,36360,func-accepts-invalid_2026171984595_34,func-accepts-invalid:nse behind=True head=n: var Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1953.8,36448,func-accepts-invalid_2026171984558_20,func-accepts-invalid:func behind=True head=h: Holder inc path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+1953.8,36448,func-accepts-invalid_2026171984558_31,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1954.0,36408,unsound_2026171984599_85,unsound/A:assert:claim-q+claim-o+forbreak+abs+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+1958.4,36536,func-accepts-invalid_2026171984601_2,func-accepts-invalid:func behind=True head=s: var seq[Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1958.4,36536,func-accepts-invalid_2026171984601_31,func-accepts-invalid:func behind=True head=s: var seq[Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1962.1,36624,func-accepts-invalid_2026171984564_38,func-accepts-invalid:nse behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1962.4,36584,unsound_2026171984605_79,unsound/A:assert:claim-go+claim-t+forbreak,NEW-11 var params not shared (aliasing; spec not implemented)
+1970.3,36784,func-other-error_2026171984570_29,func-other-error:nse behind=True head=n: var Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1975.7,36888,func-other-error_2026171984613_5,func-other-error:iter behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1979.2,36976,func-accepts-invalid_2026171984576_12,func-accepts-invalid:iter behind=True head=t: var Tup swap path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+1984.0,37064,func-accepts-invalid_2026171984619_7,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+1984.0,37064,func-accepts-invalid_2026171984619_28,func-accepts-invalid:iter behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1987.6,37152,func-other-error_2026171984582_12,func-other-error:func behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+1992.3,37240,func-accepts-invalid_2026171984625_28,func-accepts-invalid:func behind=True head=n: var Node += path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+1992.3,37240,func-accepts-invalid_2026171984625_33,func-accepts-invalid:func behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1996.4,37328,func-accepts-invalid_2026171984588_16,func-accepts-invalid:iter behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+1996.4,37328,func-accepts-invalid_2026171984588_18,func-accepts-invalid:var-result func behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2001.2,37416,func-accepts-invalid_2026171984631_34,func-accepts-invalid:func behind=True head=n: Node inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2005.4,37504,func-accepts-invalid_2026171984594_6,func-accepts-invalid:func behind=True head=h: Holder += path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+2005.4,37504,func-accepts-invalid_2026171984594_9,func-accepts-invalid:nse behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2005.4,37464,unsound_2026171984635_208,unsound/A:assert:claim-n+forbreak+abs,NEW-11 var params not shared (aliasing; spec not implemented)
+2014.1,37640,unsound_2026171984641_20,unsound/A:assert:claim-n+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+2022.6,37856,func-accepts-invalid_2026171984606_39,func-accepts-invalid:iter behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2027.2,37944,func-accepts-invalid_2026171984649_6,func-accepts-invalid:iter behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2027.2,37944,func-accepts-invalid_2026171984649_26,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2027.2,37944,func-accepts-invalid_2026171984649_35,func-accepts-invalid:iter behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2031.2,37992,unsound_2026171984653_23,unsound/A:assert:claim-gs+forbreak+abs+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+2031.4,38032,func-other-error_2026171984612_20,func-other-error:iter behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+2035.9,38120,func-accepts-invalid_2026171984655_33,func-accepts-invalid:func behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2039.9,38168,unsound_2026171984659_2,unsound/A:assert:claim-gs+claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+2039.9,38168,unsound_2026171984659_176,unsound/A:assert:claim-gs+claim-q,NEW-11 var params not shared (aliasing; spec not implemented)
+2040.0,38208,func-accepts-invalid_2026171984618_9,func-accepts-invalid:nse behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2041.6,38224,unsound_2026171984620_18,unsound/A:assert:claim-gv+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+2057.0,38560,func-accepts-invalid_2026171984630_4,func-accepts-invalid:func behind=True head=h: var Holder += path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+2057.0,38560,func-accepts-invalid_2026171984630_16,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=EDfE,NEW-09 func writes a seq element behind a ref/ptr
+2057.0,38560,func-rejects-valid_2026171984630_24,func-rejects-valid:castfunc behind=True head=n: var Node let path=Dff:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+2057.0,38560,func-accepts-invalid_2026171984630_27,func-accepts-invalid:nse behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2057.0,38560,func-accepts-invalid_2026171984630_33,func-accepts-invalid:iter behind=True head=s: var seq[Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2065.0,38696,unsound_2026171984677_12,unsound/A:assert:claim-go+forbreak+stash,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+2065.6,38736,func-accepts-invalid_2026171984636_12,func-accepts-invalid:func behind=True head=n: Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2065.6,38736,func-accepts-invalid_2026171984636_21,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+2065.6,38736,func-accepts-invalid_2026171984636_24,func-accepts-invalid:func behind=True head=n: var Node fb path=RfE,NEW-09 func writes a seq element behind a ref/ptr
+2078.2,39000,func-accepts-invalid_2026171984685_4,func-accepts-invalid:func behind=True head=s: var seq[Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2078.2,39000,func-accepts-invalid_2026171984685_21,func-accepts-invalid:var-result nse behind=True result varres-result path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2082.3,39088,func-accepts-invalid_2026171984648_15,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2083.8,39104,unsound_2026171984650_103,unsound/A:assert:claim-tv+addr+try,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+2086.5,39176,func-accepts-invalid_2026171984691_8,func-accepts-invalid:func behind=True head=a: var array[2; Node] += path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2086.5,39176,func-other-error_2026171984691_29,func-other-error:nse behind=True head=n: Node let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+2086.5,39176,func-accepts-invalid_2026171984691_34,func-accepts-invalid:var-result nse behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2090.8,39264,func-accepts-invalid_2026171984654_16,func-accepts-invalid:func behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2099.0,39400,unsound_2026171984701_29,unsound/A:assert:claim-tv+claim-q+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+2099.0,39400,unsound_2026171984701_96,unsound/A:idx:claim-q+forbreak+try,NEW-11 var params not shared (aliasing; spec not implemented)
+2099.4,39440,func-accepts-invalid_2026171984660_17,func-accepts-invalid:var-result func behind=True expr varres-expr path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+2100.2,39400,false-violation_2026171984701_44,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+2103.3,39528,func-other-error_2026171984703_39,func-other-error:func behind=True head=n: Node let path=Dff:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+2108.0,39616,func-accepts-invalid_2026171984666_3,func-accepts-invalid:func behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2116.5,39792,func-accepts-invalid_2026171984672_33,func-accepts-invalid:var-result nse behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2124.4,39968,func-accepts-invalid_2026171984678_13,func-accepts-invalid:nse behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2124.4,39968,func-accepts-invalid_2026171984678_19,func-accepts-invalid:iter behind=True head=h: var Holder fb path=fDfE,NEW-09 func writes a seq element behind a ref/ptr
+2124.4,39968,func-accepts-invalid_2026171984678_39,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2125.9,39984,unsound_2026171984680_42,unsound/A:assert:claim-gv+forbreak+abs+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+2128.7,40056,func-accepts-invalid_2026171984721_31,func-accepts-invalid:iter behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2128.7,40056,func-accepts-invalid_2026171984721_38,func-accepts-invalid:var-result func behind=True return varres-return path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2129.5,40016,false-violation_2026171984682_16,false-violation:assert:assertion violated,dup/artifact (02 ashr wrong violation, 01/04 stale facts, oracle timeouts)
+2132.7,40144,func-accepts-invalid_2026171984684_3,func-accepts-invalid:func behind=True head=p: var ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2132.7,40144,func-accepts-invalid_2026171984684_23,func-accepts-invalid:var-result func behind=True expr varres-expr path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2141.3,40320,func-accepts-invalid_2026171984690_36,func-accepts-invalid:func behind=True head=p: ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2145.3,40408,func-accepts-invalid_2026171984733_23,func-accepts-invalid:nse behind=True head=p: ptr Plain += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2145.3,40408,func-accepts-invalid_2026171984733_31,func-accepts-invalid:iter behind=True head=n: var Node swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+2145.3,40408,func-accepts-invalid_2026171984733_36,func-accepts-invalid:func behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2149.5,40456,unsound_2026171984737_5,unsound/A:idx:claim-gv+claim-cx+abs+addr,dup-05 global/threadvar fact across a barrier (fuzzers#5)
+2158.2,40672,func-other-error_2026171984702_3,func-other-error:iter behind=True head=p: ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+2162.4,40760,func-accepts-invalid_2026171984745_21,func-accepts-invalid:func behind=True head=p: ptr Plain inc path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+2166.5,40848,func-accepts-invalid_2026171984708_7,func-accepts-invalid:nse behind=True head=a: var array[2; Node] fb path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2166.5,40848,func-accepts-invalid_2026171984708_31,func-accepts-invalid:var-result nse behind=True return varres-return path=fERE,NEW-09 func writes a seq element behind a ref/ptr
+2171.1,40936,func-accepts-invalid_2026171984751_3,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2174.8,41024,func-accepts-invalid_2026171984714_12,func-accepts-invalid:func behind=True head=a: var array[2; Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2174.8,41024,func-accepts-invalid_2026171984714_30,func-accepts-invalid:iter behind=True head=p: ptr Plain inc path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2179.4,41112,func-accepts-invalid_2026171984757_25,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+2179.4,41112,func-rejects-valid_2026171984757_26,func-rejects-valid:fse behind=True head=p: var ptr Plain let path=Df:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+2183.4,41200,func-accepts-invalid_2026171984720_0,func-accepts-invalid:var-result nse behind=True return varres-return path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2188.0,41288,func-accepts-invalid_2026171984763_28,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2192.0,41376,func-accepts-invalid_2026171984726_8,func-accepts-invalid:func behind=True head=n: var Node += path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2192.0,41376,func-accepts-invalid_2026171984726_29,func-accepts-invalid:func behind=True head=t: var Tup inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+2192.1,41336,unsound_2026171984767_37,unsound/A:assert:claim-tv+claim-o,NEW-11 var params not shared (aliasing; spec not implemented)
+2202.2,41568,unsound_2026171984734_34,unsound/A:idx:claim-q+abs+addr+try,NEW-11 var params not shared (aliasing; spec not implemented)
+2205.0,41640,func-accepts-invalid_2026171984775_15,func-accepts-invalid:func behind=True head=p: var ptr Plain fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2205.0,41640,func-accepts-invalid_2026171984775_38,func-accepts-invalid:var-result func behind=True return varres-return path=DfE,NEW-09 func writes a seq element behind a ref/ptr
+2209.1,41688,unsound_2026171984779_79,unsound/A:idx:claim-o+forbreak+addr+stash,NEW-11 var params not shared (aliasing; spec not implemented)
+2209.3,41728,func-accepts-invalid_2026171984738_36,func-accepts-invalid:var-result nse behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2213.5,41816,func-rejects-valid_2026171984781_28,func-rejects-valid:castfunc behind=True head=h: var Holder let path=fDf:invalid expression for `addr` operation: PATH,NEW-10 addr of p[].f / p[] rejected
+2213.5,41816,func-accepts-invalid_2026171984781_31,func-accepts-invalid:iter behind=True head=p: ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2213.5,41816,func-accepts-invalid_2026171984781_35,func-accepts-invalid:iter behind=True head=n: var Node swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2222.2,41992,func-accepts-invalid_2026171984787_1,func-accepts-invalid:nse behind=True head=s: var seq[Node] swap path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2222.2,41992,func-accepts-invalid_2026171984787_27,func-accepts-invalid:func behind=True head=h: Holder inc path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+2227.3,42096,unsound_2026171984752_11,unsound/A:assert:claim-q+claim-t+addr,NEW-11 var params not shared (aliasing; spec not implemented)
+2227.3,42096,unsound_2026171984752_38,unsound/A:idx:claim-go+claim-q+try,NEW-11 var params not shared (aliasing; spec not implemented)
+2234.4,42240,func-accepts-invalid_2026171984756_22,func-accepts-invalid:func behind=True head=h: var Holder inc path=fRfE,NEW-09 func writes a seq element behind a ref/ptr
+2239.5,42344,func-accepts-invalid_2026171984799_8,func-accepts-invalid:func behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2239.5,42344,func-accepts-invalid_2026171984799_10,func-accepts-invalid:func behind=True head=t: var Tup += path=fRE,NEW-09 func writes a seq element behind a ref/ptr
+2239.5,42344,func-accepts-invalid_2026171984799_19,func-accepts-invalid:nse behind=True head=p: var ptr Plain swap path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2242.7,42416,func-accepts-invalid_2026171984762_13,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2248.3,42520,func-accepts-invalid_2026171984805_0,func-accepts-invalid:var-result func behind=True result varres-result path=RE,NEW-09 func writes a seq element behind a ref/ptr
+2251.2,42592,func-accepts-invalid_2026171984768_8,func-accepts-invalid:func behind=True head=a: var array[2; Node] inc path=ERE,NEW-09 func writes a seq element behind a ref/ptr
+2251.2,42592,func-accepts-invalid_2026171984768_34,func-accepts-invalid:iter behind=True head=n: var Node fb path=RE,NEW-09 func writes a seq element behind a ref/ptr

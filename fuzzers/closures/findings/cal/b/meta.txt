@@ -1,0 +1,2 @@
+seed=13
+sig=c:compile:[Bug] could not find symbol: `coroResult.N

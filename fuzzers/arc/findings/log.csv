@@ -1,0 +1,20 @@
+time_s,programs,finding_id,signature,seed
+185,16,01,leak:orc,2000004
+224,17,02,"err:dup from dead:arc+err:dup from dead:arcopt+err:dup from dead:orc",2001000
+341,21,01,"diff:arc-vs-orc+leak:orc",2001004
+794,43,01,"diff:arc-vs-orc+leak:orc",2001018
+831,45,01,"diff:arc-vs-orc+leak:orc+leak:orcopt",2001019
+1036,55,01,"diff:arc-vs-orc+leak:orc",2500014
+1251,67,01,"diff:arc-vs-orc+leak:orc+leak:orcopt",2001031
+1325,73,01,"diff:arc-vs-orc+leak:orc",2001034
+1366,77,01,"diff:arc-vs-orc+leak:orc+leak:orcopt",2500023
+1686,104,01,"diff:arc-vs-orc+leak:orc",2001050
+2105,137,01,"diff:arc-vs-orc+leak:orc+leak:orcopt",2500053
+2135,139,01,"diff:arc-vs-orc+leak:orc+leak:orcopt",2001067
+2352,157,01,"diff:arc-vs-orc+leak:orc",2001076
+2387,159,01,"diff:arc-vs-orc+leak:orc",2500064
+2694,184,01,"diff:arc-vs-orc+leak:orc",2001090
+"# totals: 186 programs (182 by workers + 4 hand v2 smoke), last at 2715 s wall"
+"# worker wall time summed over programs: 5069 s (3 builds + 3 valgrind runs each, ~28 s/program); CPU not measured per process, est. ~0.55 CPU-s per wall-s from the smoke run (user+sys 33 s / 54 s) => ~2800 CPU-s"
+"# phases: 0-196 s v1 generator (12 programs, 0 findings); 196 s switch to v2 seeds (>=2000000); 210-523 s one worker only (other slot used for minimization/triage)"
+"# 15 raw findings -> 2 distinct bugs: 01 ORC self-cycle leak (14 programs, all re-checked clean with self-cycle stores removed), 02 lent dup after move (1 program)"

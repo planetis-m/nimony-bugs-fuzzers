@@ -1,0 +1,16 @@
+r01b_inline_iter_with_closure_iter_in_closure_iter.nim: Error: unhandled exception: nifcore.nim(1281, 3) `c.rem == 0` into: body did not consume all 151 children (left 60) [AssertionDefect]
+r01_closure_iter_in_closure_iter.nim: Error: unhandled exception: nifcore.nim(1281, 3) `c.rem == 0` into: body did not consume all 151 children (left 60) [AssertionDefect]
+r02_unused_local_closure_iter.nim: [Bug] lambdalifting treParams: captured param but no environment access at r02_unused_local_closure_iter.nim(4, 8)
+r03_captured_closure_var.nim: [Bug] could not find symbol: c2.0
+r04_closure_for_in_for.nim: [Bug] `continue` outside of a `loop`
+r05_nested_closure_redefinition.nim: c/r05w1j7nn1/r05w1j7nn1.c:539:6: error: redefinition of ‘X60Qanonproc_1_r05w1j7nn1’
+r06_inline_iter_closure_in_closure_iter.nim: Error: unhandled exception: Symbol not found in NIF module: `iir.1001.r069q42ug1 [AssertionDefect]
+r07_closure_var_in_closure_iter.nim: [Bug] could not find symbol: c.0
+r08_local_inline_iter_in_for_body.nim: Error: unhandled exception: coro_transform.nim(1132, 3) `state != -1`  [AssertionDefect]
+r09_local_closure_iter_in_returned_closure.nim: [Bug] envp should have been eliminated in lambdalifting.nim
+r10_raising_closure_iter_loopvar_arg.nim: c/r10nrfmlo/r10nrfmlo.c:759:101: error: invalid operands to binary + (have ‘X60Qt_0_IAtupleSX45rrorX43ode0sysvq0aslAiS64_r10nrfmlo’ and ‘long long int’)
+r11_closure_iter_raising_seq_call.nim: Error: unhandled exception: duplifier.nim(701, 3) `leType.typeKind != AutoT` could not compute type of: (tupat result.0 0) [AssertionDefect]
+r12_local_closure_iter_captures_closure_and_loopvar.nim: [Bug] could not find symbol: `ep.0
+r13_closure_iter_try_inline_segv.nim: FAILURE: c/r13ivgkov/r13_closure_iter_try_inline_segv
+r14_local_inline_iter_error_xelim.nim: Error: unhandled exception: xelim.nim(118, 3) `result.typeKind != AutoT` cannot compute type of: (call
+r15_enclosing_iterator_locals.nim: [Bug] capturing the locals of an enclosing iterator is not supported: `iir.1001.r15v94fgq at r15_enclosing_iterator_locals.nim(17, 16)

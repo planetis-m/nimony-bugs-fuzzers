@@ -1,0 +1,10 @@
+excfuzz run: 45 min wall clock (t0=1794334792), 2 workers (never more than 2 compiles at once, except
+B6 paused 12 s for one manual reduction). Programs run: 961 (A 18, A2 8, A3 18, A4 11, A5 89, A6 313,
+B 47, B2 19, B3 13, B4 5, B5 95, B6 325). Each program: nimony c, c --opt:speed, n (skipped when c failed),
+plus valgrind on c -d:useLibc every 3rd program (every 3rd program whose c build passed; 0 valgrind errors).
+CPU time was not recorded per child process; upper bound 2 workers x 45 min = 90 CPU-min of compile+run.
+Generator restarts (see out/notes.txt) suppressed each dominating root cause once found:
+ v2 (306s) no defer in expression branches (03); v4 (619s) no raise in finally, no ref-domain try-exprs (04, 02);
+ v5 (683s) generator bug fix (helper trailing return inside defer scope); v6 (1183s) no jumps in finally (05).
+Distinct bugs: 01..06 (01 from a probe before the run). First-hit times: 02 8s, 03 24s, 04 203s, 05 583s, 06 611s.
+Findings by 5/15/30/45 min: 4 (01-04) / 6 / 6 / 6. v6 era (1183s-2700s, 638 programs): only repeats of 06.

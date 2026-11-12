@@ -1,0 +1,19 @@
+v2 run: python3 -I fuzz.py --seed 20261112 --minutes 45 --jobs 2   (nimony master 4ba90a78, C backend)
+STOPPED EARLY at 2256 s (37.6 min): Claude Code killed the background run because the machine ran low on memory.
+  Likely contributor: an oracle binary of a generated program looped forever growing a seq (odd_2026171984456_x:
+  `stash(addr i)` + `pokeP` reset a clean loop's counter). Fixed afterwards: pokeP is not generated inside clean
+  loops, and every child process now runs under RLIMIT_AS = 4 GiB (fuzz.py: _limit_mem). Not restarted.
+programs: 42640 = 23280 soundness procs (1455 modules of 16; flavours A:C = 1:2) + ~19360 func-rule routines
+  (484 modules of 40). CPU total not recorded (workers killed before totals.log).
+log.csv: 870 lines: 567 func-accepts-invalid, 68 func-rejects-valid/other-error (addr), 220 unsound/A,
+  1 unsound/C, 12 false-violation, 2 odd (oracle timeout / oracle run killed).
+distinct (classify2.py -> dedupe.csv, soundness mapping heuristic from tags + 19 minimized representatives):
+  NEW 09 func seq element behind ref (first 8.8 s), NEW 10 addr of p[].f (9.1 s), NEW 11 var params not shared
+  (4.4 s); NEW 12 from specgen.py (not in the curve); dups: 01, 02 (incl. a non-literal `(1 * -1) shr 2` in flavour C),
+  04, 05 (#5), 08, #6.
+find-rate (distinct real / new):  5 min 7/3   15 min 9/3   30 min 10/3   37.6 min 10/3   (45 min not reached)
+All three new bugs appeared in the first 10 s; nothing new after; dups saturated by 17 min (#6 at 17 min, 08 at 14.8 min).
+oracle false positives fixed: none needed in the soundness oracle; func oracle: errors reported in system.nim
+  (llms#25) must count for the case, and any non-rule error forces one-routine-per-module re-checks (a sem error
+  suppresses the derefs pass); generator bugs fixed during smoke tests: `setLen` on seq[Node] (not-nil ref has no
+  default), generic funcs (bodies are checked before instantiation), endless loop above.

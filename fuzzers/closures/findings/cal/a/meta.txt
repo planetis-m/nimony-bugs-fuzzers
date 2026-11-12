@@ -1,0 +1,2 @@
+seed=11
+sig=c:compile:[Bug] lambdalifting treParams: captured param but no environment access at prog.nim(N, N)

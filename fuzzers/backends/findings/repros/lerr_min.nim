@@ -1,0 +1,63 @@
+import std/[syncio, math]
+type V = object
+  x, y: float64
+  n: uint32
+type S = object
+  a: int16
+  b: int8
+  c: float32
+type B = object
+  q: array[4, uint64]
+  d: float64
+  e: int8
+proc h3(q0: int32; q1: uint32): int32 =
+  ((2'i32) mod (((2'i32) and 63'i32) + 1'i32))
+proc h5(q0: S; q1: B; q2: int8): uint64 =
+  q1.q[2]
+proc t7(p0: uint64; p1: float64; p2: uint32; p3: float32; p4: int32) =
+  var a0: uint64 = (not p0)
+  var a1: uint64 = (p0 and h5(S(a: -3'i16, b: 5'i8, c: 1.5'f32), B(q: [1'u64, 2'u64, 3'u64, 4'u64], d: -0.5, e: -7'i8), (-100'i8)))
+  var a2: uint32 = p2
+  var a3: uint8 = uint8(ord((p1 != p1)))
+  var a4: int32 = h3(p4, (not p2))
+  var a6: float64 = p1
+  var a7: float64 = a6
+  var a8: float32 = p3
+  var a9: bool = (int32(a3) != (-1'i32))
+  var v = V(x: (p1 - 0.1), y: a6, n: 0xFFFFFFFF'u32)
+  var w = V(x: a7, y: p1, n: p2)
+  var i8v: int8 = (-128'i8)
+  var i16v: int16 = (0'i16)
+  var u16v: uint16 = ((0'u16 * 24758'u16) - 14883'u16)
+  var s0 = S(a: int16((100'i8)), b: (-100'i8), c: sqrt(p3))
+  var s1 = S(a: int16(p4), b: int8(p2), c: p3)
+  var b0 = B(q: [p0, p0 xor 1'u64, (p0 and a0), 9'u64], d: p1, e: ((0'i8) mod (((0'i8) and 63'i8) + 1'i8)))
+  var b1 = b0
+  var mat: array[3, array[4, int32]] = [[p4, 1'i32, -2'i32, 3'i32], [p4, p4 * 3'i32, 0'i32, high(int32)], [low(int32), 7'i32, p4 - 1'i32, (a4 * p4)]]
+  var sb = ""
+  case (int((b0.e - int8(b1.q[(a0 and 3'u64)]))) and 7)
+  of 0:
+    case (int((a3 * (a3 * a3))) and 7)
+    of 0:
+      mat[(uint64((v.n and a2))) mod 3'u64][(a1) and 3'u64] = h3((-(cast[int32](a2))), (v.n * 0x7FFFFFFF'u32))
+    else:
+      w.x = (min((a7 + 4294967296.0), max(a7, v.x)) + ceil((-1.0 + v.y)))
+  else:
+    a8 = (if ((sb.len mod 3 == 1) and (b0.e <= b0.e)): (s1.c + s1.c) else: float32((if a9: i16v else: (-32768'i16))))
+  case (int((-1'i32)) and 7)
+  of 3 .. 5:
+    a0 = (if false: ((p0 xor a1) * p0) else: a0)
+  else:
+      i8v = s0.b
+  case (int(int32(mat[(a0 mod 3'u64)][(p0 and 3'u64)])) and 7)
+  of 0:
+    for k0 in 0 ..< 3:
+      if (u16v <= uint16(w.n)):
+        break
+      i8v = (if ((255'u8 == a3) and (v.y == p1)): (not s0.b) else: i8v)
+    v = w
+  else:
+    a0 = (if (sb.len mod 3 == 1): 0x00000000FFFFFFFF'u64 else: b1.q[(a0 and 3'u64)])
+proc main() =
+  t7(0x0000000000000000'u64, -1.5, 0x00008000'u32, cast[float32](0x7FC00000'u32), (-1000'i32))
+main()
