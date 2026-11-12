@@ -68,8 +68,11 @@ jobs:
         id: toolchain
         uses: actions/cache@v6
         with:
-          path: nimony/bin
-          key: nimony2-${{ matrix.os }}-${{ matrix.arch }}-${{ env.COMMIT }}
+          # upstream/: Nim's orc.nim, which the build fetches (git-ignored)
+          path: |
+            nimony/bin
+            nimony/lib/std/system/upstream
+          key: nimony3-${{ matrix.os }}-${{ matrix.arch }}-${{ env.COMMIT }}
 
       - name: Install MinGW (Windows)
         if: runner.os == 'Windows' && steps.toolchain.outputs.cache-hit != 'true'
@@ -147,8 +150,10 @@ jobs:
 
       - uses: actions/cache/restore@v6
         with:
-          path: nimony/bin
-          key: nimony2-${{ matrix.os }}-${{ matrix.arch }}-${{ env.COMMIT }}
+          path: |
+            nimony/bin
+            nimony/lib/std/system/upstream
+          key: nimony3-${{ matrix.os }}-${{ matrix.arch }}-${{ env.COMMIT }}
           fail-on-cache-miss: true
 
       - name: Install MinGW (Windows)
