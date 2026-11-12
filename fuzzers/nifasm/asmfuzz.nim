@@ -28,23 +28,26 @@
 ##
 ## `--out:DIR` (default `asmfuzz.out`) gets log.csv (time_s, programs,
 ## finding_id, kind, signature), findings.txt and summary.txt; `--work:DIR`
-## (default `work`) holds the scratch files.
+## (default `work`) holds the scratch files; `--nifasm:PATH` picks the binary.
 
-import std / [os, osproc, strutils, random, times, strformat, parseopt, tables, algorithm, sequtils]
+import std / [os, osproc, strutils, random, times, strformat, parseopt, tables, algorithm]
 
 type
-  Op = object
-    k: char          ## 'r' gpr, 'x' xmm, 'i' imm, 'm' mem, 'n' bare trailing int
-    w: int           ## bits (r, m; 0 = untyped mem)
-    r, ix, sc: int   ## reg or base, index (-1: none), scale
-    d: int           ## imm, disp, bare int
-    hasD: bool
-  Item = (string, seq[Op])
-  Case = seq[Item]
-  Res = object
-    nok, gok: bool
-    nb, gb, nerr, gerr, v: string
-    nd, gd: seq[string]
+  Operand = object
+    kind: char         ## 'r' gpr, 'x' xmm, 'i' imm, 'm' mem, 'n' bare trailing int
+    bits: int          ## width for 'r' and 'm' (0 = untyped mem)
+    reg: int           ## register, or the base of a mem operand
+    index, scale: int  ## mem index register (-1: none) and its scale
+    val: int           ## imm, disp or bare int
+    hasDisp: bool
+  Instr = (string, seq[Operand])  ## mnemonic, operands
+  Case = seq[Instr]
+  Outcome = object
+    nifOk, gasOk: bool           ## the assembler accepted the case
+    nifBytes, gasBytes: string   ## encoding between the markers
+    nifErr, gasErr: string
+    verdict: string              ## "ok", "mismatch", ... (see module doc)
+    nifAsm, gasAsm: seq[string]  ## normalised objdump lines, only when the bytes differ
 
 const
   R64 = "rax rcx rdx rbx rsp rbp rsi rdi r8 r9 r10 r11 r12 r13 r14 r15".split
@@ -57,15 +60,15 @@ const
   Disps = [0, 1, 127, -128, 128, -129, 255, 4096, -4096, 0x7fffffff, -0x80000000, 1000, -300]
   Cond = "e z ne nz a nbe ae nb nc b nae c be na g nle ge nl l nge le ng o no s ns p np pe po".split
   SetCond = "e z ne nz a nbe ae nb nc b nae c be na g nle ge nl l nge le ng o s p".split
-  Alpha = "r8 r16 r32 r64 m8 m16 m32 m64 mraw i x cl".split
-  M1 = "inc dec neg not push pop mul div idiv setcc bswap clflush prefetcht0 cmpxchg8b lea".split
-  M2 = ("add sub and or xor cmp test adc sbb mov shl shr sal sar rol ror rcl rcr bt bts btr btc " &
+  Slots = "r8 r16 r32 r64 m8 m16 m32 m64 mraw i x cl".split  ## operand shapes, see `randOp`
+  Unary = "inc dec neg not push pop mul div idiv setcc bswap clflush prefetcht0 cmpxchg8b lea".split
+  Binary = ("add sub and or xor cmp test adc sbb mov shl shr sal sar rol ror rcl rcr bt bts btr btc " &
     "xchg cmpxchg xadd bsf bsr imul lea cmovcc addsd subsd mulsd divsd movsd sqrtsd comisd " &
     "addss subss mulss divss movss sqrtss comiss movapd movdqu movupd movups addpd subpd mulpd " &
     "addps subps mulps punpcklqdq movfq movfd cvtsi2sd cvtsi2ss cvttsd2si cvttss2si cvtsd2ss cvtss2sd").split
-  Zero = "ret nop syscall mfence sfence lfence pause repmovsb repmovsw repmovsd repmovsq repstosb repstosq".split
+  Nullary = "ret nop syscall mfence sfence lfence pause repmovsb repmovsw repmovsd repmovsq repstosb repstosq".split
   Lockable = "add sub and or xor adc sbb xadd cmpxchg xchg btc bts btr inc dec neg not".split
-  Magic = 0x5AC1635200000000
+  Magic = 0x5AC1635200000000  ## high half tags a marker; low half is 2*case (+1 at the end)
   Batch = 64
 
 var
@@ -73,39 +76,42 @@ var
   work = "work"
   rng: Rand
 
-proc rn(w: int): seq[string] = (if w == 8: R8 elif w == 16: R16 elif w == 32: R32 else: R64)
-proc ptrOf(w: int): string = (if w == 8: "byte ptr " elif w == 16: "word ptr " elif w == 32: "dword ptr " elif w == 64: "qword ptr " else: "")
+proc regs(bits: int): seq[string] = (if bits == 8: R8 elif bits == 16: R16 elif bits == 32: R32 else: R64)
+proc ptrOf(bits: int): string = (if bits == 8: "byte ptr " elif bits == 16: "word ptr " elif bits == 32: "dword ptr " elif bits == 64: "qword ptr " else: "")
 
 # ---- operands and rendering --------------------------------------------------------
 
-proc build(o: Op): (string, string) =
-  case o.k
-  of 'r': ((if o.w == 64: "(" & R64[o.r] & ")" else: &"(cast (u {o.w}) ({R64[o.r]}))"), rn(o.w)[o.r])
-  of 'x': (&"(xmm{o.r})", &"xmm{o.r}")
-  of 'i', 'n': ($o.d, $o.d)
+proc renderOp(o: Operand): (string, string) =
+  ## (nifasm, GNU as) text of one operand
+  case o.kind
+  of 'r': ((if o.bits == 64: "(" & R64[o.reg] & ")" else: &"(cast (u {o.bits}) ({R64[o.reg]}))"), regs(o.bits)[o.reg])
+  of 'x': (&"(xmm{o.reg})", &"xmm{o.reg}")
+  of 'i', 'n': ($o.val, $o.val)
   else:
-    var n = "(mem (" & R64[o.r] & ")"
-    var g = R64[o.r]
-    if o.ix >= 0:
-      n.add &" ({R64[o.ix]}) {o.sc}"
-      g.add &"+{R64[o.ix]}*{o.sc}"
-    if o.hasD:
-      n.add " " & $o.d
-      g.add (if o.d >= 0: "+" else: "") & $o.d
+    var n = "(mem (" & R64[o.reg] & ")"
+    var g = R64[o.reg]
+    if o.index >= 0:
+      n.add &" ({R64[o.index]}) {o.scale}"
+      g.add &"+{R64[o.index]}*{o.scale}"
+    if o.hasDisp:
+      n.add " " & $o.val
+      g.add (if o.val >= 0: "+" else: "") & $o.val
     n.add ")"
-    ((if o.w > 0: &"(cast (u {o.w}) {n})" else: n), ptrOf(o.w) & "[" & g & "]")
+    ((if o.bits > 0: &"(cast (u {o.bits}) {n})" else: n), ptrOf(o.bits) & "[" & g & "]")
 
-proc render(it: Item): (string, string) =
+proc render(it: Instr): (string, string) =
+  ## (nifasm, GNU as) text of one instruction; translates pseudo-mnemonics
+  ## (`movfq`, `imul3`, `repmovsb`...). The as side may span several lines.
   var (mn, ops) = it
   if mn.startsWith("lock "):
     let (n, g) = render((mn[5..^1], ops))
     return ("(lock " & n & ")", "lock " & g)
   var ns, gs: seq[string]
-  var num = -1
+  var num = -1   # bare trailing int (a width); as has no operand for it
   for o in ops:
-    let (n, g) = build(o)
+    let (n, g) = renderOp(o)
     ns.add n
-    if o.k == 'n': num = o.d else: gs.add g
+    if o.kind == 'n': num = o.val else: gs.add g
   var nif = "(" & mn & (if ns.len > 0: " " & ns.join(" ") else: "") & ")"
   var gm = mn
   case mn
@@ -113,18 +119,19 @@ proc render(it: Item): (string, string) =
   of "movfd":
     gm = "movd"
     for i, o in ops:
-      if o.k == 'r' and o.w == 64: gs[i] = R32[o.r]
+      if o.kind == 'r' and o.bits == 64: gs[i] = R32[o.reg]
   of "div", "idiv":
+    # nifasm's div names rdx:rax and sets up rdx itself; as needs that spelled out
     if ops.len == 1:
       return (&"({mn} (rdx) (rax) {ns[0]})", (if mn == "div": "xor rdx, rdx\n" else: "cqo\n") & mn & " " & gs[0])
   of "movzx":
-    if num == 32:
+    if num == 32:   # a 32-bit mov zero-extends already
       gm = "mov"
-      gs[0] = R32[ops[0].r]
+      gs[0] = R32[ops[0].reg]
   of "movsx":
     if num == 32: gm = "movsxd"
   of "bswap":
-    if num > 0: gs[0] = rn(num)[ops[0].r]
+    if num > 0: gs[0] = regs(num)[ops[0].reg]
   of "imul3":
     nif = "(imul " & ns.join(" ") & ")"
     gm = "imul"
@@ -133,41 +140,43 @@ proc render(it: Item): (string, string) =
   (nif, gm & (if gs.len > 0: " " & gs.join(", ") else: ""))
 
 proc hazard(c: Case): bool =
+  ## `div`/`idiv` whose divisor uses rdx, which the lowering clobbers first
   for (mn, ops) in c:
     if mn in ["div", "idiv"] and ops.len == 1:
       let o = ops[0]
-      if o.r == 2 and o.k in {'r', 'm'} or o.k == 'm' and o.ix == 2: return true
+      if o.reg == 2 and o.kind in {'r', 'm'} or o.kind == 'm' and o.index == 2: return true
 
-proc randOp(s: string): Op =
-  case s[0]
-  of 'c': Op(k: 'r', w: 8, r: 1)
-  of 'r': Op(k: 'r', w: parseInt(s[1..^1]), r: rng.rand(15))
-  of 'x': Op(k: 'x', r: rng.rand(15))
-  of 'n': Op(k: 'n', d: parseInt(s[1..^1]))
-  of 'i': Op(k: 'i', d: (if rng.rand(1.0) < 0.85: rng.sample(Imms) else: rng.rand(-1 shl 31 .. 1 shl 31)))
+proc randOp(slot: string): Operand =
+  case slot[0]
+  of 'c': Operand(kind: 'r', bits: 8, reg: 1)
+  of 'r': Operand(kind: 'r', bits: parseInt(slot[1..^1]), reg: rng.rand(15))
+  of 'x': Operand(kind: 'x', reg: rng.rand(15))
+  of 'n': Operand(kind: 'n', val: parseInt(slot[1..^1]))
+  of 'i': Operand(kind: 'i', val: (if rng.rand(1.0) < 0.85: rng.sample(Imms) else: rng.rand(-1 shl 31 .. 1 shl 31)))
   else:
     var ix = rng.rand(14)
-    if ix >= 4: inc ix
-    Op(k: 'm', w: (if s == "mraw": 0 else: parseInt(s[1..^1])), r: rng.rand(15),
-       ix: (if rng.rand(1.0) < 0.5: ix else: -1), sc: rng.sample([1, 2, 4, 8]),
-       hasD: rng.rand(13) > 0, d: rng.sample(Disps))
+    if ix >= 4: inc ix   # rsp cannot be an index
+    Operand(kind: 'm', bits: (if slot == "mraw": 0 else: parseInt(slot[1..^1])), reg: rng.rand(15),
+       index: (if rng.rand(1.0) < 0.5: ix else: -1), scale: rng.sample([1, 2, 4, 8]),
+       hasDisp: rng.rand(13) > 0, val: rng.sample(Disps))
 
-proc item(key: seq[string]): Item =
-  var mn = key[0]
+proc instr(shape: seq[string]): Instr =
+  ## a random instruction of `shape` (mnemonic, then operand slots)
+  var mn = shape[0]
   if mn == "setcc": mn = "set" & rng.sample(SetCond)
   elif mn == "cmovcc": mn = "cmov" & rng.sample(Cond)
-  var ops: seq[Op]
-  for s in key[1..^1]: ops.add randOp(s)
-  if mn in Lockable and ops.len > 0 and ops[0].k == 'm' and rng.rand(1.0) < 0.15: mn = "lock " & mn
+  var ops: seq[Operand]
+  for s in shape[1..^1]: ops.add randOp(s)
+  if mn in Lockable and ops.len > 0 and ops[0].kind == 'm' and rng.rand(1.0) < 0.15: mn = "lock " & mn
   (mn, ops)
 
-proc pool(): seq[seq[string]] =
-  for m in M1:
-    for a in Alpha: result.add @[m, a]
-  for m in M2:
-    for a in Alpha:
-      for b in Alpha: result.add @[m, a, b]
-  for m in Zero: result.add @[m]
+proc shapePool(): seq[seq[string]] =
+  for m in Unary:
+    for a in Slots: result.add @[m, a]
+  for m in Binary:
+    for a in Slots:
+      for b in Slots: result.add @[m, a, b]
+  for m in Nullary: result.add @[m]
   for m in ["movzx", "movsx"]:
     for n in ["n8", "n16", "n32"]:
       for s in "r8 r16 r32 r64 m8 m16 m32 m64".split: result.add @[m, "r64", s, n]
@@ -186,7 +195,7 @@ proc markers(b: string): Table[int, string] =
   var start: Table[int, int]
   var p = 0
   while true:
-    p = b.find("\x49\xbb", p)
+    p = b.find("\x49\xbb", p)   # REX.W `mov r11, imm64`
     if p < 0 or p + 10 > b.len: break
     var v = 0
     for j in countdown(9, 2): v = v shl 8 or ord(b[p + j])
@@ -197,7 +206,8 @@ proc markers(b: string): Table[int, string] =
       p += 10
     else: inc p
 
-proc nifRun(cs: seq[Case]; idx: seq[int]; rs: var seq[Res]) =
+proc runNifasm(cs: seq[Case]; idx: seq[int]; rs: var seq[Outcome]) =
+  ## assembles cases `idx` in one file, one proc `c<i>` each
   var idx = idx
   let src = work / "b.nif"
   let outf = work / "b.out"
@@ -213,9 +223,10 @@ proc nifRun(cs: seq[Case]; idx: seq[int]; rs: var seq[Res]) =
     if code == 0 and fileExists(outf):
       let m = markers(readFile(outf))
       for i in idx:
-        rs[i].nok = true
-        rs[i].nb = m.getOrDefault(i)
+        rs[i].nifOk = true
+        rs[i].nifBytes = m.getOrDefault(i)
       return
+    # nifasm stops at the first error, which names the proc: drop that case, rerun the rest
     let k = o.find("in proc c")
     var bad = -1
     if k >= 0:
@@ -223,18 +234,20 @@ proc nifRun(cs: seq[Case]; idx: seq[int]; rs: var seq[Res]) =
       while j < o.len and o[j].isDigit: inc j
       if j > k + 9: bad = parseInt(o[k + 9 ..< j])
     if bad in idx:
-      rs[bad].nerr = o.strip
+      rs[bad].nifErr = o.strip
       idx.delete(idx.find(bad))
     elif idx.len == 1:
-      rs[idx[0]].nerr = o.strip
+      rs[idx[0]].nifErr = o.strip
       return
     else:                 # unattributed (a crash): bisect
-      nifRun(cs, idx[0 ..< idx.len div 2], rs)
-      nifRun(cs, idx[idx.len div 2 .. ^1], rs)
+      runNifasm(cs, idx[0 ..< idx.len div 2], rs)
+      runNifasm(cs, idx[idx.len div 2 .. ^1], rs)
       return
 
-proc gasRun(cs: seq[Case]; rs: var seq[Res]) =
-  var idx = toSeq(0 ..< cs.len)
+proc runGas(cs: seq[Case]; rs: var seq[Outcome]) =
+  ## assembles all cases in one file
+  var idx: seq[int]
+  for i in 0 ..< cs.len: idx.add i
   let src = work / "b.s"
   let outf = work / "b.o"
   while idx.len > 0:
@@ -250,28 +263,40 @@ proc gasRun(cs: seq[Case]; rs: var seq[Res]) =
     writeFile(src, s)
     removeFile(outf)
     let (o, code) = execCmdEx("as --64 -o " & quoteShell(outf) & " " & quoteShell(src))
+    # as reports every bad line (warnings too): all those cases are rejects, the rest rerun
     var bad: seq[int]
     for l in o.splitLines:
-      let p = l.split(':', 3)
-      if p.len == 4 and p[1].strip.allCharsInSet(Digits) and p[1].len > 0:
-        let i = owner[parseInt(p[1])]
+      # `file:line: message`
+      let a = l.find(':')
+      let b = if a < 0: -1 else: l.find(':', a + 1)
+      if b < 0 or l.find(':', b + 1) < 0: continue
+      let num = l.substr(a + 1, b - 1)
+      if num.len > 0 and num.allCharsInSet(Digits):
+        let i = owner[parseInt(num)]
         if i < 0: continue
-        rs[i].gerr.add l.strip & "\n"
+        rs[i].gasErr.add l.strip & "\n"
         if i notin bad: bad.add i
     if code == 0 and fileExists(outf):
       let m = markers(readFile(outf))
       for i in idx:
         if i notin bad:
-          rs[i].gok = true
-          rs[i].gb = m.getOrDefault(i)
+          rs[i].gasOk = true
+          rs[i].gasBytes = m.getOrDefault(i)
       return
     if bad.len == 0:
-      for i in idx: rs[i].gerr = o
+      for i in idx: rs[i].gasErr = o
       return
-    idx.keepItIf(it notin bad)
+    var rest: seq[int]
+    for i in idx:
+      if i notin bad: rest.add i
+    idx = rest
 
-proc norm(l: string): string =
-  l.splitWhitespace.join(" ").replace("+0x0]", "]").replace("data16 ", "")
+proc normalize(l: string): string =
+  ## hides objdump spellings that differ between equivalent encodings (zero disp, 0x66 prefix)
+  for w in l.splitWhitespace:
+    if result.len > 0: result.add ' '
+    result.add w
+  result = result.replace("+0x0]", "]").replace("data16 ", "")
 
 proc disasm(bs: seq[string]): seq[seq[string]] =
   ## one objdump call for all byte strings
@@ -288,84 +313,97 @@ proc disasm(bs: seq[string]): seq[seq[string]] =
   let (o, _) = execCmdEx("objdump -D -b binary -mi386:x86-64 -M intel " & files.join(" "))
   var cur = -1
   for l in o.splitLines:
-    if l.endsWith("file format binary"): cur = which.getOrDefault(l.split(":")[0], -1)
-    else:
-      let p = l.split('\t')
-      if cur >= 0 and p.len >= 3 and p[0].strip.endsWith(":"): result[cur].add norm(p[2 .. ^1].join(" "))
+    if l.endsWith("file format binary"): cur = which.getOrDefault(l.substr(0, l.find(':') - 1), -1)
+    elif cur >= 0:
+      # `   addr:\tbytes\tinstruction`
+      let t1 = l.find('\t')
+      let t2 = if t1 < 0: -1 else: l.find('\t', t1 + 1)
+      if t2 < 0: continue
+      var e = t1 - 1
+      while e >= 0 and l[e] in Whitespace: dec e
+      if e >= 0 and l[e] == ':': result[cur].add normalize(l.substr(t2 + 1))
 
 proc isNop(s: string): bool =
+  ## `nop` or `lea r, [r]`, where nifasm may emit nothing
   if s == "nop": return true
-  let p = s.split(' ', 1)
-  if p[0] != "lea" or p.len < 2: return false
-  let q = p[1].split(',')
-  q.len == 2 and q[1] == "[" & q[0] & "]"
+  if not s.startsWith("lea "): return false
+  let c = s.find(',')
+  c >= 0 and s.find(',', c + 1) < 0 and s.substr(c + 1) == "[" & s.substr(4, c - 1) & "]"
 
-proc eval(cs: seq[Case]): seq[Res] =
-  result = newSeq[Res](cs.len)
-  nifRun(cs, toSeq(0 ..< cs.len), result)
-  gasRun(cs, result)
-  var need: seq[int]
+proc eval(cs: seq[Case]): seq[Outcome] =
+  ## runs both assemblers on the batch, objdump only where the bytes differ
+  result = newSeq[Outcome](cs.len)
+  var all: seq[int]
+  for i in 0 ..< cs.len: all.add i
+  runNifasm(cs, all, result)
+  runGas(cs, result)
+  var unsure: seq[int]
   for i, r in result.mpairs:
-    r.v = if not r.nok and not r.gok: "ok"
-          elif not r.nok: "rejects-valid"
-          elif not r.gok: "accepts-invalid"
-          elif r.nb == r.gb: "ok"
-          elif r.nb.len == 3 and r.nb[0] == '\x48' and r.nb[1] == '\x87' and (ord(r.nb[2]) shr 6) == 3 and
-               ((ord(r.nb[2]) shr 3) and 7) == (ord(r.nb[2]) and 7) and r.gb == "\x90": "ok"   # xchg r,r == nop
-          else: (need.add i; "?")
-    if r.v == "ok" and hazard(cs[i]): r.v = "hazard"
-  if need.len == 0: return
+    r.verdict = if not r.nifOk and not r.gasOk: "ok"
+                elif not r.nifOk: "rejects-valid"
+                elif not r.gasOk: "accepts-invalid"
+                elif r.nifBytes == r.gasBytes: "ok"
+                elif r.nifBytes.len == 3 and r.nifBytes[0] == '\x48' and r.nifBytes[1] == '\x87' and (ord(r.nifBytes[2]) shr 6) == 3 and
+                     ((ord(r.nifBytes[2]) shr 3) and 7) == (ord(r.nifBytes[2]) and 7) and r.gasBytes == "\x90": "ok"   # xchg r,r == nop
+                else: (unsure.add i; "?")
+    if r.verdict == "ok" and hazard(cs[i]): r.verdict = "hazard"
+  if unsure.len == 0: return
   var bs: seq[string]
-  for i in need: bs.add [result[i].nb, result[i].gb]
+  for i in unsure: bs.add [result[i].nifBytes, result[i].gasBytes]
   let ds = disasm(bs)
-  for j, i in need:
+  for j, i in unsure:
     let r = addr result[i]
-    r.nd = ds[2*j]
-    r.gd = ds[2*j + 1]
-    r.v = if r.nb.len == 0 and r.gd.len > 0 and isNop(r.gd[0]): "ok"
-          elif r.nd == r.gd: "ok"
-          else: "mismatch"
+    r.nifAsm = ds[2*j]
+    r.gasAsm = ds[2*j + 1]
+    r.verdict = if r.nifBytes.len == 0 and r.gasAsm.len > 0 and isNop(r.gasAsm[0]): "ok"
+                elif r.nifAsm == r.gasAsm: "ok"
+                else: "mismatch"
 
 proc errKey(e: string): string =
+  ## the error message without its location, so equal errors group together
   for l in e.splitLines:
     if "Error" in l:
       result = l.strip
       for cut in [" at ???", " in proc"]:
         let k = result.find(cut)
-        if k >= 0: result = result[0 ..< k]
-      return result[0 ..< min(result.len, 90)]
-  let l = e.strip.splitLines[^1]
-  l[0 ..< min(l.len, 90)]
+        if k >= 0: result.setLen k
+      return result.substr(0, 89)
+  let s = e.strip
+  let k = s.rfind({'\r', '\n'})   # the last line
+  s.substr(k + 1, k + 90)
 
-proc key(r: Res): string =
-  if r.v == "rejects-valid": r.v & " :: " & errKey(r.nerr) else: r.v
+proc bucket(r: Outcome): string =
+  ## what the minimizer must keep: the verdict, plus the error for rejects
+  if r.verdict == "rejects-valid": r.verdict & " :: " & errKey(r.nifErr) else: r.verdict
 
 # ---- minimizer ---------------------------------------------------------------------
 
-proc shrinks(o: Op): seq[Op] =
+proc shrinks(o: Operand): seq[Operand] =
+  ## simpler variants of `o`, one change each
   template alt(f, v) =
     var y = o
     y.f = v
-    when astToStr(f) == "ix": (if v < 0: y.sc = 1)
+    when astToStr(f) == "index": (if v < 0: y.scale = 1)
     result.add y
-  case o.k
+  case o.kind
   of 'r', 'x':
     for i in 0..1:
-      if o.r > i and (o.k == 'r' or i == 0): alt(r, i)
+      if o.reg > i and (o.kind == 'r' or i == 0): alt(reg, i)
   of 'i':
     for v in [0, 1, 5]:
-      if o.d == low(int) or abs(v) < abs(o.d): alt(d, v)
+      if o.val == low(int) or abs(v) < abs(o.val): alt(val, v)
   of 'm':
-    if o.ix >= 0: alt(ix, -1)
-    if o.ix >= 0 and o.sc != 1: alt(sc, 1)
-    if o.hasD: alt(hasD, false)
-    if o.hasD and o.d notin [0, 1]: alt(d, 1)
-    if o.ix > 1: alt(ix, 1)
+    if o.index >= 0: alt(index, -1)
+    if o.index >= 0 and o.scale != 1: alt(scale, 1)
+    if o.hasDisp: alt(hasDisp, false)
+    if o.hasDisp and o.val notin [0, 1]: alt(val, 1)
+    if o.index > 1: alt(index, 1)
     for b in 0..1:
-      if o.r > b: alt(r, b)
+      if o.reg > b: alt(reg, b)
   else: discard
 
-proc minimize(c: Case; k: string): Case =
+proc minimize(c: Case; want: string): Case =
+  ## greedy: take the first candidate that keeps bucket `want`, until none does
   result = c
   while true:
     var cands: seq[Case]
@@ -385,7 +423,7 @@ proc minimize(c: Case; k: string): Case =
     for start in countup(0, cands.len - 1, Batch):
       let rs = eval(cands[start ..< min(cands.len, start + Batch)])
       for j, r in rs:
-        if key(r) == k:
+        if bucket(r) == want:
           hit = start + j
           break
       if hit >= 0: break
@@ -415,72 +453,86 @@ proc main() =
   rng = initRand(seed)
   createDir(outDir)
   createDir(work)
-  let keys = pool()
-  var tries, nAcc, anyAcc = newSeq[int](keys.len)
-  var live = toSeq(0 ..< keys.len)
-  let logf = open(outDir / "log.csv", fmAppend)
-  let fnd = open(outDir / "findings.txt", fmAppend)
-  if logf.getFileSize == 0: logf.writeLine "time_s,programs,finding_id,kind,signature"
+  let shapes = shapePool()
+  var tries, nifAcc, anyAcc = newSeq[int](shapes.len)   # per shape, plain single-instruction cases only
+  var live: seq[int]
+  for k in 0 ..< shapes.len: live.add k
+  let log = open(outDir / "log.csv", fmAppend)
+  let findings = open(outDir / "findings.txt", fmAppend)
+  if log.getFileSize == 0: log.writeLine "time_s,programs,finding_id,kind,signature"
   var seen: Table[string, int]
-  var capped: CountTable[string]
+  var capped: CountTable[string]   # findings per group before minimizing; caps the expensive repeats
   var counts: CountTable[string]
-  var n, fid = 0
-  let t0 = epochTime()
-  while (if count > 0: n < count else: epochTime() - t0 < minutes * 60):
-    var cs: seq[Case]
-    var ks: seq[int]
-    for b in 0 ..< (if count > 0: min(Batch, count - n) else: Batch):
+  var total, fid = 0
+  let start = epochTime()
+  while (if count > 0: total < count else: epochTime() - start < minutes * 60):
+    var batch: seq[Case]
+    var shapeOf: seq[int]   # -1: a sequence or locked, so it says nothing about one shape
+    for b in 0 ..< (if count > 0: min(Batch, count - total) else: Batch):
       let k = rng.sample(live)
-      var c = @[item(keys[k])]
+      var c = @[instr(shapes[k])]
       if rng.rand(1.0) < 0.1:
-        for j in 0 .. rng.rand(2): c.insert(item(keys[rng.sample(live)]), 0)
-      cs.add c
-      ks.add (if c.len == 1 and not c[0][0].startsWith("lock "): k else: -1)
-    let rs = eval(cs)
+        for j in 0 .. rng.rand(2): c.insert(instr(shapes[rng.sample(live)]), 0)
+      batch.add c
+      shapeOf.add (if c.len == 1 and not c[0][0].startsWith("lock "): k else: -1)
+    let rs = eval(batch)
     for i, r in rs:
-      inc n
-      counts.inc r.v
-      if ks[i] >= 0:
-        inc tries[ks[i]]
-        if r.nok: inc nAcc[ks[i]]
-        if r.nok or r.gok: inc anyAcc[ks[i]]
-      if r.v == "ok": continue
-      let pre = r.v & " " & cs[i].mapIt(it[0]).join(",") & " " & (if ks[i] >= 0: keys[ks[i]].join(",") else: "seq")
-      capped.inc pre
-      if capped[pre] > 6: continue
-      let m = if r.v == "hazard": cs[i].filterIt(hazard(@[it]))[0 .. 0] else: minimize(cs[i], key(r))
-      var r2 = eval(@[m])[0]
-      let ds = disasm(@[r2.nb, r2.gb])
-      (r2.nd, r2.gd) = (ds[0], ds[1])
+      inc total
+      counts.inc r.verdict
+      if shapeOf[i] >= 0:
+        inc tries[shapeOf[i]]
+        if r.nifOk: inc nifAcc[shapeOf[i]]
+        if r.nifOk or r.gasOk: inc anyAcc[shapeOf[i]]
+      if r.verdict == "ok": continue
+      var mns: seq[string]
+      for it in batch[i]: mns.add it[0]
+      let group = r.verdict & " " & mns.join(",") & " " & (if shapeOf[i] >= 0: shapes[shapeOf[i]].join(",") else: "seq")
+      capped.inc group
+      if capped[group] > 6: continue
+      # a hazard is one instruction's property: keep that instruction, no minimizing
+      var small: Case
+      if r.verdict == "hazard":
+        for it in batch[i]:
+          if hazard(@[it]):
+            small = @[it]
+            break
+      else: small = minimize(batch[i], bucket(r))
+      var again = eval(@[small])[0]
+      let ds = disasm(@[again.nifBytes, again.gasBytes])
+      (again.nifAsm, again.gasAsm) = (ds[0], ds[1])
       var nif, gas: seq[string]
-      for it in m:
+      for it in small:
         let (a, b) = render(it)
         nif.add a
         gas.add b
-      var sig = r.v & " | " & nif.join(" ")
-      if r.v == "rejects-valid": sig.add " :: " & errKey(r2.nerr)
+      var sig = r.verdict & " | " & nif.join(" ")
+      if r.verdict == "rejects-valid": sig.add " :: " & errKey(again.nifErr)
       if sig in seen:
         inc seen[sig]
         continue
       seen[sig] = 1
       inc fid
-      let el = int(epochTime() - t0)
-      logf.writeLine &"{el},{n},{fid},{r.v},\"" & sig.replace('"', '\'') & "\""
-      logf.flushFile
-      fnd.write &"## {fid} {r.v} t={el}s n={n}\nnif: {nif.join(\" \")}\ngas: {gas.join(\"; \")}\n" &
-        (if r2.nok: &"nifasm: {hex(r2.nb)}| {r2.nd.join(\"; \")}\n" else: &"nifasm rejects: {errKey(r2.nerr)}\n") &
-        (if r2.gok: &"as:     {hex(r2.gb)}| {r2.gd.join(\"; \")}\n\n" else: &"as rejects: {r2.gerr.strip}\n\n")
-      fnd.flushFile
-      echo &"{el}s #{n} {sig}"
-    # retire shapes nobody accepts, and shapes nifasm never accepts (known gaps)
-    live.keepItIf(not (tries[it] >= 2 and anyAcc[it] == 0 or tries[it] >= 8 and nAcc[it] == 0))
+      let secs = int(epochTime() - start)
+      log.writeLine &"{secs},{total},{fid},{r.verdict},\"" & sig.replace('"', '\'') & "\""
+      log.flushFile
+      findings.write &"## {fid} {r.verdict} t={secs}s n={total}\nnif: {nif.join(\" \")}\ngas: {gas.join(\"; \")}\n" &
+        (if again.nifOk: &"nifasm: {hex(again.nifBytes)}| {again.nifAsm.join(\"; \")}\n" else: &"nifasm rejects: {errKey(again.nifErr)}\n") &
+        (if again.gasOk: &"as:     {hex(again.gasBytes)}| {again.gasAsm.join(\"; \")}\n\n" else: &"as rejects: {again.gasErr.strip}\n\n")
+      findings.flushFile
+      echo &"{secs}s #{total} {sig}"
+    # retire shapes nobody accepts and shapes nifasm never accepts (known gaps):
+    # they only repeat `ok` or the same rejects-valid and waste the budget
+    var keep: seq[int]
+    for k in live:
+      if not (tries[k] >= 2 and anyAcc[k] == 0 or tries[k] >= 8 and nifAcc[k] == 0): keep.add k
+    live = keep
     if live.len == 0: break
-  let wall = epochTime() - t0
+  let wall = epochTime() - start
   var cnt: seq[string]
   for k, v in counts: cnt.add &"{k}={v}"
   cnt.sort
-  let s = &"seed={seed} programs={n} wall_s={int(wall)} cases_per_s={n.float / wall:.1f} cpu_s={cpuTime():.1f} " &
-          &"distinct_sigs={seen.len} live_shapes={live.len}/{keys.len} {cnt.join(\" \")}"
+  let s = &"seed={seed} programs={total} wall_s={int(wall)} cases_per_s={total.float / wall:.1f} cpu_s={cpuTime():.1f} " &
+          &"distinct_sigs={seen.len} live_shapes={live.len}/{shapes.len} {cnt.join(\" \")}"
   let f = open(outDir / "summary.txt", fmAppend)
   f.writeLine s
   f.close

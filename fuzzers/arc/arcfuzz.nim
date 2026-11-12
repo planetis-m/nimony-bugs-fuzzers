@@ -30,7 +30,7 @@
 ##   arc/arcfuzz --seed:1000 --count:20
 ##   arc/arcfuzz --seed:1004 --count:1 --sig:leak:orc   # reduce that signature
 
-import std / [os, osproc, strutils, random, times, strformat, parseopt, sets, sequtils, algorithm, tables]
+import std / [os, osproc, strutils, random, times, strformat, parseopt, sets, algorithm, tables]
 
 const Prelude = """{.feature: "lenientnils".}
 import std/[syncio, sequtils]
@@ -171,85 +171,98 @@ echo "SUMMARY created=", gCreated, " destroyed=", gDestroyed, " leaks=", leaks, 
 """
 
 type
-  Node = ref object
+  Node = ref object             ## one generated statement
     line: string
     kids: seq[Node]                   ## body
     alts: seq[(string, seq[Node])]    ## `else:`, `of 0:`, `except:`, `finally:` ...
-  Var = object
+  Var = object                  ## a variable of the program being generated
     name: string
     kind: char  ## R S(seq) P(air) A(rray) T(uple) N(ode) s(tring) L(et R) C(ase obj) W B(ase)
-    loop: int
+    depth: int  ## loop depth of its declaration
 
 # ---- generator state (one program at a time) ---------------------------------------
 
 var
-  r: Rand
-  cnt, loopD, closD, budget: int
+  rng: Rand
+  counter, loopDepth, closureDepth, budget: int  ## budget: statements left in this proc
   scopes: seq[seq[Var]]
-  moved, touched, locked: HashSet[string]
+  moved: HashSet[string]    ## vars that may be moved-from here; never read
+  touched: HashSet[string]  ## vars used in the current statement; never moved in it
+  locked: HashSet[string]   ## seqs being iterated; no add/del/move
 
-proc rf(): float = r.rand(1.0)
-proc ri(a, b: int): int = r.rand(a..b)
-proc K(): int = ri(0, 15)
-proc mkK(): string = &"mk({K()})"
-proc ab(): string = r.sample(["a", "b"])
-proc fresh(p: string): string = inc cnt; p & $cnt
-let none: seq[Node] = @[]
-proc st(line: string; kids: seq[Node] = @[]; alts: seq[(string, seq[Node])] = @[]): Node =
+proc roll(): float = rng.rand(1.0)
+proc randInt(a, b: int): int = rng.rand(a..b)
+proc num(): int = randInt(0, 15)  ## index into the program's `gK` table
+proc mkNum(): string = &"mk({num()})"
+proc field(): string = rng.sample(["a", "b"])
+proc newName(prefix: string): string = inc counter; prefix & $counter
+let noKids: seq[Node] = @[]
+proc node(line: string; kids: seq[Node] = @[]; alts: seq[(string, seq[Node])] = @[]): Node =
   Node(line: line, kids: kids, alts: alts)
-proc ec(what: string): Node = st("echo \"" & fresh("e") & " \", " & what)
-proc declare(n: string; k: char) = scopes[^1].add Var(name: n, kind: k, loop: loopD)
+proc echoed(what: string): Node = node("echo \"" & newName("e") & " \", " & what)
+proc declare(name: string; k: char) = scopes[^1].add Var(name: name, kind: k, depth: loopDepth)
 proc visible(k: char): seq[Var] =
   for sc in scopes:
     for v in sc:
       if v.kind == k: result.add v
-proc live(k: char): seq[Var] = visible(k).filterIt(it.name notin moved)
+proc live(k: char): seq[Var] =
+  for v in visible(k):
+    if v.name notin moved: result.add v
 proc movable(k: char): seq[Var] =
-  live(k).filterIt(it.name notin touched and it.loop == loopD and closD == 0 and it.name notin locked)
+  ## moving inside a loop or closure would move an outer var more than once
+  for v in live(k):
+    if v.name notin touched and v.depth == loopDepth and closureDepth == 0 and v.name notin locked:
+      result.add v
+proc without(vs: seq[Var]; name: string): seq[Var] =
+  for v in vs:
+    if v.name != name: result.add v
 proc touch(vs: seq[Var]): string =
   ## a random var of `vs`, marked touched ("" if none)
   if vs.len == 0: return ""
-  result = r.sample(vs).name
+  result = rng.sample(vs).name
   touched.incl result
-proc pk(k: char): string = touch(live(k))
+proc pick(k: char): string = touch(live(k))  ## a readable var of kind `k`
 
 # ---- expressions -----------------------------------------------------------------
 
-proc rexpr(d = 0; mv = true): string
-proc rn(d = 0): string = rexpr(d, false)
+# `d` is the nesting depth throughout; deeper means simpler choices.
+proc rExpr(d = 0; canMove = true): string
+proc rPure(d = 0): string = rExpr(d, false)  ## an R expression that moves nothing
 
 proc cond(d = 0): string =
-  let x = rf()
-  if x < 0.6 or d > 1: return &"rt({K()}) " & r.sample([">", "<", "==", ">="]) & &" {ri(1, 8)}"
-  if x < 0.8: return &"get({rn(d + 1)}) > {ri(1, 20)}"
-  let s = pk('S')
-  if s != "": &"{s}.len > {ri(0, 3)}" else: "true"
+  ## a bool, mostly via `rt` so the compiler cannot fold it
+  let x = roll()
+  if x < 0.6 or d > 1: return &"rt({num()}) " & rng.sample([">", "<", "==", ">="]) & &" {randInt(1, 8)}"
+  if x < 0.8: return &"get({rPure(d + 1)}) > {randInt(1, 20)}"
+  let s = pick('S')
+  if s != "": &"{s}.len > {randInt(0, 3)}" else: "true"
 
-proc rvarRead(): string =
+proc rPlace(): string =
   ## an lvalue of type R that can be read (not moved)
-  var o: seq[(string, string)]
-  for v in live('R') & live('L'): o.add (v.name, v.name)
-  for v in live('P'): o.add (v.name, v.name & "." & ab())
-  for v in live('A'): o.add (v.name, &"{v.name}[{ri(0, 2)}]")
-  for v in live('T'): o.add (v.name, v.name & "[0]")
-  for v in live('N') & live('B'): o.add (v.name, v.name & ".r")
-  for v in live('W'): o.add (v.name, v.name & ".x")
-  if o.len == 0: return ""
-  let (n, s) = r.sample(o)
-  touched.incl n
-  s
+  var places: seq[(string, string)]  # (var, lvalue)
+  for v in live('R') & live('L'): places.add (v.name, v.name)
+  for v in live('P'): places.add (v.name, v.name & "." & field())
+  for v in live('A'): places.add (v.name, &"{v.name}[{randInt(0, 2)}]")
+  for v in live('T'): places.add (v.name, v.name & "[0]")
+  for v in live('N') & live('B'): places.add (v.name, v.name & ".r")
+  for v in live('W'): places.add (v.name, v.name & ".x")
+  if places.len == 0: return ""
+  let (name, place) = rng.sample(places)
+  touched.incl name
+  place
 
-proc rexpr(d = 0; mv = true): string =
-  var x = rf()
-  if d > 2: x *= 0.45
-  template e: string = rexpr(d + 1, mv)
-  if x < 0.15: return mkK()
+proc rExpr(d = 0; canMove = true): string =
+  ## an expression of type R
+  var x = roll()
+  if d > 2: x *= 0.45  # deep: only leaves (mk, var reads, moves)
+  template e: string = rExpr(d + 1, canMove)
+  if x < 0.15: return mkNum()
   if x < 0.4:
-    let s = rvarRead()
-    return if s != "": s else: mkK()
-  if x < 0.5 and mv:
+    let s = rPlace()
+    return if s != "": s else: mkNum()
+  if x < 0.5 and canMove:
     let v = touch(movable('R'))
-    if v == "": return mkK()
+    if v == "": return mkNum()
     moved.incl v
     return &"move({v})"
   if x < 0.58: return &"pass({e})"
@@ -258,380 +271,394 @@ proc rexpr(d = 0; mv = true): string =
   if x < 0.8: return &"(if {cond(d + 1)}: {e} else: {e})"
   if x < 0.85: return &"(if {cond(d + 1)}: {e} elif {cond(d + 1)}: {e} else: {e})"
   if x < 0.9:
-    var v = pk('R')
+    var v = pick('R')
     if v != "": return &"takeLent({v})"
-    v = pk('P')
-    return if v != "": &"firstOf({v})" else: mkK()
+    v = pick('P')
+    return if v != "": &"firstOf({v})" else: mkNum()
   if x < 0.95:
-    let p = pk('P')
-    return if p != "": &"mkPair({e}, \"q\").{ab()}" else: mkK()
-  let t = pk('T')
-  if t != "": t & "[0]" else: mkK()
+    let p = pick('P')
+    return if p != "": &"mkPair({e}, \"q\").{field()}" else: mkNum()
+  let t = pick('T')
+  if t != "": t & "[0]" else: mkNum()
 
-proc strexpr(): string =
-  let s = pk('s')
-  if s != "" and rf() < 0.5: return r.sample([s, s & &" & \"{K()}\""])
-  &"\"s{K()}\" & $rt({K()})"
+proc strExpr(): string =
+  let s = pick('s')
+  if s != "" and roll() < 0.5: return rng.sample([s, s & &" & \"{num()}\""])
+  &"\"s{num()}\" & $rt({num()})"
 
-proc seqexpr(): string =
-  let x = rf()
+proc seqExpr(): string =
+  let x = roll()
   if x < 0.3: return "@[]"
   if x < 0.6:
     var a: seq[string]
-    for _ in 1..ri(1, 3): a.add rexpr(1)
+    for _ in 1..randInt(1, 3): a.add rExpr(1)
     return "@[" & a.join(", ") & "]"
   if live('S').len > 0:
-    if x < 0.8: return pk('S')
+    if x < 0.8: return pick('S')
     let m = touch(movable('S'))   # a moved-from seq is empty, still readable
     if m != "": return &"move({m})"
-  &"@[{rexpr(1)}]"
+  &"@[{rExpr(1)}]"
 
 # ---- statements ------------------------------------------------------------------
 
 proc stmt(d: int): Node
 
-proc body(d: int; n = -1; scope = true): seq[Node] =
-  let n = if n < 0: ri(1, 4) else: n
+proc body(d: int; count = -1; scope = true): seq[Node] =
+  let count = if count < 0: randInt(1, 4) else: count
   if scope: scopes.add @[]
-  for _ in 0..<n: result.add stmt(d + 1)
+  for _ in 0..<count: result.add stmt(d + 1)
   if scope: discard scopes.pop
 
-proc branchy(d, k: int): seq[seq[Node]] =
+proc branches(d, count: int): seq[seq[Node]] =
   ## alternative bodies: afterwards a var is moved if any branch moved it
   let before = moved
-  var u = moved
-  for _ in 0..<k:
+  var union = moved
+  for _ in 0..<count:
     moved = before
     result.add body(d)
-    u = u + moved
-  moved = u
+    union = union + moved
+  moved = union
 
 proc loop(d: int; head: string; pre: seq[Node] = @[]): Node =
+  ## `head` with `pre` + a random body one loop level deeper
   let before = moved
-  inc loopD
+  inc loopDepth
   let b = body(d)
-  dec loopD
+  dec loopDepth
   moved = moved + before
-  st(head, pre & b)
+  node(head, pre & b)
 
 proc decl(k: char): Node =
-  var n, e: string
+  ## declares a new var of kind `k`
+  var name, init: string
   case k
   of 'R':
-    n = fresh("x")
-    if rf() < 0.15:
-      result = st(&"var {n} = case rt({K()}) mod 3", @[],
-                  @[("of 0: " & rexpr(1), none), ("of 1: " & rexpr(1), none), ("else: " & rexpr(1), none)])
-    else: e = rexpr()
-  of 'L': n = fresh("l"); e = rexpr(mv = rf() < 0.3)
-  of 'S': n = fresh("s") & ": seq[R]"; e = seqexpr()
+    name = newName("x")
+    if roll() < 0.15:
+      result = node(&"var {name} = case rt({num()}) mod 3", @[],
+                  @[("of 0: " & rExpr(1), noKids), ("of 1: " & rExpr(1), noKids), ("else: " & rExpr(1), noKids)])
+    else: init = rExpr()
+  of 'L': name = newName("l"); init = rExpr(canMove = roll() < 0.3)
+  of 'S': name = newName("s") & ": seq[R]"; init = seqExpr()
   of 'P':
-    n = fresh("p")
-    e = if rf() < 0.7: &"Pair(a: {rexpr()}, b: {rexpr()}, s: {strexpr()})" else: &"mkPair({rexpr()}, {strexpr()})"
-  of 'A': n = fresh("a"); e = &"[{rexpr(1)}, {rexpr(1)}, {rexpr(1)}]"
-  of 'T': n = fresh("t"); e = &"({rexpr()}, {K()})"
-  of 'N': n = fresh("n"); e = &"Node(r: {rexpr()})"
-  of 's': n = fresh("str"); e = strexpr()
+    name = newName("p")
+    init = if roll() < 0.7: &"Pair(a: {rExpr()}, b: {rExpr()}, s: {strExpr()})" else: &"mkPair({rExpr()}, {strExpr()})"
+  of 'A': name = newName("a"); init = &"[{rExpr(1)}, {rExpr(1)}, {rExpr(1)}]"
+  of 'T': name = newName("t"); init = &"({rExpr()}, {num()})"
+  of 'N': name = newName("n"); init = &"Node(r: {rExpr()})"
+  of 's': name = newName("str"); init = strExpr()
   of 'C':
-    n = fresh("v")
-    e = if rf() < 0.5: &"V(k: true, r: {rexpr()})" else: &"V(k: false, s: {seqexpr()})"
-  of 'W': n = fresh("wv"); e = &"W[R](x: {rexpr()}, y: {seqexpr()})"
+    name = newName("v")
+    init = if roll() < 0.5: &"V(k: true, r: {rExpr()})" else: &"V(k: false, s: {seqExpr()})"
+  of 'W': name = newName("wv"); init = &"W[R](x: {rExpr()}, y: {seqExpr()})"
   else:
-    n = fresh("bb") & ": Base"
-    e = if rf() < 0.5: &"Der(r: {rexpr()}, r2: {rexpr()})" else: &"Base(r: {rexpr()})"
-  if result == nil: result = st((if k == 'L': "let " else: "var ") & n & " = " & e)
-  declare(n.split(':')[0], k)
+    name = newName("bb") & ": Base"
+    init = if roll() < 0.5: &"Der(r: {rExpr()}, r2: {rExpr()})" else: &"Base(r: {rExpr()})"
+  if result == nil: result = node((if k == 'L': "let " else: "var ") & name & " = " & init)
+  let colon = name.find(':')
+  declare(if colon < 0: name else: name.substr(0, colon - 1), k)
 
-proc setR(e: string; p: float): Node =
-  ## `t = e` for a visible, unmoved R; else `var x = e`
-  let tg = visible('R')
-  if tg.len > 0 and rf() < p:
-    let t = r.sample(tg).name
-    if t notin moved: return st(t & " = " & e)
-  let n = fresh("x")
-  declare(n, 'R')
-  st(&"var {n} = {e}")
+proc setR(e: string; prob: float): Node =
+  ## `t = e` for a visible, unmoved R (with chance `prob`); else `var x = e`
+  let targets = visible('R')
+  if targets.len > 0 and roll() < prob:
+    let t = rng.sample(targets).name
+    if t notin moved: return node(t & " = " & e)
+  let name = newName("x")
+  declare(name, 'R')
+  node(&"var {name} = {e}")
 
-proc other(vs: seq[Var]; v: string): Node =
+proc assignOther(vs: seq[Var]; v: string): Node =
   ## `v = o` for another var of the same kind
   let o = touch(vs)
-  st(&"{v} = {o}")
+  node(&"{v} = {o}")
 
+# Statement kinds and their weights; one-letter keys declare a var of that kind.
 const Weights = {"R": 10, "assignR": 10, "useR": 10, "sinkcall": 5, "S": 4, "seqop": 9, "P": 3,
   "pairop": 5, "A": 2, "arrop": 3, "T": 2, "tupop": 3, "N": 3, "nodeop": 4, "s": 2, "strop": 2,
   "closure": 3, "destroyReset": 1, "raise": 2, "ret": 1, "mayRaise": 2, "L": 5, "C": 2, "vop": 4,
   "W": 2, "wop": 3, "B": 2, "bop": 3, "swap": 3, "selfAssign": 2, "early": 2, "identR": 2}
-const Nested = {"if": 6, "while": 3, "for": 3, "case": 3, "try": 4, "block": 2}
+const Nested = {"if": 6, "while": 3, "for": 3, "case": 3, "try": 4, "block": 2}  # only while depth and budget allow
 
 proc stmt(d: int): Node =
   touched.clear
   dec budget
-  var w = @Weights
-  if d < 3 and budget > 0: w.add @Nested
-  if loopD > 0: w.add [("brk", 2), ("cont", 2)]
-  var p = rf() * float(w.mapIt(it[1]).foldl(a + b))
-  var what = ""
-  for (n, k) in w:
-    what = n
-    p -= float(k)
-    if p <= 0: break
-  if what.len == 1: return decl(what[0])
-  let x = rf()
-  result = case what
+  var weights = @Weights
+  if d < 3 and budget > 0: weights.add @Nested
+  if loopDepth > 0: weights.add [("brk", 2), ("cont", 2)]
+  var total = 0
+  for (_, w) in weights: total += w
+  var left = roll() * float(total)
+  var kind = ""
+  for (n, w) in weights:
+    kind = n
+    left -= float(w)
+    if left <= 0: break
+  if kind.len == 1: return decl(kind[0])
+  let x = roll()  # picks the variant within `kind`
+  result = case kind
   of "assignR":
     let vs = visible('R')
     if x < 0.6 and vs.len > 0:
-      let v = r.sample(vs).name
+      let v = rng.sample(vs).name
       touched.incl v
-      let e = rexpr()
+      let e = rExpr()
       # an assignment revives the target only if declared in this scope
-      if scopes.len == 1 or scopes[^1].anyIt(it.name == v): moved.excl v
-      return st(&"{v} = {e}")
+      var here = scopes.len == 1
+      for d in scopes[^1]: here = here or d.name == v
+      if here: moved.excl v
+      return node(&"{v} = {e}")
     if x < 0.8:
-      let p = pk('P')
-      if p != "": return st(&"{p}.{ab()} = {rexpr()}")
-    let n = pk('N')
-    if n != "": return st(&"{n}.r = {rexpr()}")
+      let p = pick('P')
+      if p != "": return node(&"{p}.{field()} = {rExpr()}")
+    let n = pick('N')
+    if n != "": return node(&"{n}.r = {rExpr()}")
     decl('R')
-  of "useR": ec("get(" & rexpr(mv = x < 0.5) & ")")
+  of "useR": echoed("get(" & rExpr(canMove = x < 0.5) & ")")
   of "sinkcall":
-    if x < 0.4: return ec(&"takeSink({rexpr()})")
+    if x < 0.4: return echoed(&"takeSink({rExpr()})")
     if x < 0.7:
-      let v = pk('R')
-      if v != "": return ec(&"eat({v}, {v})")
-    let s = pk('S')
-    if s != "": return ec(r.sample(["sumSeq", "sumSinkSeq"]) & &"({s})")
-    ec(&"eat({rexpr()}, {rn()})")
+      let v = pick('R')
+      if v != "": return echoed(&"eat({v}, {v})")
+    let s = pick('S')
+    if s != "": return echoed(rng.sample(["sumSeq", "sumSinkSeq"]) & &"({s})")
+    echoed(&"eat({rExpr()}, {rPure()})")
   of "seqop":
-    let s = touch(live('S').filterIt(it.name notin locked))
+    var ss: seq[Var]
+    for v in live('S'):
+      if v.name notin locked: ss.add v
+    let s = touch(ss)
     if s == "": return decl('S')
-    if x < 0.25: return st(&"{s}.add {rexpr()}")
-    if x < 0.33: return st(&"if {s}.len > 0: {s}.del(rt({K()}) mod {s}.len)")
-    if x < 0.38: return st(&"if {s}.len > 1: {s}.setLen(1)")
-    if x < 0.43: return st(&"{s}.insert([{rexpr()}], 0)")
+    if x < 0.25: return node(&"{s}.add {rExpr()}")
+    if x < 0.33: return node(&"if {s}.len > 0: {s}.del(rt({num()}) mod {s}.len)")
+    if x < 0.38: return node(&"if {s}.len > 1: {s}.setLen(1)")
+    if x < 0.43: return node(&"{s}.insert([{rExpr()}], 0)")
     if x < 0.5:
-      let tg = visible('R')
-      if tg.len > 0 and rf() < 0.5:
-        let t = r.sample(tg).name
-        if t notin moved: return st(&"if {s}.len > 0: {t} = {s}.pop")
-      return st(&"if {s}.len > 0: discard {s}.pop")
+      let targets = visible('R')
+      if targets.len > 0 and roll() < 0.5:
+        let t = rng.sample(targets).name
+        if t notin moved: return node(&"if {s}.len > 0: {t} = {s}.pop")
+      return node(&"if {s}.len > 0: discard {s}.pop")
     if x < 0.6:
-      locked.incl s
-      inc loopD
-      let it = fresh("it")
-      result = st(&"for {it} in {s}:", @[ec(&"get({it})")])
-      if rf() < 0.5 and d < 3:
+      locked.incl s   # mutating a seq while iterating it is UB
+      inc loopDepth
+      let it = newName("it")
+      result = node(&"for {it} in {s}:", @[echoed(&"get({it})")])
+      if roll() < 0.5 and d < 3:
         scopes.add @[]
-        let xn = fresh("x")   # `it` is a borrowed R; copy it out
-        result.kids.add st(&"var {xn} = {it}")
+        let xn = newName("x")   # `it` is a borrowed R; copy it out
+        result.kids.add node(&"var {xn} = {it}")
         declare(xn, 'R')
-        result.kids.add body(d, ri(0, 2), false)
+        result.kids.add body(d, randInt(0, 2), false)
         discard scopes.pop
-      dec loopD
+      dec loopDepth
       locked.excl s
       return
     if x < 0.7:
-      let k = ri(0, 2)
-      let t = if rf() < 0.6: touch(live('R')) else: ""
-      if t != "": return st(&"if {s}.len > {k}: {t} = {s}[{k}]")
-      return st(&"if {s}.len > {k}: {s}[{k}] = {rexpr()}")
+      let k = randInt(0, 2)
+      let t = if roll() < 0.6: touch(live('R')) else: ""
+      if t != "": return node(&"if {s}.len > {k}: {t} = {s}[{k}]")
+      return node(&"if {s}.len > {k}: {s}[{k}] = {rExpr()}")
     if x < 0.78:
-      let i = fresh("i")
-      inc loopD
+      let i = newName("i")
+      inc loopDepth   # `e` runs once per iteration
       locked.incl s
-      let e = rexpr()
+      let e = rExpr()
       locked.excl s
-      dec loopD
-      return st(&"for {i} in 0..<{s}.len: {s}[{i}] = {e}")
-    if x < 0.85: return st(&"{s} = {seqexpr()}")
-    if x < 0.92: return ec(&"{s}.len")
-    let k = ri(0, 2)
+      dec loopDepth
+      return node(&"for {i} in 0..<{s}.len: {s}[{i}] = {e}")
+    if x < 0.85: return node(&"{s} = {seqExpr()}")
+    if x < 0.92: return echoed(&"{s}.len")
+    let k = randInt(0, 2)
     let t = touch(movable('R'))
-    if t == "": return ec(&"sumSeq({s})")
+    if t == "": return echoed(&"sumSeq({s})")
     # move out of a seq slot, refill it
-    st(&"if {s}.len > {k}:", @[st(&"{t} = move({s}[{k}])"), st(&"{s}[{k}] = {rn()}")])
+    node(&"if {s}.len > {k}:", @[node(&"{t} = move({s}[{k}])"), node(&"{s}[{k}] = {rPure()}")])
   of "pairop":
     let ps = live('P')
     let p = touch(ps)
     if p == "": return decl('P')
-    if x < 0.3: return st(&"{p}.{ab()} = {rexpr()}")
-    if x < 0.45: return ec(&"get({p}.a), \" \", get({p}.b), \" \", {p}.s")
-    if x < 0.55: return st(&"{p}.s = {p}.s & {strexpr()}")
+    if x < 0.3: return node(&"{p}.{field()} = {rExpr()}")
+    if x < 0.45: return echoed(&"get({p}.a), \" \", get({p}.b), \" \", {p}.s")
+    if x < 0.55: return node(&"{p}.s = {p}.s & {strExpr()}")
     if x < 0.7:
-      let o = ps.filterIt(it.name != p)
-      if o.len > 0: return other(o, p)
-      return st(&"{p} = Pair(a: {rexpr()}, b: {p}.a, s: \"z\")")
+      let o = ps.without(p)
+      if o.len > 0: return assignOther(o, p)
+      return node(&"{p} = Pair(a: {rExpr()}, b: {p}.a, s: \"z\")")
     if x < 0.8:
       let t = touch(movable('R'))
       if t != "":
-        let f = ab()
-        return st("block:", @[st(&"{t} = move({p}.{f})"), st(&"{p}.{f} = {mkK()}")])
+        let f = field()
+        return node("block:", @[node(&"{t} = move({p}.{f})"), node(&"{p}.{f} = {mkNum()}")])
     if x < 0.9:
-      let a = fresh("x")
-      let b = fresh("x")
+      let a = newName("x")
+      let b = newName("x")
       declare(a, 'R')
       declare(b, 'R')
-      return st(&"var ({a}, {b}) = ({p}.a, {p}.b)")
-    ec(&"get(firstOf({p}))")
+      return node(&"var ({a}, {b}) = ({p}.a, {p}.b)")
+    echoed(&"get(firstOf({p}))")
   of "arrop":
     let aa = live('A')
     let a = touch(aa)
     if a == "": return decl('A')
-    if x < 0.35: return st(&"{a}[{ri(0, 2)}] = {rexpr()}")
-    if x < 0.5: return st(&"{a}[rt({K()}) mod 3] = {rexpr()}")
-    if x < 0.65: return ec(&"get({a}[0]) + get({a}[1]) + get({a}[2])")
-    let o = aa.filterIt(it.name != a)
-    if x < 0.8 and o.len > 0: return other(o, a)
-    let it = fresh("it")
-    st(&"for {it} in {a}: echo get({it})")
+    if x < 0.35: return node(&"{a}[{randInt(0, 2)}] = {rExpr()}")
+    if x < 0.5: return node(&"{a}[rt({num()}) mod 3] = {rExpr()}")
+    if x < 0.65: return echoed(&"get({a}[0]) + get({a}[1]) + get({a}[2])")
+    let o = aa.without(a)
+    if x < 0.8 and o.len > 0: return assignOther(o, a)
+    let it = newName("it")
+    node(&"for {it} in {a}: echo get({it})")
   of "tupop":
-    let t = pk('T')
+    let t = pick('T')
     if t == "": return decl('T')
-    if x < 0.35: return st(&"{t}[0] = {rexpr()}")
+    if x < 0.35: return node(&"{t}[0] = {rExpr()}")
     if x < 0.6:
-      let xn = fresh("x")
-      let k = fresh("k")
+      let xn = newName("x")
+      let k = newName("k")
       declare(xn, 'R')
-      return st(&"var ({xn}, {k}) = {t}")
-    if x < 0.8: return ec(&"get({t}[0]) + {t}[1]")
-    st(&"{t} = ({rexpr()}, {t}[1] + 1)")
+      return node(&"var ({xn}, {k}) = {t}")
+    if x < 0.8: return echoed(&"get({t}[0]) + {t}[1]")
+    node(&"{t} = ({rExpr()}, {t}[1] + 1)")
   of "nodeop":
     let ns = live('N')
     let n = touch(ns)
     if n == "": return decl('N')
-    if x < 0.3: return st(&"when defined(gcOrc): {n}.next = " & r.sample(ns).name)  # cycles: ORC only
-    if x < 0.5: return st(&"{n}.r = {rexpr()}")
-    if x < 0.65: return ec(&"get({n}.r)")
-    if x < 0.8: return other(ns, n)
+    if x < 0.3: return node(&"when defined(gcOrc): {n}.next = " & rng.sample(ns).name)  # cycles: ORC only
+    if x < 0.5: return node(&"{n}.r = {rExpr()}")
+    if x < 0.65: return echoed(&"get({n}.r)")
+    if x < 0.8: return assignOther(ns, n)
     if x < 0.9:
-      let b = fresh("b")   # a cycle through a closure env (ORC only)
-      return st("when defined(gcOrc):", @[st(&"var {b} = Box(r: {rn()})"),
-        st(&"{b}.cb = proc (): int {{.closure.}} = get({b}.r) + get({n}.r) + (if {b}.cb != nil: 1 else: 0)"),
-        st(&"discard {b}.cb()")])
-    st(&"{n} = Node(r: {rexpr()}, next: nil)")
+      let b = newName("b")   # a cycle through a closure env (ORC only)
+      return node("when defined(gcOrc):", @[node(&"var {b} = Box(r: {rPure()})"),
+        node(&"{b}.cb = proc (): int {{.closure.}} = get({b}.r) + get({n}.r) + (if {b}.cb != nil: 1 else: 0)"),
+        node(&"discard {b}.cb()")])
+    node(&"{n} = Node(r: {rExpr()}, next: nil)")
   of "strop":
-    let s = pk('s')
+    let s = pick('s')
     if s == "": return decl('s')
-    if x < 0.5: st(s & ".add \"x\"") else: ec(s)
+    if x < 0.5: node(s & ".add \"x\"") else: echoed(s)
   of "closure":
-    let c = fresh("c")
-    inc closD
+    let c = newName("c")
+    inc closureDepth
     let n = if x < 0.5:
-        st("block:", @[st(&"let {c} = proc (): int {{.closure.}} = get({rn(1)}) + get({rn(1)})"), ec(c & "()")])
+        node("block:", @[node(&"let {c} = proc (): int {{.closure.}} = get({rPure(1)}) + get({rPure(1)})"), echoed(c & "()")])
       elif x < 0.75:
-        let v = pk('R')
-        if v == "": ec("0") else: st("block:", @[st(&"let {c} = proc () {{.closure.}} = {v} = {rn(1)}"),
-                                                 st(c & "()"), ec(&"get({v})")])
+        let v = pick('R')
+        if v == "": echoed("0") else: node("block:", @[node(&"let {c} = proc () {{.closure.}} = {v} = {rPure(1)}"),
+                                                 node(c & "()"), echoed(&"get({v})")])
       else:
-        let z = fresh("x")
-        st("block:", @[st(&"var {z} = {rn(1)}"),
-          st(&"let {c} = proc (k: int): R {{.closure.}} = comb({z}, mk(k))"), ec(&"get({c}({K()}))")])
-    dec closD
+        let z = newName("x")
+        node("block:", @[node(&"var {z} = {rPure(1)}"),
+          node(&"let {c} = proc (k: int): R {{.closure.}} = comb({z}, mk(k))"), echoed(&"get({c}({num()}))")])
+    dec closureDepth
     n
   of "destroyReset":
     let v = touch(movable('R'))
     if v == "": return decl('R')
     moved.incl v
-    st(&"`=destroy`({v}); `=wasMoved`({v})")
-  of "raise": st(&"if rt({K()}) > {ri(5, 9)}: raise ValueError")
-  of "ret": st(&"if rt({K()}) > {ri(6, 9)}: return")
-  of "brk": st(&"if rt({K()}) > {ri(3, 8)}: break")
-  of "cont": st(&"if rt({K()}) > {ri(3, 8)}: continue")
-  of "mayRaise": setR(&"mayRaise({rn()}, rt({K()}))", 0.6)
-  of "early": setR(&"mkEarly(rt({K()}))", 0.5)
+    node(&"`=destroy`({v}); `=wasMoved`({v})")
+  of "raise": node(&"if rt({num()}) > {randInt(5, 9)}: raise ValueError")
+  of "ret": node(&"if rt({num()}) > {randInt(6, 9)}: return")
+  of "brk": node(&"if rt({num()}) > {randInt(3, 8)}: break")
+  of "cont": node(&"if rt({num()}) > {randInt(3, 8)}: continue")
+  of "mayRaise": setR(&"mayRaise({rPure()}, rt({num()}))", 0.6)
+  of "early": setR(&"mkEarly(rt({num()}))", 0.5)
   of "vop":
     let vs = live('C')
     let v = touch(vs)
     if v == "": return decl('C')
-    if x < 0.3: return ec(&"vval({v})")
-    if x < 0.5: return st(&"{v} = V(k: true, r: {rexpr()})")
-    if x < 0.65: return st(&"{v} = V(k: false, s: {seqexpr()})")
-    if x < 0.8: return st(&"if {v}.k: {v}.r = {rn()}")
-    other(vs, v)
+    if x < 0.3: return echoed(&"vval({v})")
+    if x < 0.5: return node(&"{v} = V(k: true, r: {rExpr()})")
+    if x < 0.65: return node(&"{v} = V(k: false, s: {seqExpr()})")
+    if x < 0.8: return node(&"if {v}.k: {v}.r = {rPure()}")
+    assignOther(vs, v)
   of "wop":
     let ws = live('W')
     let v = touch(ws)
     if v == "": return decl('W')
-    if x < 0.3: return ec(&"wval({v})")
-    if x < 0.5: return st(&"{v}.x = {rexpr()}")
-    if x < 0.65: return st(&"{v}.y.add {rexpr()}")
-    if x < 0.8: return st(&"if {v}.y.len > 0: {v}.x = {v}.y[0]")
-    other(ws, v)
+    if x < 0.3: return echoed(&"wval({v})")
+    if x < 0.5: return node(&"{v}.x = {rExpr()}")
+    if x < 0.65: return node(&"{v}.y.add {rExpr()}")
+    if x < 0.8: return node(&"if {v}.y.len > 0: {v}.x = {v}.y[0]")
+    assignOther(ws, v)
   of "bop":
     let bs = live('B')
     let v = touch(bs)
     if v == "": return decl('B')
-    if x < 0.4: return ec(&"bval({v})")
-    if x < 0.6: return st(&"{v}.r = {rexpr()}")
-    if x < 0.8: return st(&"{v} = Der(r: {rexpr()}, r2: {v}.r)")
-    other(bs, v)
+    if x < 0.4: return echoed(&"bval({v})")
+    if x < 0.6: return node(&"{v}.r = {rExpr()}")
+    if x < 0.8: return node(&"{v} = Der(r: {rExpr()}, r2: {v}.r)")
+    assignOther(bs, v)
   of "swap":
     var vs = live('R')
     if vs.len < 2: return decl('R')
-    r.shuffle(vs)
-    st((if x < 0.5: "swap(" else: "swapIt(") & vs[0].name & ", " & vs[1].name & ")")
+    rng.shuffle(vs)
+    node((if x < 0.5: "swap(" else: "swapIt(") & vs[0].name & ", " & vs[1].name & ")")
   of "selfAssign":
-    let v = pk('R')
+    let v = pick('R')
     if v == "": return decl('R')
-    if x < 0.5: return st(&"{v} = {v}")
-    let p = pk('P')
-    if p != "": st(&"{p}.a = {p}.a") else: st(&"{v} = comb({v}, {v})")
+    if x < 0.5: return node(&"{v} = {v}")
+    let p = pick('P')
+    if p != "": node(&"{p}.a = {p}.a") else: node(&"{v} = comb({v}, {v})")
   of "identR":
-    if x < 0.5: return ec(&"get(ident({rexpr()}))")
-    let s = pk('S')
-    if s != "": ec(&"sumSeq(ident({s}))") else: ec(&"get(ident({mkK()}))")
+    if x < 0.5: return echoed(&"get(ident({rExpr()}))")
+    let s = pick('S')
+    if s != "": echoed(&"sumSeq(ident({s}))") else: echoed(&"get(ident({mkNum()}))")
   of "if":
     let c = cond()
     if x < 0.6:
-      let b = branchy(d, 2)
-      st(&"if {c}:", b[0], @[("else:", b[1])])
-    else: st(&"if {c}:", branchy(d, 1)[0])
+      let b = branches(d, 2)
+      node(&"if {c}:", b[0], @[("else:", b[1])])
+    else: node(&"if {c}:", branches(d, 1)[0])
   of "case":
-    let b = branchy(d, 3)
-    st(&"case rt({K()}) mod 3", @[], @[("of 0:", b[0]), ("of 1:", b[1]), ("else:", b[2])])
+    let b = branches(d, 3)
+    node(&"case rt({num()}) mod 3", @[], @[("of 0:", b[0]), ("of 1:", b[1]), ("else:", b[2])])
   of "while":
-    let i = fresh("w")
-    st("block:", @[st(&"var {i} = 0"), loop(d, &"while {i} < rt({K()}) mod 4:", @[st(&"inc {i}")])])
+    let i = newName("w")
+    node("block:", @[node(&"var {i} = 0"), loop(d, &"while {i} < rt({num()}) mod 4:", @[node(&"inc {i}")])])
   of "for":
-    let j = fresh("j")
-    loop(d, &"for {j} in 0..<{ri(1, 3)}:")
+    let j = newName("j")
+    loop(d, &"for {j} in 0..<{randInt(1, 3)}:")
   of "try":
     let before = moved
     let b = body(d)
-    moved = before + moved
-    var alts = @[("except:", @[ec("\"caught\"")] & body(d, ri(0, 2)))]
-    if rf() < 0.3: alts.add ("finally:", body(d, ri(1, 2)))
-    st("try:", b, alts)
-  else: st("block:", body(d))
+    moved = before + moved   # `except:` may run after any prefix of the body
+    var alts = @[("except:", @[echoed("\"caught\"")] & body(d, randInt(0, 2)))]
+    if roll() < 0.3: alts.add ("finally:", body(d, randInt(1, 2)))
+    node("try:", b, alts)
+  else: node("block:", body(d))
 
 proc generate(seed: int): seq[seq[Node]] =
-  r = initRand(seed)
-  cnt = 0
-  for _ in 0..<ri(4, 7):
+  ## the bodies of procs `t0`, `t1`, ...
+  rng = initRand(seed)
+  counter = 0
+  for _ in 0..<randInt(4, 7):
     scopes = @[newSeq[Var]()]
     moved.clear; locked.clear
-    loopD = 0; closD = 0
-    budget = ri(15, 35)
+    loopDepth = 0; closureDepth = 0
+    budget = randInt(15, 35)
     var b: seq[Node]
     while budget > 0: b.add stmt(0)
     result.add b
 
 # ---- rendering -------------------------------------------------------------------
 
-var prog: seq[seq[Node]]
+var prog: seq[seq[Node]]  ## current program: proc bodies, shrunk in place by the reducer
 var only = -1   ## render only proc `t<only>` (reducer)
 
-proc render(n: Node; ind: int; o: var string) =
-  let pad = repeat("  ", ind)
-  o.add pad & n.line & "\n"
-  for k in n.kids: render(k, ind + 1, o)
-  if n.line.endsWith(":") and n.kids.len == 0: o.add pad & "  discard\n"
-  for (h, ks) in n.alts:
-    o.add pad & h & "\n"
-    for k in ks: render(k, ind + 1, o)
-    if ks.len == 0 and h.endsWith(":"): o.add pad & "  discard\n"
+proc render(n: Node; indent: int; res: var string) =
+  let pad = repeat("  ", indent)
+  res.add pad & n.line & "\n"
+  for k in n.kids: render(k, indent + 1, res)
+  # the reducer may empty a body
+  if n.line.endsWith(":") and n.kids.len == 0: res.add pad & "  discard\n"
+  for (head, ks) in n.alts:
+    res.add pad & head & "\n"
+    for k in ks: render(k, indent + 1, res)
+    if ks.len == 0 and head.endsWith(":"): res.add pad & "  discard\n"
 
 proc render(): string =
+  ## the full program source
   result = Prelude
   var main = "proc main() =\n"
   for i, b in prog:
@@ -647,18 +674,19 @@ proc render(): string =
 
 var nimony = "/home/ageralis/Projects/nimony/bin/nimony"
 var work = ""
-const Vg = "valgrind -q --leak-check=full --errors-for-leak-kinds=definite --show-leak-kinds=definite --error-exitcode=99 "
-const VgKinds = {"Invalid read": "invalid-read", "Invalid write": "invalid-write", "Invalid free": "invalid-free",
+const Valgrind = "valgrind -q --leak-check=full --errors-for-leak-kinds=definite --show-leak-kinds=definite --error-exitcode=99 "
+const VgErrors = {"Invalid read": "invalid-read", "Invalid write": "invalid-write", "Invalid free": "invalid-free",
   "definitely lost": "def-lost", "uninitialised": "uninit", "Mismatched free": "mismatched-free"}
 
-proc normErr(s: string): string =
+proc normErr(progSeed: string): string =
   ## the identifying line of an error, numbers replaced by N
   var l = ""
-  for x in s.splitLines:
-    if x.strip.len > 0: l = x
-  for x in s.splitLines:
+  for x in progSeed.splitLines:
+    if not x.isEmptyOrWhitespace: l = x
+  for x in progSeed.splitLines:
     if "Error:" in x or "BUG" in x or "Assertion" in x or "SIGSEGV" in x or "Defect" in x:
-      l = x.split("Error:")[^1]
+      let e = x.rfind("Error:")
+      l = if e < 0: x else: x.substr(e + "Error:".len)
       break
   for c in l.strip:
     if c notin Digits: result.add c
@@ -669,24 +697,28 @@ proc noCounts(o: string): string =
   ## created/destroyed/copies/dups legitimately differ when `when defined(gcOrc)` code runs
   for l in o.splitLines:
     if l.startsWith("SUMMARY"):
-      result.add l.split.filterIt(it.startsWith("leaks=") or it.startsWith("errs=")).join(" ")
+      var sep = ""
+      for f in l.split:
+        if f.startsWith("leaks=") or f.startsWith("errs="):
+          result.add sep & f
+          sep = " "
     else: result.add l
     result.add '\n'
 
-proc check(src: string; cs: seq[string]; vg = true): (seq[string], string) =
+proc check(src: string; cfgs: seq[string]; valgrind = true): (seq[string], string) =
   ## build + run `src` under each config: (signatures, details)
-  var sig: seq[string]
-  var det = ""
-  var outs: Table[string, string]
+  var sigs: seq[string]
+  var details = ""
+  var outs: Table[string, string]  ## stdout per config
   template hit(x: string) =
     let y = x
-    if y notin sig: sig.add y
+    if y notin sigs: sigs.add y
   writeFile(work / "fz.nim", src)
-  for c in cs:
-    let dir = work / c
+  for cfg in cfgs:
+    let dir = work / cfg
     let exe = dir / "fz"
-    let cmd = nimony & " c " & (if c.startsWith("arc"): "--mm:arc" else: "--mm:orc") &
-              (if c.endsWith("opt"): " --opt:speed" else: "") & " -d:useLibc --nimcache:" & dir &
+    let cmd = nimony & " c " & (if cfg.startsWith("arc"): "--mm:arc" else: "--mm:orc") &
+              (if cfg.endsWith("opt"): " --opt:speed" else: "") & " -d:useLibc --nimcache:" & dir &
               " -o:" & exe & " " & work / "fz.nim"
     removeDir dir
     var (o, rc) = execCmdEx(cmd)
@@ -694,74 +726,78 @@ proc check(src: string; cs: seq[string]; vg = true): (seq[string], string) =
       removeDir dir
       (o, rc) = execCmdEx(cmd)
     if rc != 0 or not fileExists(exe):
-      hit &"cfail:{c}:{normErr(o)}"
-      det.add &"===== {c}\n{o[max(0, o.len - 3000) .. ^1]}\n"
+      hit &"cfail:{cfg}:{normErr(o)}"
+      details.add &"===== {cfg}\n{o.substr(o.len - 3000)}\n"
       continue
-    let (p, prc) = execCmdEx("timeout 120 " & (if vg: Vg else: "") & exe & " 2>" & dir / "stderr.txt")
-    let e = readFile(dir / "stderr.txt")
-    outs[c] = p
-    det.add &"===== {c} rc={prc}\n--- stdout tail\n{p[max(0, p.len - 1500) .. ^1]}\n--- stderr tail\n{e[max(0, e.len - 3000) .. ^1]}\n"
-    for l in p.splitLines:
-      if l.startsWith("ERR ") and " id=" in l: hit "err:" & l[4 ..< l.find(" id=")] & ":" & c
-      if l.startsWith("LEAK"): hit &"leak:{c}"
-    if "SUMMARY" notin p: hit &"crash:{c}:rc={prc}:{normErr(e)}"
-    for (pat, k) in VgKinds:
-      if pat in e: hit &"vg:{k}:{c}"
+    let (output, code) = execCmdEx("timeout 120 " & (if valgrind: Valgrind else: "") & exe & " 2>" & dir / "stderr.txt")
+    let errs = readFile(dir / "stderr.txt")
+    outs[cfg] = output
+    details.add &"===== {cfg} rc={code}\n--- stdout tail\n{output.substr(output.len - 1500)}\n--- stderr tail\n{errs.substr(errs.len - 3000)}\n"
+    for l in output.splitLines:
+      let id = l.find(" id=")
+      if l.startsWith("ERR ") and id >= 0: hit "err:" & l.substr(4, id - 1) & ":" & cfg
+      if l.startsWith("LEAK"): hit &"leak:{cfg}"
+    if "SUMMARY" notin output: hit &"crash:{cfg}:rc={code}:{normErr(errs)}"
+    for (pat, k) in VgErrors:
+      if pat in errs: hit &"vg:{k}:{cfg}"
   if "arc" in outs and "orc" in outs and noCounts(outs["arc"]) != noCounts(outs["orc"]): hit "diff:arc-vs-orc"
   for b in ["arc", "orc"]:
     if b in outs and b & "opt" in outs and outs[b] != outs[b & "opt"]: hit &"diff:{b}-vs-{b}opt"
-  (sig.sorted, det)
+  (sigs.sorted, details)
 
 # ---- reducer ---------------------------------------------------------------------
 
-var target = ""
+var target = ""      ## the signature being reduced
 var tests = 0
-var maxTests = 150
+var maxTests = 150   ## `--budget`
 
-proc cfgsOf(s: string): seq[string] =
-  let p = s.split(':')
+proc cfgsOf(sig: string): seq[string] =
+  ## the configs a signature needs rebuilt
+  let p = sig.split(':')
   case p[0]
   of "diff": p[1].split("-vs-")
   of "err": @[p[^1]]
   of "vg": @[p[2]]
   else: @[p[1]]
 
-proc still(): bool =
+proc stillHits(): bool =
+  ## does the current program still show `target`? (valgrind only when it matters)
   inc tests
   if tests > maxTests: return false
   result = target in check(render(), cfgsOf(target), target.startsWith("vg:") or target.startsWith("crash:"))[0]
   if result: echo &"  test {tests}: hit, {render().countLines} lines"
 
-proc shrink(l: var seq[Node]): bool =
+proc shrink(stmts: var seq[Node]): bool =
   ## delete chunks (halves .. single), then hoist or recurse into compound statements
-  var c = max(1, l.len div 2)
+  var chunk = max(1, stmts.len div 2)
   while true:
     var i = 0
-    while i < l.len:
-      let j = min(i + c, l.len)
-      let saved = l[i ..< j]
-      l.delete(i ..< j)
-      if still(): result = true
+    while i < stmts.len:
+      let j = min(i + chunk, stmts.len)
+      let saved = stmts[i ..< j]
+      for _ in i ..< j: stmts.delete(i)
+      if stillHits(): result = true
       else:
-        l.insert(saved, i)
+        for k, s in saved: stmts.insert(s, i + k)
         i = j
-    if c == 1: break
-    c = c div 2
+    if chunk == 1: break
+    chunk = chunk div 2
   var i = 0
-  while i < l.len:
-    let n = l[i]
+  while i < stmts.len:
+    let n = stmts[i]
     var hoisted = false
     if n.kids.len + n.alts.len > 0:
-      var bs = @[n.kids]
+      var bodies = @[n.kids]
       for (_, ks) in n.alts:
-        if ks.len > 0: bs.add ks
-      for b in bs:
-        l.delete(i); l.insert(b, i)
-        if still():
+        if ks.len > 0: bodies.add ks
+      for b in bodies:   # replace the statement by one of its bodies
+        stmts.delete(i)
+        for k, s in b: stmts.insert(s, i + k)
+        if stillHits():
           hoisted = true
           break
-        if b.len > 0: l.delete(i ..< i + b.len)
-        l.insert(n, i)
+        for _ in 0 ..< b.len: stmts.delete(i)
+        stmts.insert(n, i)
     if hoisted: result = true
     else:
       if shrink(n.kids): result = true
@@ -770,10 +806,12 @@ proc shrink(l: var seq[Node]): bool =
       inc i
 
 proc reduce(): string =
+  ## shrinks `prog` while `target` persists; returns the reduced source
   tests = 0
+  # first try each proc alone
   for i in 0..<prog.len:
     only = i
-    if still(): break
+    if stillHits(): break
     only = -1
   var changed = true
   while changed and tests <= maxTests:
@@ -789,7 +827,7 @@ proc main() =
   var count = 10
   var outDir = getAppDir() / "out"
   var doReduce = true
-  var want = ""
+  var wantSig = ""
   for kind, key, val in getopt():
     case key
     of "seed": seed = parseInt(val)
@@ -798,7 +836,7 @@ proc main() =
     of "out": outDir = val
     of "work": work = val
     of "budget": maxTests = parseInt(val)
-    of "sig": want = val
+    of "sig": wantSig = val
     of "noreduce": doReduce = false
     else: quit "unknown option: " & key
   if work == "": work = getAppDir() / "work" / ("s" & $seed)  # one per process
@@ -807,39 +845,39 @@ proc main() =
   outDir = absolutePath(outDir)
   createDir work
   createDir outDir
-  let t0 = epochTime()
+  let start = epochTime()
   var found = 0
   for k in 0..<count:
-    let s = seed + k
-    prog = generate(s)
+    let progSeed = seed + k
+    prog = generate(progSeed)
     only = -1
-    let t1 = epochTime()
-    let (sig, det) = check(render(), @["arc", "orc", (if s mod 2 == 0: "arcopt" else: "orcopt")])
-    let el = int(epochTime() - t0)
+    let started = epochTime()
+    let (sig, details) = check(render(), @["arc", "orc", (if progSeed mod 2 == 0: "arcopt" else: "orcopt")])
+    let elapsed = int(epochTime() - start)
     if sig.len == 0:
-      echo &"[{el}s] seed {s}: ok ({int(epochTime() - t1)}s)"
+      echo &"[{elapsed}s] seed {progSeed}: ok ({int(epochTime() - started)}s)"
       continue
     inc found
-    echo &"[{el}s] seed {s}: " & sig.join(" ")
-    let d = outDir / &"s{s}"
-    createDir d
-    writeFile(d / "prog.nim", render())
-    writeFile(d / "details.txt", sig.join("\n") & "\n\n" & det)
+    echo &"[{elapsed}s] seed {progSeed}: " & sig.join(" ")
+    let dir = outDir / &"s{progSeed}"
+    createDir dir
+    writeFile(dir / "prog.nim", render())
+    writeFile(dir / "details.txt", sig.join("\n") & "\n\n" & details)
     let f = open(outDir / "log.csv", fmAppend)
-    f.writeLine(&"{el},{k + 1},{s},\"" & sig.join("+") & "\"")
+    f.writeLine(&"{elapsed},{k + 1},{progSeed},\"" & sig.join("+") & "\"")
     f.close
     if not doReduce: continue
-    target = want
-    if target notin sig:
+    target = wantSig
+    if target notin sig:   # else the most severe signature
       target = ""
       for p in ["err:", "vg:", "crash:", "cfail:", "leak:", "diff:"]:
         for x in sig:
           if target == "" and x.startsWith(p): target = x
     echo &"  reducing {target}"
-    let red = reduce()
-    writeFile(d / "reduced.nim", red)
-    echo &"  reduced to {red.countLines} lines in {tests} tests: {d}/reduced.nim"
-  echo &"{count} programs, {found} with findings, {int(epochTime() - t0)}s -> {outDir}"
+    let reduced = reduce()
+    writeFile(dir / "reduced.nim", reduced)
+    echo &"  reduced to {reduced.countLines} lines in {tests} tests: {dir}/reduced.nim"
+  echo &"{count} programs, {found} with findings, {int(epochTime() - start)}s -> {outDir}"
   if found > 0: quit 1
 
 main()

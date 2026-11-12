@@ -1,7 +1,7 @@
 # nifasm x86-64 differential fuzzer
 
     nim c -d:release -o:nifasm/asmfuzz nifasm/asmfuzz.nim
-    nifasm/asmfuzz --seed:1 --minutes:45 [--out:DIR] [--work:DIR]   # or --count:N
+    nifasm/asmfuzz --seed:1 --minutes:45 [--out:DIR] [--work:DIR] [--nifasm:PATH]   # or --count:N
 
 Random instructions (mnemonic x operand shape, sometimes a short sequence) go to nifasm as `(lenient)` procs and to
 GNU `as --64` in Intel syntax; bytes are compared, and differences are compared again after `objdump -M intel`
