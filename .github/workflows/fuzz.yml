@@ -1,8 +1,9 @@
 name: fuzz
 
-# Every third day: build nimony master, run each fuzzer for a few minutes on
-# fresh seeds, upload what they found. The job summary lists every finding line
-# that matches nothing in known.txt. Toolchain setup follows
+# Every third day: build nimony master once, then run the seven fuzzers side by
+# side for 45 minutes each (as the original campaigns did) on fresh seeds. Each
+# job uploads its findings and lists in its summary every finding line that
+# matches nothing in known.txt. Toolchain setup follows
 # planetis-m/test_nimony_native.
 
 on:
@@ -11,8 +12,8 @@ on:
   workflow_dispatch:
     inputs:
       minutes:
-        description: minutes per fuzzer
-        default: '8'
+        description: minutes per fuzzer (at most 90)
+        default: '45'
 
 permissions:
   contents: read
@@ -21,30 +22,27 @@ env:
   NIMONY_REPO: https://github.com/nim-lang/nimony
 
 jobs:
-  fuzz:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
-    env:
-      MIN: ${{ inputs.minutes || '8' }}
+    timeout-minutes: 60
+    outputs:
+      commit: ${{ steps.clone.outputs.commit }}
     steps:
-      - uses: actions/checkout@v7
-        with:
-          path: fz
-
       - name: Clone nimony master
+        id: clone
         run: |
           git clone -q --depth 1 "$NIMONY_REPO" nimony
-          echo "NIMONY_COMMIT=$(git -C nimony rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "commit=$(git -C nimony rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Restore the nimony toolchain
         id: toolchain
         uses: actions/cache@v6
         with:
           path: nimony/bin
-          key: nimony-linux-amd64-${{ env.NIMONY_COMMIT }}
+          key: nimony-linux-amd64-${{ steps.clone.outputs.commit }}
 
-      # Nim builds the fuzzers too, so install it even on a cache hit.
-      - uses: jiro4989/setup-nim-action@v2
+      - if: steps.toolchain.outputs.cache-hit != 'true'
+        uses: jiro4989/setup-nim-action@v2
         with:
           nim-version: 2.4.x
           repo-token: ${{ github.token }}
@@ -58,46 +56,73 @@ jobs:
           nim c -r src/hastur/hastur --release build arkham
           bin/hastur --release build all
 
-      - name: Install valgrind
+  fuzz:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: backends, src: backends/bfuzz,   run: 'backends/bfuzz --seed:$S --count:1000000 --time:$T --nimony:$N' }
+          - { name: opt,      src: opt/optfuzz,      run: 'opt/optfuzz --seed:$S --count:1000000 --time:$T --nimony:$N' }
+          - { name: closures, src: closures/clofuzz, run: 'timeout $T closures/clofuzz --seed:$S --count:1000000 --nimony:$N' }
+          - { name: exc,      src: exc/excfuzz,      run: 'timeout $T exc/excfuzz --seed:$S --count:1000000 --nimony:$N' }
+          - { name: arc,      src: arc/arcfuzz,      run: 'timeout $T arc/arcfuzz --seed:$S --count:1000000 --nimony:$N' }
+          - { name: nifasm,   src: nifasm/asmfuzz,   run: 'nifasm/asmfuzz --seed:$S --minutes:$MIN --nifasm:$NB/nifasm' }
+          # 4 GiB address-space cap per process (children inherit it), as the old prover had.
+          - { name: prover,   src: prover/provfuzz,  run: 'prlimit --as=4294967296 prover/provfuzz --seed:$S --count:1000000 --minutes:$MIN --nimony:$N' }
+    env:
+      MIN: ${{ inputs.minutes || '45' }}
+      COMMIT: ${{ needs.build.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: fz
+
+      - name: Clone nimony at the built commit
+        run: |
+          git init -q nimony
+          git -C nimony fetch -q --depth 1 "$NIMONY_REPO" "$COMMIT"
+          git -C nimony checkout -q FETCH_HEAD
+
+      - uses: actions/cache/restore@v6
+        with:
+          path: nimony/bin
+          key: nimony-linux-amd64-${{ env.COMMIT }}
+          fail-on-cache-miss: true
+
+      - uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: 2.4.x
+          repo-token: ${{ github.token }}
+
+      - if: matrix.name == 'arc'
         run: sudo apt-get update -qq && sudo apt-get install -yq --no-install-recommends valgrind
 
       - name: Fuzz
+        working-directory: fz/fuzzers
         run: |
-          N=$PWD/nimony/bin/nimony
-          O=$RUNNER_TEMP/out; W=$RUNNER_TEMP/work
+          NB=$GITHUB_WORKSPACE/nimony/bin; N=$NB/nimony
           S=$(( $(date +%s) / 86400 * 1000 ))   # fresh seeds each day
           T=$(( MIN * 60 ))
-          cd fz/fuzzers
-          for f in backends/bfuzz opt/optfuzz closures/clofuzz exc/excfuzz arc/arcfuzz nifasm/asmfuzz prover/provfuzz; do
-            nim c -d:release --hints:off $f.nim
-          done
+          nim c -d:release --hints:off ${{ matrix.src }}.nim
           # The outer timeout also stops a reduction that overruns its budget.
-          run() { name=$1; shift; echo "::group::$name"; timeout $(( T + 120 )) "$@" --out:$O/$name --work:$W/$name || true; echo "::endgroup::"; }
-          run backends backends/bfuzz --seed:$S --count:1000000 --time:$T --nimony:$N
-          run opt      opt/optfuzz    --seed:$S --count:1000000 --time:$T --nimony:$N
-          run closures timeout $T closures/clofuzz --seed:$S --count:1000000 --nimony:$N
-          run exc      timeout $T exc/excfuzz      --seed:$S --count:1000000 --nimony:$N
-          run arc      timeout $T arc/arcfuzz      --seed:$S --count:1000000 --nimony:$N
-          run nifasm   nifasm/asmfuzz --seed:$S --minutes:$MIN --nifasm:$GITHUB_WORKSPACE/nimony/bin/nifasm
-          # 4 GiB address-space cap per process (children inherit it), as the old prover had.
-          run prover   prlimit --as=4294967296 prover/provfuzz --seed:$S --count:1000000 --minutes:$MIN --nimony:$N
+          eval "timeout $(( T + 300 )) ${{ matrix.run }} --out:$RUNNER_TEMP/out --work:$RUNNER_TEMP/work" || true
 
       - name: Summary
         if: always()
         run: |
-          grep -v '^#' fz/known.txt | grep . > "$RUNNER_TEMP/known" || true
-          echo "nimony $NIMONY_COMMIT" >> "$GITHUB_STEP_SUMMARY"
-          cd "$RUNNER_TEMP/out" 2>/dev/null || exit 0
-          for d in */; do
-            new=$(cat "$d"*.csv 2>/dev/null | grep -v '^#' | grep -vF -f "$RUNNER_TEMP/known" || true)
-            n=$(printf '%s' "$new" | grep -c . || true)
-            echo "### ${d%/}: $n new" >> "$GITHUB_STEP_SUMMARY"
-            if [ "$n" -gt 0 ]; then printf '```\n%s\n```\n' "$(echo "$new" | head -40)" >> "$GITHUB_STEP_SUMMARY"; fi
-          done
+          grep -v '^#' fz/known.txt | grep . > known || true
+          new=$(cat $RUNNER_TEMP/out/*.csv 2>/dev/null | grep -v '^#' | grep -vF -f known || true)
+          n=$(printf '%s' "$new" | grep -c . || true)
+          echo "### ${{ matrix.name }}: $n new (nimony $COMMIT)" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$n" -gt 0 ]; then printf '```\n%s\n```\n' "$(echo "$new" | head -40)" >> "$GITHUB_STEP_SUMMARY"; fi
 
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: fuzz-out
+          name: fuzz-${{ matrix.name }}
           path: ${{ runner.temp }}/out
           retention-days: 14
+          if-no-files-found: ignore
