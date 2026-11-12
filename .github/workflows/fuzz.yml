@@ -113,11 +113,10 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          grep -v '^#' fz/known.txt | grep . > known || true
-          new=$(cat $RUNNER_TEMP/out/*.csv 2>/dev/null | grep -v '^#' | grep -vF -f known || true)
-          n=$(printf '%s' "$new" | grep -c . || true)
-          echo "### ${{ matrix.name }}: $n new (nimony $COMMIT)" >> "$GITHUB_STEP_SUMMARY"
-          if [ "$n" -gt 0 ]; then printf '```\n%s\n```\n' "$(echo "$new" | head -40)" >> "$GITHUB_STEP_SUMMARY"; fi
+          grep -v '^#' fz/known.txt | grep . > known || true   # blank patterns would match everything
+          cat $RUNNER_TEMP/out/*.csv 2>/dev/null | grep -v '^#' | grep -vF -f known > new || true
+          echo "### ${{ matrix.name }}: $(wc -l < new) new (nimony $COMMIT)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -s new ]; then { echo '```'; head -40 new; echo '```'; } >> "$GITHUB_STEP_SUMMARY"; fi
 
       - uses: actions/upload-artifact@v7
         if: always()
