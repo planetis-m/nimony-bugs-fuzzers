@@ -339,6 +339,7 @@ proc eval(cs: seq[Case]): seq[Outcome] =
   var unsure: seq[int]
   for i, r in result.mpairs:
     r.verdict = if not r.nifOk and not r.gasOk: "ok"
+                elif not r.nifOk and "does not fit a" in r.nifErr: "ok"   # as truncates the immediate silently
                 elif not r.nifOk: "rejects-valid"
                 elif not r.gasOk: "accepts-invalid"
                 elif r.nifBytes == r.gasBytes: "ok"
