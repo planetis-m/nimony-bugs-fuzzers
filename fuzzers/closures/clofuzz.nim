@@ -37,7 +37,6 @@
 ## Parallelism: start several processes with disjoint seed ranges.
 
 import std / [os, osproc, strutils, random, times, strformat, parseopt, tables]
-from std/posix import getrusage, Rusage, RUSAGE_CHILDREN
 
 type
   Kind = enum                  ## e: expressions, s: statements
@@ -916,11 +915,8 @@ proc main() =
         writeFile(dir / "min.nim", render(m))
         writeFile(dir / "min.expected", model(m).join("\n") & "\n")
         echo &"  reduced with {tests} tests to {render(m).countLines} lines: {dir}/min.nim"
-  var ru: Rusage
-  discard getrusage(RUSAGE_CHILDREN, addr ru)
-  let cpu = ru.ru_utime.tv_sec.int + ru.ru_stime.tv_sec.int + cpuTime().int
-  log.writeLine &"# end: elapsed_s={epochTime() - t0:.0f} programs={count} distinct={sigs.len} cpu_s={cpu}"
+  log.writeLine &"# end: elapsed_s={epochTime() - t0:.0f} programs={count} distinct={sigs.len}"
   log.close
-  echo &"{count} programs, {sigs.len} signatures, cpu {cpu}s -- {outDir}"
+  echo &"{count} programs, {sigs.len} signatures -- {outDir}"
 
 main()

@@ -530,7 +530,7 @@ proc main() =
   var cnt: seq[string]
   for k, v in counts: cnt.add &"{k}={v}"
   cnt.sort
-  let s = &"seed={seed} programs={total} wall_s={int(wall)} cases_per_s={total.float / wall:.1f} cpu_s={cpuTime():.1f} " &
+  let s = &"seed={seed} programs={total} wall_s={int(wall)} cases_per_s={total.float / wall:.1f} " &
           &"distinct_sigs={seen.len} live_shapes={live.len}/{shapes.len} {cnt.join(\" \")}"
   let f = open(outDir / "summary.txt", fmAppend)
   f.writeLine s

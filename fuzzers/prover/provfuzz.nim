@@ -43,7 +43,7 @@
 ## programs, finding, signature) go to `--out` (default `out/` next to the
 ## binary); compiles happen in `--work`/w<seed> (default `work/`).
 
-import std / [os, osproc, strutils, random, times, parseopt, tables, algorithm, posix]
+import std / [os, osproc, strutils, random, times, parseopt, tables, algorithm]
 
 type
   ExprKind = enum eLeaf, eBin, eCmp, eAnd, eOr, eNot, eCall, eChk, eTrue, eFalse
@@ -1427,10 +1427,6 @@ proc main() =
     let s = seed + k
     found += (if s mod 3 == 2: funcBatch(s) else: soundBatch(s))
     inc k
-  var ru: Rusage
-  discard getrusage(RUSAGE_CHILDREN, addr ru)
-  let cpu = cpuTime() + float(ru.ru_utime.tv_sec) + float(ru.ru_stime.tv_sec)
-  echo k, " modules, ", programs, " programs, ", found, " findings, wall ", int(epochTime() - start), " s, cpu ", int(cpu),
-       " s - ", outDir
+  echo k, " modules, ", programs, " programs, ", found, " findings, wall ", int(epochTime() - start), " s - ", outDir
 
 main()

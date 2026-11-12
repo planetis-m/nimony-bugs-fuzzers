@@ -925,7 +925,6 @@ proc main() =
   for be in backends:
     if be != "c": others.add be
   let t0 = epochTime()
-  let cpu0 = cpuTime()
   var found, invalidCount, programs = 0
   var perBe = initCountTable[string]()
   var seen = initCountTable[string]()    # findings per signature
@@ -985,7 +984,7 @@ proc main() =
     echo &"{int(epochTime() - t0)}s ", line
   events.close()
   echo &"{programs} programs, {found} findings, {invalidCount} invalid (generator), " &
-       &"wall {int(epochTime() - t0)}s, driver cpu {cpuTime() - cpu0:.1f}s — {outDir}"
+       &"wall {int(epochTime() - t0)}s — {outDir}"
   for be, n in perBe: echo &"  {be}: {n} raw findings"
   for sig, n in seen: echo &"  {n}x {sig}"
 

@@ -22,24 +22,39 @@ env:
   NIMONY_REPO: https://github.com/nim-lang/nimony
 
 jobs:
-  build:
+  head:
+    # One commit for every build and fuzz job, even if master moves meanwhile.
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     outputs:
-      commit: ${{ steps.clone.outputs.commit }}
+      commit: ${{ steps.head.outputs.commit }}
     steps:
-      - name: Clone nimony master
-        id: clone
+      - id: head
+        run: echo "commit=$(git ls-remote "$NIMONY_REPO" HEAD | cut -f1)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: head
+    strategy:
+      matrix:
+        include:
+          - { arch: amd64, runner: ubuntu-latest }
+          - { arch: arm64, runner: ubuntu-26.04-arm }
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    env:
+      COMMIT: ${{ needs.head.outputs.commit }}
+    steps:
+      - name: Clone nimony
         run: |
-          git clone -q --depth 1 "$NIMONY_REPO" nimony
-          echo "commit=$(git -C nimony rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          git init -q nimony
+          git -C nimony fetch -q --depth 1 "$NIMONY_REPO" "$COMMIT"
+          git -C nimony checkout -q FETCH_HEAD
 
       - name: Restore the nimony toolchain
         id: toolchain
         uses: actions/cache@v6
         with:
           path: nimony/bin
-          key: nimony-linux-amd64-${{ steps.clone.outputs.commit }}
+          key: nimony-linux-${{ matrix.arch }}-${{ env.COMMIT }}
 
       - if: steps.toolchain.outputs.cache-hit != 'true'
         uses: jiro4989/setup-nim-action@v2
@@ -57,14 +72,16 @@ jobs:
           bin/hastur --release build all
 
   fuzz:
-    needs: build
-    runs-on: ubuntu-latest
+    needs: [head, build]
+    runs-on: ${{ matrix.runner || 'ubuntu-latest' }}
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
         include:
           - { name: backends, src: backends/bfuzz,   run: 'backends/bfuzz --seed:$S --count:1000000 --time:$T --nimony:$N' }
+          # The native backend's AArch64 code generator, which nothing else fuzzes.
+          - { name: backends-arm64, arch: arm64, runner: ubuntu-26.04-arm, src: backends/bfuzz, run: 'backends/bfuzz --seed:$S --count:1000000 --time:$T --nimony:$N' }
           - { name: opt,      src: opt/optfuzz,      run: 'opt/optfuzz --seed:$S --count:1000000 --time:$T --nimony:$N' }
           - { name: closures, src: closures/clofuzz, run: 'timeout $T closures/clofuzz --seed:$S --count:1000000 --nimony:$N' }
           - { name: exc,      src: exc/excfuzz,      run: 'timeout $T exc/excfuzz --seed:$S --count:1000000 --nimony:$N' }
@@ -74,7 +91,7 @@ jobs:
           - { name: prover,   src: prover/provfuzz,  run: 'prlimit --as=4294967296 prover/provfuzz --seed:$S --count:1000000 --minutes:$MIN --nimony:$N' }
     env:
       MIN: ${{ inputs.minutes || '45' }}
-      COMMIT: ${{ needs.build.outputs.commit }}
+      COMMIT: ${{ needs.head.outputs.commit }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -89,7 +106,7 @@ jobs:
       - uses: actions/cache/restore@v6
         with:
           path: nimony/bin
-          key: nimony-linux-amd64-${{ env.COMMIT }}
+          key: nimony-linux-${{ matrix.arch || 'amd64' }}-${{ env.COMMIT }}
           fail-on-cache-miss: true
 
       - uses: jiro4989/setup-nim-action@v2
