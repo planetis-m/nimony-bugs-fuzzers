@@ -33,9 +33,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       commit: ${{ steps.head.outputs.commit }}
+      nim: ${{ steps.head.outputs.nim }}
     steps:
       - id: head
-        run: echo "commit=$(git ls-remote "$NIMONY_REPO" HEAD | cut -f1)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "commit=$(git ls-remote "$NIMONY_REPO" HEAD | cut -f1)" >> "$GITHUB_OUTPUT"
+          # newest Nim 2.4.x: the version setup-nim-action would pick, fixed once for the cache key
+          echo "nim=$(git ls-remote --tags --refs https://github.com/nim-lang/Nim 'refs/tags/v2.4.*' |
+                      sed 's|.*/v||' | sort -V | tail -1)" >> "$GITHUB_OUTPUT"
 
   build:
     needs: head
@@ -73,11 +78,22 @@ jobs:
           7z x -y mingw.7z -o"$RUNNER_TEMP" > /dev/null
           echo "$RUNNER_TEMP/mingw64/bin" >> "$GITHUB_PATH"
 
-      - if: steps.toolchain.outputs.cache-hit != 'true'
+      # setup-nim-action compiles Nim from source except on linux/amd64 and
+      # Windows, and reinstalls every time, so keep its install in a cache.
+      - name: Restore Nim
+        id: nim
+        if: steps.toolchain.outputs.cache-hit != 'true'
+        uses: actions/cache@v6
+        with:
+          path: .nim_runtime
+          key: nim-${{ needs.head.outputs.nim }}-${{ matrix.os }}-${{ matrix.arch }}
+      - if: steps.toolchain.outputs.cache-hit != 'true' && steps.nim.outputs.cache-hit != 'true'
         uses: jiro4989/setup-nim-action@v2
         with:
-          nim-version: 2.4.x
+          nim-version: ${{ needs.head.outputs.nim }}
           repo-token: ${{ github.token }}
+      - if: steps.toolchain.outputs.cache-hit != 'true' && steps.nim.outputs.cache-hit == 'true'
+        run: echo "${{ github.workspace }}/.nim_runtime/bin" >> "$GITHUB_PATH"
 
       - name: Build the nimony toolchain
         if: steps.toolchain.outputs.cache-hit != 'true'
@@ -139,10 +155,21 @@ jobs:
           7z x -y mingw.7z -o"$RUNNER_TEMP" > /dev/null
           echo "$RUNNER_TEMP/mingw64/bin" >> "$GITHUB_PATH"
 
-      - uses: jiro4989/setup-nim-action@v2
+      # setup-nim-action compiles Nim from source except on linux/amd64 and
+      # Windows, and reinstalls every time, so keep its install in a cache.
+      - name: Restore Nim
+        id: nim
+        uses: actions/cache@v6
         with:
-          nim-version: 2.4.x
+          path: .nim_runtime
+          key: nim-${{ needs.head.outputs.nim }}-${{ matrix.os }}-${{ matrix.arch }}
+      - if: steps.nim.outputs.cache-hit != 'true'
+        uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: ${{ needs.head.outputs.nim }}
           repo-token: ${{ github.token }}
+      - if: steps.nim.outputs.cache-hit == 'true'
+        run: echo "${{ github.workspace }}/.nim_runtime/bin" >> "$GITHUB_PATH"
 
       - if: matrix.name == 'arc'
         run: sudo apt-get update -qq && sudo apt-get install -yq --no-install-recommends valgrind
