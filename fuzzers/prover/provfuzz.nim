@@ -1013,13 +1013,33 @@ type
   Err = tuple[ln: int, msg: string]
   Run = tuple[status: string, reached, passed, failed: seq[int], witness: Table[int, string], output: string]
 
+const Exe = when defined(windows): ".exe" else: ""   # executable suffix
+
+proc run(cmd: string; secs: int; dir = ""; errFile = ""): (string, int) =
+  ## `cmd` (one command) through the shell with stdin empty and its output captured (stderr
+  ## too, unless `errFile`); killed after `secs` s, then exit code 124 as with
+  ## timeout(1). Output goes to a file: a full pipe would stall the wait.
+  let f = getTempDir() / "fz" & $getCurrentProcessId() & ".out"
+  let null = when defined(windows): "NUL" else: "/dev/null"
+  var line = cmd & " <" & null & " >" & quoteShell(f) &
+             (if errFile == "": " 2>&1" else: " 2>" & quoteShell(errFile))
+  when defined(windows): line = "cmd /s /c \"" & line & "\""
+  let t = epochTime()
+  let p = startProcess(line, dir, options = {poEvalCommand, poParentStreams})
+  result[1] = p.waitForExit(secs * 1000)
+  if p.running:
+    p.kill
+    discard p.waitForExit
+  if epochTime() - t >= secs.float: result[1] = 124
+  p.close
+  result[0] = readFile(f)
+
 proc build(src, name, cmd: string): (int, string) =
   ## Runs `nimony <cmd>` on `src` saved as <workDir>/<name>.nim; returns (exit code, output).
   writeFile(workDir / name & ".nim", src)
-  let c = "cd " & quoteShell(workDir) & " && timeout -k 5 180 " & quoteShell(nimony) & " " & cmd &
-          " --nimcache:nc_" & name & " " & name & ".nim"
+  let c = quoteShell(nimony) & " " & cmd & " --nimcache:nc_" & name & " " & name & ".nim"
   for _ in 0 .. 1:
-    let (o, rc) = execCmdEx(c)
+    let (o, rc) = run(c, 180, workDir)
     result = (rc, o)
     if rc == 0 or "deps.nif" notin o: break   # known flake (report 08): retry once
 
@@ -1058,14 +1078,14 @@ proc runOracle(src, name: string): Run =
   ## Compile in mode O and run; the program prints R/P/F <id> (reached/passed/failed) and W <id> <input>.
   let (rc, o) = build(src, name, "c")
   result.output = o
-  result.status = if rc in [124, 137]: "timeout" else: "fail"
+  result.status = if rc == 124: "timeout" else: "fail"
   if rc != 0: return
   var exe = ""
   for f in walkDirRec(workDir / "nc_" & name):
-    if f.extractFilename == name: exe = f
-  let (o2, rc2) = execCmdEx("timeout -k 2 60 " & quoteShell(exe))
+    if f.extractFilename == name & Exe: exe = f
+  let (o2, rc2) = run(quoteShell(exe), 60)
   result.output = o2
-  if rc2 in [124, 137]: result.status = "timeout"
+  if rc2 == 124: result.status = "timeout"
   for l in o2.splitLines:
     if l == "END" and rc2 == 0: result.status = "ok"
     elif l.len > 2 and l[0] in "RPFW" and l[1] == ' ':
@@ -1099,7 +1119,7 @@ proc settle(ps: var seq[Node]; nclaims: int; rejected: var Table[int, (int, stri
     let (src, lines) = render(ps, false, nclaims)
     let (rc, o) = build(src, "s", "c")
     if rc == 0: return ("ok", src, o)
-    if rc in [124, 137]: return ("timeout", src, o)
+    if rc == 124: return ("timeout", src, o)
     let es = errors(o, "s")
     if es.len == 0 or crashy(o): return ("crash", src, o)
     var progress = false
@@ -1361,7 +1381,7 @@ proc funcBatch(seed: int): int =
   let (src, ranges) = renderFuncs(cases)
   let (rc, o) = build(src, "f", "check")
   let es = errors(o, "f")
-  if rc in [124, 137] or (rc != 0 and es.len == 0):
+  if rc == 124 or (rc != 0 and es.len == 0):
     discard report("func-crash", seed, 0, "func-crash:" & $rc, src, o)
     return 1
   var msgs = initTable[int, seq[string]]()
@@ -1374,7 +1394,7 @@ proc funcBatch(seed: int): int =
       let (t1, r1) = renderFuncs(@[c])
       let (rc1, o1) = build(t1, "f1", "check")
       let e1 = errors(o1, "f1")
-      if rc1 in [124, 137] or (rc1 != 0 and e1.len == 0):
+      if rc1 == 124 or (rc1 != 0 and e1.len == 0):
         discard report("func-crash", seed, i, "func-crash:" & $rc1, t1, o1)
         inc result
       else: msgs[i] = msgsIn(e1, r1[0], elsewhere = true)

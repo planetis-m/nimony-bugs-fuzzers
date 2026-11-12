@@ -466,7 +466,7 @@ proc main() =
   var counts: CountTable[string]
   var total, fid = 0
   let start = epochTime()
-  while (if count > 0: total < count else: epochTime() - start < minutes * 60):
+  while (count == 0 or total < count) and (minutes == 0 or epochTime() - start < minutes * 60):
     var batch: seq[Case]
     var shapeOf: seq[int]   # -1: a sequence or locked, so it says nothing about one shape
     for b in 0 ..< (if count > 0: min(Batch, count - total) else: Batch):

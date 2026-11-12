@@ -1,7 +1,7 @@
 # optfuzz: shoggoth optimizer differential fuzzer
 
     nim c -d:release -o:optfuzz optfuzz.nim
-    ./optfuzz --seed:1 --count:50 --out:out --work:work [--mode:n] [--time:S] [--noreduce]
+    ./optfuzz --seed:1 --count:50 --out:out --work:work [--mode:n] [--minutes:M] [--noreduce]
     ./optfuzz --seed:N --emit                    # print the program for one seed
 
 Oracle: the same backend with and without the optimizer (`nimony c` vs `nimony c --opt:speed`; `--mode:n` for

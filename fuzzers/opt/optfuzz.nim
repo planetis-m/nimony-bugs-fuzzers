@@ -592,19 +592,42 @@ var nimonyExe = "/home/ageralis/Projects/nimony/bin/nimony"
 var backend = "c"
 var workDir = "work"
 
-proc buildRun(file, tag, extra: string; env = ""): (bool, string) =
+const Exe = when defined(windows): ".exe" else: ""   # executable suffix
+
+proc run(cmd: string; secs: int; dir = ""; errFile = ""): (string, int) =
+  ## `cmd` (one command) through the shell with stdin empty and its output captured (stderr
+  ## too, unless `errFile`); killed after `secs` s, then exit code 124 as with
+  ## timeout(1). Output goes to a file: a full pipe would stall the wait.
+  let f = getTempDir() / "fz" & $getCurrentProcessId() & ".out"
+  let null = when defined(windows): "NUL" else: "/dev/null"
+  var line = cmd & " <" & null & " >" & quoteShell(f) &
+             (if errFile == "": " 2>&1" else: " 2>" & quoteShell(errFile))
+  when defined(windows): line = "cmd /s /c \"" & line & "\""
+  let t = epochTime()
+  let p = startProcess(line, dir, options = {poEvalCommand, poParentStreams})
+  result[1] = p.waitForExit(secs * 1000)
+  if p.running:
+    p.kill
+    discard p.waitForExit
+  if epochTime() - t >= secs.float: result[1] = 124
+  p.close
+  result[0] = readFile(f)
+
+proc buildRun(file, tag, extra: string; disable = ""): (bool, string) =
   ## (compiled, output + exit code, or the compiler's error)
   let dir = workDir / tag
   removeDir(dir)
   createDir(dir)
-  let (outp, code) = execCmdEx(env & quoteShell(nimonyExe) & " " & backend & " " & extra &
-                               " --nimcache:" & quoteShell(dir) & " " & quoteShell(file))
+  if disable != "": putEnv("SHOGGOTH_DISABLE", disable)   # the pass to switch off
+  let (outp, code) = run(quoteShell(nimonyExe) & " " & backend & " " & extra &
+                         " --nimcache:" & quoteShell(dir) & " " & quoteShell(file), 300)
+  if disable != "": delEnv("SHOGGOTH_DISABLE")
   if code != 0: return (false, outp)
   var exe = ""
   for f in walkDirRec(dir):
-    if f.extractFilename == "fz" and fpUserExec in getFilePermissions(f): exe = f
+    if f.extractFilename == "fz" & Exe: exe = f
   if exe.len == 0: return (false, "no executable produced\n" & outp)
-  let (r, rc) = execCmdEx("timeout 10 " & quoteShell(exe) & " 2>&1")
+  let (r, rc) = run(quoteShell(exe), 10)
   (true, r & "\nexit code " & $rc)
 
 proc firstDiffProc(a, b: string): int =
@@ -629,7 +652,7 @@ proc firstDiffProc(a, b: string): int =
       return last + 1
   -1
 
-proc check(src: string; env = ""; knownBase = ""): Result =
+proc check(src: string; disable = ""; knownBase = ""): Result =
   ## Base build vs `--opt:speed` build (with `env`); `knownBase` skips the base build.
   createDir(workDir)
   let file = workDir / "fz.nim"
@@ -637,7 +660,7 @@ proc check(src: string; env = ""; knownBase = ""): Result =
   let (baseOk, baseOut) = if knownBase.len > 0: (true, knownBase) else: buildRun(file, "base", "")
   if not baseOk:
     return Result(outcome: oInvalid, detail: "base build: " & baseOut)
-  let (optOk, optOut) = buildRun(file, "opt", "--opt:speed", env)
+  let (optOk, optOut) = buildRun(file, "opt", "--opt:speed", disable)
   if not optOk:
     # blame the proc nimony names in its error, if any
     var bad = -1
@@ -771,7 +794,7 @@ proc bisectPasses(src: string; target: Result): string =
   var fixes: seq[string] = @[]
   for pass in Passes:
     # the base output is known, so only the opt build reruns
-    let r = check(src, "SHOGGOTH_DISABLE=" & pass & " ", target.baseOut)
+    let r = check(src, pass, target.baseOut)
     if not sameFailure(r, target) and r.outcome != oInvalid: fixes.add pass
   if fixes.len == 0: "none (no single pass disable fixes it)" else: fixes.join(",")
 
@@ -783,7 +806,7 @@ proc main() =
   var nprocs = 6
   var outDir = "out"
   var doReduce = true
-  var timeLimit = 0.0
+  var minutes = 0.0
   var emit = false
   for kind, key, val in getopt():
     case key
@@ -796,7 +819,7 @@ proc main() =
     of "work": workDir = val
     of "budget": reduceBudget = parseInt(val)
     of "noreduce": doReduce = false
-    of "time": timeLimit = parseFloat(val)
+    of "minutes": minutes = parseFloat(val)
     of "emit": emit = true
     else: quit "unknown option: " & key
   if emit:
@@ -807,7 +830,7 @@ proc main() =
   var programs, found, invalidCount = 0
   var seen = initTable[string, string]()   # signature -> first finding
   for k in 0 ..< count:
-    if timeLimit > 0 and epochTime() - start > timeLimit: break
+    if minutes > 0 and epochTime() - start > minutes * 60: break
     let s = seed + k
     var p = generate(s, nprocs)
     let res = check(render(p))

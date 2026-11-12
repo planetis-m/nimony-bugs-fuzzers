@@ -2,7 +2,7 @@
 
 Build: `nim c -d:release -o:closures/clofuzz closures/clofuzz.nim`
 
-Usage: `closures/clofuzz --seed:1 --count:100 [--avoid:citer-in-citer,unused-local-iter] [--out:DIR] [--work:DIR] [--budget:N] [--noreduce]`
+Usage: `closures/clofuzz --seed:1 --count:100 [--minutes:M] [--avoid:citer-in-citer,unused-local-iter] [--out:DIR] [--work:DIR] [--budget:N] [--noreduce]`
 (parallel: several processes with disjoint seed ranges; each needs its own `--work`, default `work/s<seed>`).
 
 Design: `clofuzz.nim` generates random programs over closures, factories, closures in seqs/objects, inline/closure/local

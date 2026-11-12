@@ -1,7 +1,7 @@
 # bfuzz: differential fuzzer across Nimony backends
 
     nim c -d:release -o:bin/bfuzz bfuzz.nim
-    bin/bfuzz --seed:1000000 --count:100 --out:out --work:work [--backends:c,n,l,j,w] [--time:S] [--noreduce]
+    bin/bfuzz --seed:1000000 --count:100 --out:out --work:work [--backends:c,n,l,j,w] [--minutes:M] [--noreduce]
     bin/bfuzz --seed:N --emit                    # print the program for one seed
 
 Extended copy of `nimony/tools/difffuzz.nim`: UB-free random programs, every value printed as a bit pattern,

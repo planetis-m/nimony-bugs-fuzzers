@@ -662,13 +662,34 @@ var backends = @["c", "n", "l", "j", "w"]
 
 type Run = tuple[compiled, ran: bool; output: string]
 
+const Exe = when defined(windows): ".exe" else: ""   # executable suffix
+
+proc run(cmd: string; secs: int; dir = ""; errFile = ""): (string, int) =
+  ## `cmd` (one command) through the shell with stdin empty and its output captured (stderr
+  ## too, unless `errFile`); killed after `secs` s, then exit code 124 as with
+  ## timeout(1). Output goes to a file: a full pipe would stall the wait.
+  let f = getTempDir() / "fz" & $getCurrentProcessId() & ".out"
+  let null = when defined(windows): "NUL" else: "/dev/null"
+  var line = cmd & " <" & null & " >" & quoteShell(f) &
+             (if errFile == "": " 2>&1" else: " 2>" & quoteShell(errFile))
+  when defined(windows): line = "cmd /s /c \"" & line & "\""
+  let t = epochTime()
+  let p = startProcess(line, dir, options = {poEvalCommand, poParentStreams})
+  result[1] = p.waitForExit(secs * 1000)
+  if p.running:
+    p.kill
+    discard p.waitForExit
+  if epochTime() - t >= secs.float: result[1] = 124
+  p.close
+  result[0] = readFile(f)
+
 proc build(be, tag: string): (string, int) =
   ## Compile `<work>/<tag>/fz.nim` with backend `be`: (output, exit code).
   let dir = workDir / tag / be
   removeDir(dir)
   createDir(dir)
-  execCmdEx("timeout 300 " & quoteShell(nimony) & " " & be & " " & flags &
-            " --nimcache:" & quoteShell(dir) & " " & quoteShell(workDir / tag / "fz.nim"))
+  run(quoteShell(nimony) & " " & be & " " & flags & " --nimcache:" & quoteShell(dir) & " " &
+      quoteShell(workDir / tag / "fz.nim"), 300)
 
 proc buildRun(be, tag: string): Run =
   var (outp, code) = build(be, tag)
@@ -681,9 +702,9 @@ proc buildRun(be, tag: string): Run =
     case be
     of "j": (if n == "fz.js": cmd = "node " & quoteShell(f))
     of "w": (if n == "fz.wasm": cmd = "node " & quoteShell(RunWasm) & " " & quoteShell(f))
-    else: (if n == "fz" and fpUserExec in getFilePermissions(f): cmd = quoteShell(f))
+    else: (if n == "fz" & Exe: cmd = quoteShell(f))
   if cmd.len == 0: return (false, false, "no executable produced\n" & outp)
-  let (r, rc) = execCmdEx("timeout 20 " & cmd & " </dev/null")
+  let (r, rc) = run(cmd, 20)
   (true, rc == 0, (if rc == 0: r else: r & "\nexit code " & $rc))
 
 proc runAll(src, tag: string; bes: seq[string]): Table[string, Run] =
@@ -896,7 +917,7 @@ proc main() =
   var nprocs = 12
   var outDir = "bfuzz.out"
   var doReduce = true
-  var timeLimit = 0.0
+  var minutes = 0.0
   var maxReduce = 3
   var emit = false
   for kind, key, val in getopt():
@@ -910,7 +931,7 @@ proc main() =
     of "work": workDir = val
     of "budget": budget = parseInt(val)
     of "noreduce": doReduce = false
-    of "time": timeLimit = parseFloat(val)
+    of "minutes": minutes = parseFloat(val)
     of "backends": backends = val.split(',')
     of "maxreduce": maxReduce = parseInt(val)
     of "emit": emit = true
@@ -931,7 +952,7 @@ proc main() =
   let events = open(outDir / "events.csv", fmAppend)
   events.writeLine "time_s,programs,backend,outcome,signature,seed,file"
   for k in 0 ..< count:
-    if timeLimit > 0 and epochTime() - t0 > timeLimit: break
+    if minutes > 0 and epochTime() - t0 > minutes * 60: break
     let seed = first + k
     var p = generate(seed, nprocs)
     let tag = "s" & $seed

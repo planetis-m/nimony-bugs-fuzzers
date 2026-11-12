@@ -704,6 +704,27 @@ proc noCounts(o: string): string =
     else: result.add l
     result.add '\n'
 
+const Exe = when defined(windows): ".exe" else: ""   # executable suffix
+
+proc run(cmd: string; secs: int; dir = ""; errFile = ""): (string, int) =
+  ## `cmd` (one command) through the shell with stdin empty and its output captured (stderr
+  ## too, unless `errFile`); killed after `secs` s, then exit code 124 as with
+  ## timeout(1). Output goes to a file: a full pipe would stall the wait.
+  let f = getTempDir() / "fz" & $getCurrentProcessId() & ".out"
+  let null = when defined(windows): "NUL" else: "/dev/null"
+  var line = cmd & " <" & null & " >" & quoteShell(f) &
+             (if errFile == "": " 2>&1" else: " 2>" & quoteShell(errFile))
+  when defined(windows): line = "cmd /s /c \"" & line & "\""
+  let t = epochTime()
+  let p = startProcess(line, dir, options = {poEvalCommand, poParentStreams})
+  result[1] = p.waitForExit(secs * 1000)
+  if p.running:
+    p.kill
+    discard p.waitForExit
+  if epochTime() - t >= secs.float: result[1] = 124
+  p.close
+  result[0] = readFile(f)
+
 proc check(src: string; cfgs: seq[string]; valgrind = true): (seq[string], string) =
   ## build + run `src` under each config: (signatures, details)
   var sigs: seq[string]
@@ -715,20 +736,20 @@ proc check(src: string; cfgs: seq[string]; valgrind = true): (seq[string], strin
   writeFile(work / "fz.nim", src)
   for cfg in cfgs:
     let dir = work / cfg
-    let exe = dir / "fz"
+    let exe = dir / "fz" & Exe
     let cmd = nimony & " c " & (if cfg.startsWith("arc"): "--mm:arc" else: "--mm:orc") &
               (if cfg.endsWith("opt"): " --opt:speed" else: "") & " -d:useLibc --nimcache:" & dir &
               " -o:" & exe & " " & work / "fz.nim"
     removeDir dir
-    var (o, rc) = execCmdEx(cmd)
+    var (o, rc) = run(cmd, 300)
     if rc != 0 and "deps.nif" in o:   # known flake, re-run once
       removeDir dir
-      (o, rc) = execCmdEx(cmd)
+      (o, rc) = run(cmd, 300)
     if rc != 0 or not fileExists(exe):
       hit &"cfail:{cfg}:{normErr(o)}"
       details.add &"===== {cfg}\n{o.substr(o.len - 3000)}\n"
       continue
-    let (output, code) = execCmdEx("timeout 120 " & (if valgrind: Valgrind else: "") & exe & " 2>" & dir / "stderr.txt")
+    let (output, code) = run((if valgrind: Valgrind else: "") & exe, 120, errFile = dir / "stderr.txt")
     let errs = readFile(dir / "stderr.txt")
     outs[cfg] = output
     details.add &"===== {cfg} rc={code}\n--- stdout tail\n{output.substr(output.len - 1500)}\n--- stderr tail\n{errs.substr(errs.len - 3000)}\n"
@@ -824,6 +845,7 @@ proc reduce(): string =
 proc main() =
   var seed = int(epochTime() * 1000) mod 1_000_000
   var count = 10
+  var minutes = 0.0
   var outDir = getAppDir() / "out"
   var doReduce = true
   var wantSig = ""
@@ -831,6 +853,7 @@ proc main() =
     case key
     of "seed": seed = parseInt(val)
     of "count": count = parseInt(val)
+    of "minutes": minutes = parseFloat(val)
     of "nimony": nimony = val
     of "out": outDir = val
     of "work": work = val
@@ -847,6 +870,9 @@ proc main() =
   let start = epochTime()
   var found = 0
   for k in 0..<count:
+    if minutes > 0 and epochTime() - start > minutes * 60:   # time budget used up
+      count = k   # programs actually run, for the totals below
+      break
     let progSeed = seed + k
     prog = generate(progSeed)
     only = -1

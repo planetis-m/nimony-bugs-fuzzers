@@ -606,6 +606,27 @@ proc errKey(o: string): string =
   result = result.strip
   if result.len > 110: result.setLen 110
 
+const Exe = when defined(windows): ".exe" else: ""   # executable suffix
+
+proc run(cmd: string; secs: int; dir = ""; errFile = ""): (string, int) =
+  ## `cmd` (one command) through the shell with stdin empty and its output captured (stderr
+  ## too, unless `errFile`); killed after `secs` s, then exit code 124 as with
+  ## timeout(1). Output goes to a file: a full pipe would stall the wait.
+  let f = getTempDir() / "fz" & $getCurrentProcessId() & ".out"
+  let null = when defined(windows): "NUL" else: "/dev/null"
+  var line = cmd & " <" & null & " >" & quoteShell(f) &
+             (if errFile == "": " 2>&1" else: " 2>" & quoteShell(errFile))
+  when defined(windows): line = "cmd /s /c \"" & line & "\""
+  let t = epochTime()
+  let p = startProcess(line, dir, options = {poEvalCommand, poParentStreams})
+  result[1] = p.waitForExit(secs * 1000)
+  if p.running:
+    p.kill
+    discard p.waitForExit
+  if epochTime() - t >= secs.float: result[1] = 124
+  p.close
+  result[0] = readFile(f)
+
 proc verdict(p: Node; cfg: string): string =
   ## "" when the backend agrees with the interpreter, else the failure signature.
   var exp = ""
@@ -616,18 +637,18 @@ proc verdict(p: Node; cfg: string): string =
   createDir dir
   writeFile(dir / "p.nim", render(p))
   for x in walkDirRec(nimcache):  # a stale binary must not pass for a fresh one
-    if x.extractFilename == "p": removeFile x
+    if x.extractFilename == "p" & Exe: removeFile x
   var flags = ""
   for c in Cfgs:
     if c[0] == cfg: flags = c[1]
-  let (o, rc) = execCmdEx(&"timeout 300 {nimony} {flags} --nimcache:{nimcache} {dir / \"p.nim\"}")
+  let (o, rc) = run(&"{nimony} {flags} --nimcache:{nimcache} {dir / \"p.nim\"}", 300)
   var exe = ""
   for x in walkDirRec(nimcache):
-    if x.extractFilename == "p" and fpUserExec in getFilePermissions(x): exe = x
+    if x.extractFilename == "p" & Exe: exe = x
   if rc != 0 or exe == "":
     actual = o
     return cfg & ":cfail:" & (if rc == 124: "timeout" else: errKey(o))
-  let (ro, rrc) = execCmdEx("timeout 20 " & exe)
+  let (ro, rrc) = run(exe, 20)
   actual = ro
   if rrc == 124: cfg & ":timeout"
   elif rrc != 0: cfg & ":crash:" & $rrc
@@ -723,12 +744,14 @@ proc trailer(p: Node): string =
 proc main() =
   var seed = int(epochTime()) mod 1_000_000
   var count = 10
+  var minutes = 0.0
   var outDir = getAppDir() / "out"
   var one = -1
   for kind, key, val in getopt():
     case key
     of "seed": seed = parseInt(val)
     of "count": count = parseInt(val)
+    of "minutes": minutes = parseFloat(val)
     of "nimony": nimony = val
     of "out": outDir = val
     of "work": work = val
@@ -747,6 +770,9 @@ proc main() =
   var found = 0
   var seen: CountTable[string]
   for k in 0 ..< count:
+    if minutes > 0 and epochTime() - t0 > minutes * 60:   # time budget used up
+      count = k   # programs actually run, for the totals below
+      break
     let s = seed + k
     let p = make(s)
     var sigs: seq[string]

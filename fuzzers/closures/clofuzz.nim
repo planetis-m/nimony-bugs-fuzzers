@@ -778,17 +778,37 @@ proc compileSig(o: string): string =
   let t = o.strip
   "failed:" & normalize(t.substr(t.rfind(Newlines) + 1))   # its last line
 
+const Exe = when defined(windows): ".exe" else: ""   # executable suffix
+
+proc run(cmd: string; secs: int; dir = ""; errFile = ""): (string, int) =
+  ## `cmd` (one command) through the shell with stdin empty and its output captured (stderr
+  ## too, unless `errFile`); killed after `secs` s, then exit code 124 as with
+  ## timeout(1). Output goes to a file: a full pipe would stall the wait.
+  let f = getTempDir() / "fz" & $getCurrentProcessId() & ".out"
+  let null = when defined(windows): "NUL" else: "/dev/null"
+  var line = cmd & " <" & null & " >" & quoteShell(f) &
+             (if errFile == "": " 2>&1" else: " 2>" & quoteShell(errFile))
+  when defined(windows): line = "cmd /s /c \"" & line & "\""
+  let t = epochTime()
+  let p = startProcess(line, dir, options = {poEvalCommand, poParentStreams})
+  result[1] = p.waitForExit(secs * 1000)
+  if p.running:
+    p.kill
+    discard p.waitForExit
+  if epochTime() - t >= secs.float: result[1] = 124
+  p.close
+  result[0] = readFile(f)
+
 proc build(src, backend: string): (string, string) =
   ## (executable or "", compiler output); the nimcache is kept between programs.
   let nc = work / backend
   for f in walkDirRec(nc):
-    if f.extractFilename == "prog": removeFile f
-  let (o, rc) = execCmdEx(&"timeout 300 {nimony.quoteShell} {backend} --nimcache:{nc.quoteShell} {src.quoteShell}",
-                          workingDir = work)
+    if f.extractFilename == "prog" & Exe: removeFile f
+  let (o, rc) = run(&"{nimony.quoteShell} {backend} --nimcache:{nc.quoteShell} {src.quoteShell}", 300, work)
   if rc == 124: return ("", "compile-timeout")
   if rc == 0:
     for f in walkDirRec(nc):
-      if f.extractFilename == "prog" and fpUserExec in getFilePermissions(f): return (f, o)
+      if f.extractFilename == "prog" & Exe: return (f, o)
   ("", o)
 
 proc check(p: seq[Node]; expected: seq[string]; want = ""): seq[(string, string)] =
@@ -803,7 +823,7 @@ proc check(p: seq[Node]; expected: seq[string]; want = ""): seq[(string, string)
       result.add (b & ":compile:" & (if o == "compile-timeout": o else: compileSig(o)), o)
       if b == "c": break     # broken for the native backend too
       continue
-    let (text, rc) = execCmdEx("timeout 15 " & exe.quoteShell)
+    let (text, rc) = run(exe.quoteShell, 15)
     var got = text.splitLines
     if got.len > 0 and got[^1] == "": got.setLen(got.len - 1)
     if rc == 124: result.add (b & ":run-timeout", text)
@@ -865,12 +885,14 @@ proc reduce(p: seq[Node]; sig: string): seq[Node] =
 proc main() =
   var seed = 1
   var count = 10
+  var minutes = 0.0
   var outDir = getAppDir() / "out"
   var doReduce = true
   for kind, key, val in getopt():
     case key
     of "seed": seed = parseInt(val)
     of "count": count = parseInt(val)
+    of "minutes": minutes = parseFloat(val)
     of "nimony": nimony = val
     of "out": outDir = val
     of "work": work = val
@@ -888,6 +910,9 @@ proc main() =
   if log.getFileSize == 0: log.writeLine "time_s,programs,finding_id,signature"
   var sigs: Table[string, int]
   for k in 0 ..< count:
+    if minutes > 0 and epochTime() - t0 > minutes * 60:   # time budget used up
+      count = k   # programs actually run, for the totals below
+      break
     let s = seed + k
     var p: seq[Node]
     var expected: seq[string]

@@ -2,7 +2,7 @@
 
 Build: `nim c -d:release -o:exc/excfuzz exc/excfuzz.nim`
 
-Usage: `exc/excfuzz --seed:1000 --count:50` (`--one:SEED` prints a program and its expected trace;
+Usage: `exc/excfuzz --seed:1000 --count:50 [--minutes:M]` (`--one:SEED` prints a program and its expected trace;
 `--allow:1234` re-enables shapes of known findings 01-05; `--budget:0` skips reduction).
 
 Design: one file. A random program tree (try/except/finally, defer, raise/re-raise, return/break/continue in try
