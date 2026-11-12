@@ -16,6 +16,13 @@ Build and run one (host Nim 2.x, a built nimony):
 Runs are deterministic from `--seed`; for parallelism start several processes with different seed
 ranges and separate `--out` dirs.
 
+## Fuzzing in CI
+
+`.github/workflows/fuzz.yml` builds nimony master every third day and runs six fuzzers (not the prover)
+for a few minutes each on fresh seeds; run it by hand with `gh workflow run fuzz -f minutes=8`. Findings
+are uploaded as the `fuzz-out` artifact, and the run summary lists every finding line not matched by
+`known.txt`. Add a bug's signature there once it has an issue.
+
 ## Closing issues
 
 A nimony PR or commit that says `Fixes planetis-m/nimony-bugs-fuzzers#N` closes issue N here once it is

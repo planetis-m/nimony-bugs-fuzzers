@@ -1,0 +1,3 @@
+# Signatures of known bugs, one per line. The fuzz workflow's summary hides every
+# finding line that contains one of these strings (plain substring match).
+# Lines starting with # and blank lines are ignored.
