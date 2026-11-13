@@ -143,8 +143,7 @@ proc clone(n: Node): Node =
 proc splice(l: var seq[Node]; n: Node; by: seq[Node]): bool =
   let j = l.find(n)
   if j >= 0:
-    l.delete(j)
-    for k, x in by: l.insert(x, j + k)
+    l[j .. j] = by
   j >= 0
 proc subst(root, n: Node; by: seq[Node] = @[]): bool =
   ## Replaces `n` by `by` wherever it hangs below `root` (deletes it by default).
