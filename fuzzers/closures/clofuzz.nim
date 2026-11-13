@@ -861,10 +861,10 @@ proc shrink(l: var seq[Node]): bool =
     while i < l.len:
       let stop = min(i + chunk, l.len)
       let saved = l[i ..< stop]
-      for _ in i ..< stop: l.delete(i)
+      l[i ..< stop] = newSeq[Node]()
       if fails(): result = true
       else:
-        for j, s in saved: l.insert(s, i + j)
+        l[i ..< i] = saved
         i += chunk
     chunk = chunk div 2
   for s in l:
