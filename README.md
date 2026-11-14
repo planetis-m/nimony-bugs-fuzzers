@@ -25,5 +25,5 @@ by `known.txt`. Add a bug's signature there once it has an issue.
 
 ## Closing issues
 
-A nimony PR or commit that says `Fixes planetis-m/nimony-bugs-fuzzers#N` closes issue N here once it is
-merged: `.github/workflows/close-fixed.yml` runs `scripts/close_fixed.py` daily (or run it by hand: `gh workflow run close-fixed`).
+An issue is closed once its reproducers give the expected behaviour on nimony master; the closing
+comment names the commit they were checked at.
