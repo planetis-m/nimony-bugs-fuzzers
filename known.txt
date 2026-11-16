@@ -3,3 +3,182 @@
 # Lines starting with # and blank lines are ignored.
 # planetis-m/nimony-bugs-fuzzers#65: native {.keepOverflowFlag.} on int8/int16/int32 crashes arkham
 keepovf for sub-
+
+# --- backends (bfuzz) ---
+# planetis-m/nimony-bugs-llms#222: LLVM "use of undefined value" (every LLVM program)
+use of undefined value '%L#'
+# planetis-m/nimony-bugs-fuzzers#57: JS/wasm with optimizer, folded keepovf operand crashes jorogumo
+j:compileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor at TagLit
+w:compileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor at TagLit
+# planetis-m/nimony-bugs-fuzzers#58: JS/wasm case on a non-int selector
+jorogumo: unsupported case label: TagLit
+# planetis-m/nimony-bugs-fuzzers#67: native x - x etc. reach nifasm with identical register operands
+with identical register operands
+# planetis-m/nimony-bugs-fuzzers#62: arkham runs out of staging registers
+no staging register for an unsigned int→float sticky bit
+# planetis-m/nimony-bugs-fuzzers#66: folded keepovf operand (arm64: arkham assertion)
+keepovf op not yet supported:
+# planetis-m/nimony-bugs-fuzzers#89: arm64 mod with a narrow literal dividend
+got (i #) at ??? (kind=TagLit; tag=(mov)
+# planetis-m/nimony-bugs-fuzzers#90: arm64 variable shift destination aliases the count register
+variable shift whose destination aliases the count register
+
+# --- closures (clofuzz) ---
+# planetis-m/nimony-bugs-fuzzers#33 / #37: closure-typed local captured, called by its owner / closure local in a closure iterator
+could not find symbol: ID.N
+# planetis-m/nimony-bugs-fuzzers#31: nested closure iterator inside a closure iterator
+could not find symbol: `coroResult.
+body did not consume all
+# planetis-m/nimony-bugs-fuzzers#37: closure literal in a closure iterator
+Symbol not found in NIF module: `anonproc.
+# planetis-m/nimony-bugs-fuzzers#41 (and #31's bare `(tupat`): raising call in a local raising closure iterator
+could not compute type of: (tupat
+callee type not params at prog.nim(N; N): ErrorCode.
+callee type not params at prog.nim(N; N): (auto)
+callCanRaise: callee type not params at prog.nim(N; N): (closureTuple
+# planetis-m/nimony-bugs-fuzzers#32: unused capturing local closure iterator in a closure
+captured param but no environment access
+# planetis-m/nimony-bugs-fuzzers#38: local iterator declared in a `for` body over an inline iterator
+`state != -N`
+error: duplicate member
+could not find symbol: `iir`
+# planetis-m/nimony-bugs-fuzzers#39: local closure iterator iterated in a returned closure
+envp should have been eliminated
+# planetis-m/nimony-bugs-fuzzers#42: local closure iterator calling a captured closure local
+could not find symbol: `llTemp.
+could not find symbol: `ep.
+undeclared (first use
+# planetis-m/nimony-bugs-fuzzers#35: nested routine in an inline iterator inlined twice
+error: redefinition of
+could not compute type of: (dot
+# planetis-m/nimony-bugs-fuzzers#36: closure in an inline iterator used from a closure iterator
+Symbol not found in NIF module: `iir.
+# planetis-m/nimony-bugs-fuzzers#34: routine with a `for` inside an inlined body (ii.N names and labels collide)
+could not find symbol: `ii.N
+`continue` outside of a `loop`
+trackers.nim(N; N)
+lab/jmp operand is not a symbol
+statement not eliminated: for
+`n.isTagLit`
+error: invalid initializer
+error: request for member
+trCall: callee type not params at prog.nim(N; N): (closureTuple
+callee type not params at prog.nim(N; N): (i N)
+makes integer from pointer without a cast
+assigning to type ‘ID’ {aka ‘long int’} from type ‘ID’
+assigning to type ‘ID’ from type ‘long int’
+# planetis-m/nimony-bugs-fuzzers#44: capturing an enclosing iterator's locals
+capturing the locals of an enclosing iterator is not supported
+could not find symbol: `this.
+# planetis-m/nimony-bugs-fuzzers#40: loop var of a raising closure iterator in another closure-iterator call
+error: invalid operands to binary
+error: incompatible type for argument N of
+# planetis-m/nimony-bugs-fuzzers#43: segfault, raising closure iterator with try around an inlined loop creating closures
+c:exit139:
+# planetis-m/nimony-bugs-fuzzers#85: captured inline-iterator param passed to a closure-iterator call
+could not find symbol: `lf.
+# planetis-m/nimony-bugs-fuzzers#86: for over a raising closure iterator inside a closure iterator
+from incompatible pointer type
+# planetis-m/nimony-bugs-fuzzers#87: raising closure iterator declared in a for body
+assigning to type ‘ID’ from type ‘ID’ {aka ‘long int’}
+assigning to type ‘ID’ from type ‘long long int’
+
+# --- nifasm (asmfuzz) ---
+# planetis-m/nimony-bugs-fuzzers#74: div/idiv divisor in RDX (the hazard verdict exists only for this)
+hazard | 
+# planetis-m/nimony-bugs-llms#201: ALU immediate outside int32 crashes with RangeDefect
+:: Error: unhandled exception: value out of range
+# planetis-m/nimony-bugs-llms#217: lock RMW on a narrow memory operand with an immediate rejected
+and (lit 64)
+# planetis-m/nimony-bugs-fuzzers#72: clflush register form accepted, memory form rejected
+| (clflush 
+# planetis-m/nimony-bugs-fuzzers#70: cmpxchg8b encoded as cmpxchg16b
+| (cmpxchg8b 
+# planetis-m/nimony-bugs-fuzzers#69: lock RMW on a narrow memory operand widened to 64 bits
+accepts-invalid | (lock (
+mismatch | (lock (
+# planetis-m/nimony-bugs-fuzzers#71: memory (or immediate) operand of prefetch/movfq/movfd/cvt* replaced by rax
+| (prefetcht
+accepts-invalid | (movf
+mismatch | (movf
+accepts-invalid | (cvt
+mismatch | (cvt
+# planetis-m/nimony-bugs-fuzzers#76: shift/rotate/bt immediate counts truncated (reg-reg width pairs: #75)
+accepts-invalid | (sa
+accepts-invalid | (sh
+accepts-invalid | (ro
+accepts-invalid | (rc
+accepts-invalid | (bt
+# planetis-m/nimony-bugs-fuzzers#75: operand-width mismatches accepted (ALU, mov, cmov, xadd/xchg/cmpxchg, SSE memory widths, setcc on r64, truncated immediates)
+accepts-invalid | (add
+accepts-invalid | (adc 
+accepts-invalid | (and 
+accepts-invalid | (sub
+accepts-invalid | (sbb 
+accepts-invalid | (or 
+accepts-invalid | (xor 
+accepts-invalid | (cmp
+accepts-invalid | (test 
+accepts-invalid | (mov
+accepts-invalid | (cmov
+accepts-invalid | (bs
+accepts-invalid | (xadd 
+accepts-invalid | (xchg 
+accepts-invalid | (popcnt 
+accepts-invalid | (comis
+accepts-invalid | (mul
+accepts-invalid | (div
+accepts-invalid | (sqrts
+mismatch | (set
+# planetis-m/nimony-bugs-fuzzers#73: narrow cast ignored (mul/div/imul/rotate/bt/push/movzx/movsx, mem-raw ALU with a narrow source)
+accepts-invalid | (imul 
+accepts-invalid | (push 
+mismatch | (mul 
+mismatch | (div 
+mismatch | (idiv 
+mismatch | (imul 
+mismatch | (push 
+mismatch | (rol 
+mismatch | (ror 
+mismatch | (bt
+mismatch | (movsx 
+mismatch | (movzx 
+mismatch | (mov (mem 
+mismatch | (add 
+mismatch | (adc 
+mismatch | (and 
+mismatch | (sub 
+mismatch | (sbb 
+mismatch | (or 
+mismatch | (xor 
+mismatch | (cmp 
+mismatch | (test 
+# planetis-m/nimony-bugs-fuzzers#84: 32-bit memory mov of an unsigned 32-bit immediate rejected
+Immediate too large for memory move
+# Known nifasm gaps (fuzzers/nifasm/findings/09.md): unsupported forms, not bugs
+:: [Error] Expected memory destination
+not supported yet
+cannot be memory
+must be a register
+Unsupported instruction for LOCK prefix
+needs a 64-bit operand
+has no sub-width form
+Rotate count must be immediate or CL
+expected xmm register or float variable
+popcnt width must be
+
+# --- arc (arcfuzz) ---
+# planetis-m/nimony-bugs-fuzzers#46: ORC never collects a self-cycle (the generator makes one under gcOrc)
+leak:orc
+# planetis-m/nimony-bugs-fuzzers#47: lent call in a constructor dup'ed after its source moved
+err:dup from dead
+
+# --- opt (optfuzz) ---
+# planetis-m/nimony-bugs-fuzzers#51 / #92: CSE keeps a load across an aliasing store (var/ptr params; addr of a local)
+cse]
+# planetis-m/nimony-bugs-fuzzers#50: inliner substitutes p[]/a local for a by-value param
+mismatch [imi]
+
+# --- prover (provfuzz) ---
+# planetis-m/nimony-bugs-fuzzers#80: `addr p[].x` and similar rejected
+invalid expression for `addr` operation
