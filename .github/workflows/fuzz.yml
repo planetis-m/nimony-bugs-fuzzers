@@ -121,7 +121,10 @@ jobs:
           - { name: opt,      src: opt/optfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N' }
           - { name: closures, src: closures/clofuzz, os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N' }
           - { name: exc,      src: exc/excfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N' }
-          - { name: arc,      src: arc/arcfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N' }
+          # The reducer can delete a loop's counter step; a candidate that then allocates without
+          # bound took the whole runner down, so cap it too (valgrind fits in 4 GiB).
+          - { name: arc,      src: arc/arcfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N',
+              pre: 'prlimit --as=4294967296' }
           - { name: nifasm,   src: nifasm/asmfuzz,   os: linux, arch: amd64, runner: ubuntu-latest, args: '--nifasm:$NB/nifasm' }
           # 4 GiB address-space cap per process (children inherit it), as the old prover had.
           - { name: prover,   src: prover/provfuzz,  os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N',
