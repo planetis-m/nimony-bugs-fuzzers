@@ -190,7 +190,8 @@ jobs:
         continue-on-error: true
         run: |
           NB=$GITHUB_WORKSPACE/nimony/bin; N=$NB/nimony
-          S=$(( $(date +%s) / 86400 * 1000 ))   # fresh seeds each day
+          # fresh seeds each day and each run: two runs on one day must not repeat each other
+          S=$(( $(date +%s) / 86400 * 100000 + ${{ github.run_number }} % 100 * 1000 ))
           nim c -d:release --hints:off ${{ matrix.src }}.nim
           ${{ matrix.pre }} ${{ matrix.src }} --seed:$S --count:1000000 --minutes:$MIN ${{ matrix.args }} \
             --out:$RUNNER_TEMP/out --work:$RUNNER_TEMP/work
