@@ -61,7 +61,7 @@ const
   Cond = "e z ne nz a nbe ae nb nc b nae c be na g nle ge nl l nge le ng o no s ns p np pe po".split
   SetCond = "e z ne nz a nbe ae nb nc b nae c be na g nle ge nl l nge le ng o s p".split
   Slots = "r8 r16 r32 r64 m8 m16 m32 m64 mraw i x cl".split  ## operand shapes, see `randOp`
-  Unary = "inc dec neg not push pop mul div idiv setcc bswap clflush prefetcht0 cmpxchg8b lea".split
+  Unary = "inc dec neg not push pop mul div idiv setcc clflush prefetcht0 cmpxchg8b lea".split  # bswap: needs its width, see shapePool
   Binary = ("add sub and or xor cmp test adc sbb mov shl shr sal sar rol ror rcl rcr bt bts btr btc " &
     "xchg cmpxchg xadd bsf bsr imul lea cmovcc addsd subsd mulsd divsd movsd sqrtsd comisd " &
     "addss subss mulss divss movss sqrtss comiss movapd movdqu movupd movups addpd subpd mulpd " &
@@ -108,10 +108,26 @@ proc render(it: Instr): (string, string) =
     return ("(lock " & n & ")", "lock " & g)
   var ns, gs: seq[string]
   var num = -1   # bare trailing int (a width); as has no operand for it
+  var hasXmm = false
   for o in ops:
-    let (n, g) = renderOp(o)
+    if o.kind == 'x': hasXmm = true
+  for o in ops:
+    var (n, g) = renderOp(o)
+    # an uncast `(mem ..)` is a 64-bit operand to nifasm ("(i 64)"); say so to as,
+    # which otherwise calls it ambiguous or takes the register's width
+    if o.kind == 'm' and o.bits == 0 and not hasXmm and mn notin ["lea", "prefetcht0", "clflush"]:
+      g = "qword ptr " & g
     ns.add n
     if o.kind == 'n': num = o.val else: gs.add g
+  # nifasm's shift/rotate count register is RCX whatever its cast: it means CL
+  if mn in ["shl", "shr", "sal", "sar", "rol", "ror", "rcl", "rcr"] and ops.len == 2 and
+      ops[1].kind == 'r' and ops[1].reg == 1:
+    gs[1] = "cl"
+  # the width operand of popcnt/movzx/movsx sizes an uncast register source
+  if mn in ["popcnt", "movzx", "movsx"] and num in [8, 16, 32] and ops.len >= 2 and
+      ops[1].kind == 'r' and ops[1].bits == 64:
+    gs[1] = regs(num)[ops[1].reg]
+    if mn == "popcnt": gs[0] = regs(num)[ops[0].reg]
   var nif = "(" & mn & (if ns.len > 0: " " & ns.join(" ") else: "") & ")"
   var gm = mn
   case mn
@@ -296,6 +312,17 @@ proc normalize(l: string): string =
     if result.len > 0: result.add ' '
     result.add w
   result = result.replace("+0x0]", "]").replace("data16 ", "")
+  # equivalent spellings: `shl r,1` (D1) vs `shl r,0x1` (C1 ib), `xchg a,b` vs `xchg b,a`,
+  # `lea a,[b]` vs `mov a,b`
+  if result.endsWith(",1"): result = result[0 ..< ^2] & ",0x1"
+  let sp = result.find(' ')
+  let c = result.find(',')
+  if sp > 0 and c > sp and result.find(',', c + 1) < 0:
+    let (op, a, b) = (result[0 ..< sp], result[sp + 1 ..< c], result[c + 1 .. ^1])
+    if op == "xchg" and '[' notin a and '[' notin b and b < a: result = "xchg " & b & "," & a
+    elif op == "lea" and b.len > 2 and b[0] == '[' and b[^1] == ']' and
+        b[1 ..< ^1].allCharsInSet(Letters + Digits):
+      result = "mov " & a & "," & b[1 ..< ^1]
 
 proc disasm(bs: seq[string]): seq[seq[string]] =
   ## one objdump call for all byte strings
@@ -323,11 +350,25 @@ proc disasm(bs: seq[string]): seq[seq[string]] =
       if e >= 0 and l[e] == ':': result[cur].add normalize(l.substr(t2 + 1))
 
 proc isNop(s: string): bool =
-  ## `nop` or `lea r, [r]`, where nifasm may emit nothing
+  ## `nop`, `lea r, [r]` (normalised to `mov r,r`), or a move of a 64-bit or xmm
+  ## register to itself, where nifasm may emit nothing
   if s == "nop": return true
-  if not s.startsWith("lea "): return false
+  let sp = s.find(' ')
   let c = s.find(',')
-  c >= 0 and s.find(',', c + 1) < 0 and s.substr(c + 1) == "[" & s.substr(4, c - 1) & "]"
+  if sp < 0 or c < sp or s.find(',', c + 1) >= 0: return false
+  let (op, a, b) = (s[0 ..< sp], s[sp + 1 ..< c], s[c + 1 .. ^1])
+  a == b and (op == "mov" and a in R64 or op in ["movss", "movsd", "movaps", "movapd"])
+
+proc immTooWide(c: Case): bool =
+  ## an immediate that fits neither the signed nor the unsigned range of its
+  ## memory operand's width, which GNU as truncates without a word
+  for (mn, ops) in c:
+    var bits = 0
+    for o in ops:
+      if o.kind == 'm' and o.bits > 0: bits = o.bits
+    for o in ops:
+      if o.kind == 'i' and bits in [8, 16, 32] and
+          (o.val < -(1 shl (bits - 1)) or o.val > (1 shl bits) - 1): return true
 
 proc eval(cs: seq[Case]): seq[Outcome] =
   ## runs both assemblers on the batch, objdump only where the bytes differ
@@ -340,6 +381,7 @@ proc eval(cs: seq[Case]): seq[Outcome] =
   for i, r in result.mpairs:
     r.verdict = if not r.nifOk and not r.gasOk: "ok"
                 elif not r.nifOk and "does not fit a" in r.nifErr: "ok"   # as truncates the immediate silently
+                elif not r.nifOk and "Immediate too large" in r.nifErr and immTooWide(cs[i]): "ok"   # likewise
                 elif not r.nifOk: "rejects-valid"
                 elif not r.gasOk: "accepts-invalid"
                 elif r.nifBytes == r.gasBytes: "ok"
