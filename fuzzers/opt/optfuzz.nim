@@ -619,7 +619,10 @@ proc buildRun(file, tag, extra: string; disable = ""): (bool, string) =
   removeDir(dir)
   createDir(dir)
   if disable != "": putEnv("SHOGGOTH_DISABLE", disable)   # the pass to switch off
-  let (outp, code) = run(quoteShell(nimonyExe) & " " & backend & " " & extra &
+  # gcc contracts a*b+c into an FMA at -O3 (--opt:speed) on targets that have one, but not at the
+  # base build's -O1: the builds then differ in float rounding, not because of shoggoth
+  let fp = if backend == "c": " --passC:-ffp-contract=off" else: ""
+  let (outp, code) = run(quoteShell(nimonyExe) & " " & backend & fp & " " & extra &
                          " --nimcache:" & quoteShell(dir) & " " & quoteShell(file), 300)
   if disable != "": delEnv("SHOGGOTH_DISABLE")
   if code != 0: return (false, outp)
