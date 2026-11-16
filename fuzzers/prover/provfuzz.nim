@@ -795,7 +795,11 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
       ex = @[g.pick([bin("-", hi, num(1)), g.small]), g.pick([lo, num(0), num(1)])]
     g.lets.add kv
     g.loops.add "for"
+    # a seq grown in a loop over its own length, under a fueled `while`, grows geometrically:
+    # the oracle then times out or runs out of memory (odd:oracle-timeout / odd:oracle-fail)
+    inc g.nogrow
     let kids = g.body(depth, @[], @[(kv, c)])
+    dec g.nogrow
     discard g.loops.pop
     g.lets.delete(g.lets.find(kv))
     return @[Node(kind: nFor, fmt: fmt, exprs: ex, kids: kids)]
