@@ -397,8 +397,11 @@ proc eval(cs: seq[Case]): seq[Outcome] =
     let r = addr result[i]
     r.nifAsm = ds[2*j]
     r.gasAsm = ds[2*j + 1]
-    r.verdict = if r.nifBytes.len == 0 and r.gasAsm.len > 0 and isNop(r.gasAsm[0]): "ok"
-                elif r.nifAsm == r.gasAsm: "ok"
+    # nifasm may drop a no-op (a self-move) anywhere in the sequence, so compare without as's
+    var gasReal: seq[string]
+    for g in r.gasAsm:
+      if not isNop(g): gasReal.add g
+    r.verdict = if r.nifAsm == r.gasAsm or r.nifAsm == gasReal: "ok"
                 else: "mismatch"
 
 proc errKey(e: string): string =
