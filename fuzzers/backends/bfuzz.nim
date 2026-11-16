@@ -688,7 +688,10 @@ proc build(be, tag: string): (string, int) =
   let dir = workDir / tag / be
   removeDir(dir)
   createDir(dir)
-  run(quoteShell(nimony) & " " & be & " " & flags & " --nimcache:" & quoteShell(dir) & " " &
+  # the C oracle must round each float op separately like the other backends: clang/gcc on
+  # arm64 contract `a*b - c` into an FMA by default (seed 2077311029 on macOS)
+  let extra = if be == "c": " --passC:-ffp-contract=off" else: ""
+  run(quoteShell(nimony) & " " & be & " " & flags & extra & " --nimcache:" & quoteShell(dir) & " " &
       quoteShell(workDir / tag / "fz.nim"), 300)
 
 proc buildRun(be, tag: string): Run =
