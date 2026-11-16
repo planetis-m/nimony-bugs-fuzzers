@@ -12,4 +12,3 @@ nested arrays, `case`, `while`/`break`/`continue`, strings. Raw findings go to `
 deletes statements while the failure persists. Run several processes on disjoint `--seed` ranges for parallelism.
 
 `findings/`: one `NN.md` per distinct bug, `log.csv` (find-rate of the 2026-11-10 run), `repros/`.
-`old/`: the campaign's runs, one-off scripts and the original difffuzz.
