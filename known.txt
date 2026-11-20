@@ -10,12 +10,21 @@ use of undefined value '%L#'
 # planetis-m/nimony-bugs-fuzzers#57: JS/wasm with optimizer, folded keepovf operand crashes jorogumo
 j:compileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor at TagLit
 w:compileFails:Error: unhandled exception: nifcore.nim(#; #) `c.load.kind == TagLit` into requires cursor at TagLit
+jorogumo: keepovf on unsupported op: suf
 # planetis-m/nimony-bugs-fuzzers#58: JS/wasm case on a non-int selector
 jorogumo: unsupported case label: TagLit
 # planetis-m/nimony-bugs-fuzzers#67: native x - x etc. reach nifasm with identical register operands
 with identical register operands
 # planetis-m/nimony-bugs-fuzzers#62: arkham runs out of staging registers
 no staging register for an unsigned int→float sticky bit
+no staging register for a sub-width operand
+# planetis-m/nimony-bugs-fuzzers#109: magic-division multiplier staging (also listed in #62)
+no staging register for a magic-division multiplier
+# planetis-m/nimony-bugs-fuzzers#55: LLVM backend, nested case + 2-D array under -d:danger
+[Error] node is not a type: (err)
+# planetis-m/nimony-bugs-fuzzers#116: arkham drops a label after an ite arm that starts with a jmp
+Unknown or invalid symbol: ´blk
+Unknown or invalid symbol: ´lc
 # planetis-m/nimony-bugs-fuzzers#66: folded keepovf operand (arm64: arkham assertion)
 keepovf op not yet supported:
 # planetis-m/nimony-bugs-fuzzers#89: arm64 mod with a narrow literal dividend
@@ -172,6 +181,8 @@ popcnt width must be
 leak:orc
 # planetis-m/nimony-bugs-fuzzers#47: lent call in a constructor dup'ed after its source moved
 err:dup from dead
+# planetis-m/nimony-bugs-fuzzers#114: lent call result dup'ed after a later argument moved its source
+err:use of moved
 
 # --- opt (optfuzz) ---
 # planetis-m/nimony-bugs-fuzzers#51 / #92: CSE keeps a load across an aliasing store (var/ptr params; addr of a local)
