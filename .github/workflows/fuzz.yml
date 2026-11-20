@@ -118,9 +118,15 @@ jobs:
       matrix:
         include:
           - { name: backends, src: backends/bfuzz,   os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N' }
-          - { name: opt,      src: opt/optfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N' }
-          - { name: closures, src: closures/clofuzz, os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N' }
-          - { name: exc,      src: exc/excfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N' }
+          # A compile that times out is killed through its shell only, so a runaway compiler
+          # process lives on and keeps growing (a closures shoggoth reached 4.7 GB in 20 s and
+          # the reducer's retries took the runner down): cap these at 4 GiB as well.
+          - { name: opt,      src: opt/optfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N',
+              pre: 'prlimit --as=4294967296' }
+          - { name: closures, src: closures/clofuzz, os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N',
+              pre: 'prlimit --as=4294967296' }
+          - { name: exc,      src: exc/excfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N',
+              pre: 'prlimit --as=4294967296' }
           # The reducer can delete a loop's counter step; a candidate that then allocates without
           # bound took the whole runner down, so cap it too (valgrind fits in 4 GiB).
           - { name: arc,      src: arc/arcfuzz,      os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N',
