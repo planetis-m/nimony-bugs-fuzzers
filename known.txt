@@ -84,6 +84,10 @@ lab/jmp operand is not a symbol
 # the same collision as an unlabeled `ii` jump target (native) and a C return-type clash (CI run 45844034856)
 Symbol is not a label
 incompatible types when returning type
+Unknown or invalid symbol: `ii.
+Jump target must be label
+# planetis-m/nimony-bugs-fuzzers#120: native, `except ErrorCode as e` in an inline iterator inlined into a closure
+getOrQuit: missing key
 statement not eliminated: for
 `n.isTagLit`
 error: invalid initializer
@@ -181,6 +185,8 @@ mismatch | (cmp
 mismatch | (test 
 # planetis-m/nimony-bugs-fuzzers#84: 32-bit memory mov of an unsigned 32-bit immediate rejected
 Immediate too large for memory move
+# ... and since the llms#201 fix the ALU memory forms and three-operand imul (comment on #84)
+Immediate too large (must fit in 32 bits)
 # Known nifasm gaps (fuzzers/nifasm/findings/09.md): unsupported forms, not bugs
 :: [Error] Expected memory destination
 not supported yet

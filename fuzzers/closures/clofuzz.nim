@@ -771,8 +771,10 @@ proc normalize(s: string): string =
 
 proc compileSig(o: string): string =
   ## The first line matching the most telling pattern, normalized.
-  # `[Error] ` is how shoggoth, arkham and nifasm report; nifmake's FAILURE line names none of it
-  for pat in ["[Bug]", "Error: unhandled exception: ", "SIGSEGV", "Assertion", "[Error] ", "error: ", "Error: "]:
+  # `[Error] ` is how shoggoth, arkham and nifasm report, `getOrQuit: ` a failed nifasm lookup;
+  # nifmake's FAILURE line names none of it
+  for pat in ["[Bug]", "Error: unhandled exception: ", "SIGSEGV", "Assertion", "[Error] ", "getOrQuit: ",
+              "error: ", "Error: "]:
     for l in o.splitLines:
       let p = l.find(pat)
       if p >= 0: return normalize(l.substr(p))
