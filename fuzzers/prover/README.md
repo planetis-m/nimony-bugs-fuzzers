@@ -2,7 +2,7 @@
 
 Build: `nim c -d:release -o:prover/provfuzz prover/provfuzz.nim`
 
-Usage: `prover/provfuzz --seed:1 --count:20 [--minutes:45] [--out:DIR] [--work:DIR] [--budget:150] [--noreduce] [--nimony:PATH]`
+Usage: `prover/provfuzz --seed:1 --count:20 [--minutes:45] [--mode:bounds] [--out:DIR] [--work:DIR] [--budget:150] [--noreduce] [--nimony:PATH]`
 (run several processes with different seed ranges for parallelism; findings + `log.csv` go to `--out`, default `prover/out/`).
 Cap memory per process (children inherit it): `prlimit --as=4294967296 prover/provfuzz ...`
 
@@ -15,6 +15,10 @@ Design (details in the doc comment at the top of `provfuzz.nim`):
 * Oracle: settle under staticContracts (delete every rejected claim until it compiles), then run the proved
   claims as run-time tests on ~4000 inputs: proved-but-fails = unsound. Also false-violation, incomplete
   (`incomplete.log`), crash.
+* `--mode:bounds`: bounds-check elimination in the default contract mode. Run-time checks only (no assert, assume,
+  ensures or range), plus stores of extreme values (fuzzers#93) and, in flavour A, `for` bounds the body writes
+  (llms#164). Mode O finds a witness for every failing check; it replays in runtimeContracts (every check kept) and in
+  the default and `-d:release` builds. A build whose output differs ran past the check: `unchecked/<flavour>:<check>:<tags> [<builds>]`.
 * Classifier: signature = flavour, claim kind, shared variables named, known-bug constructs present.
 * Reducer: delta debugging over the statement tree and sub-expressions; writes `*.reduced.nim`.
 

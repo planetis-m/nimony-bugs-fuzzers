@@ -29,15 +29,30 @@
 ## rule says whether that is legal (in a noSideEffect routine: illegal iff the
 ## path dereferences a ref/ptr); `nimony check` must agree.
 ##
+## Bounds mode (`--mode:bounds`): the default contract mode, where a proved
+## index or `requires` loses its run-time check. The procs have run-time checks
+## only (no `{.assert.}`, `{.assume.}`, `.ensures` or `range`, which are
+## compile-time claims or undefined when false), and also store extreme values
+## (`low(int)`, `0'i64`, `w = 7'u8`: the stores behind fuzzers#93) and, in
+## flavour A (even seeds), loop `for` up to a local the body writes (llms#164).
+## Mode D settles them in default mode (a violated claim is a correct error),
+## mode O finds a witness input for every check that fails, and each witness
+## replays from the command line in mode R (runtimeContracts: every check
+## stays) and in the default and `-d:release` builds of mode D. Where R stops at
+## the check, a build that prints anything else ran past it: UNCHECKED.
+##
 ## Classifier: an unsound finding's signature is its flavour, claim kind, the
-## shared variables the claim names and the known-bug constructs in its proc.
-## Reducer: delta debugging over the proc's statement tree (delete subtrees,
-## unwrap compound statements, drop else/fuel/ensures), then over
-## sub-expressions, while the finding persists.
+## shared variables the claim names and the known-bug constructs in its proc;
+## an unchecked one's also the container indexed, `forbound`/`lit` and the
+## builds that ran past the check. Reducer: delta debugging over the proc's
+## statement tree (delete subtrees, unwrap compound statements, drop
+## else/fuel/ensures), then over sub-expressions, while the finding persists;
+## an unchecked finding keeps its check.
 ##
 ##   nim c -d:release -o:prover/provfuzz prover/provfuzz.nim
 ##   prover/provfuzz --seed:1 --count:20         # 20 modules
 ##   prover/provfuzz --seed:1000 --minutes:45    # timed run
+##   prover/provfuzz --mode:bounds --seed:1 --minutes:45
 ##
 ## Findings (`<kind>_<seed>_<id>.nim/.txt/.reduced.nim`) and log.csv (time_s,
 ## programs, finding, signature) go to `--out` (default `out/` next to the
@@ -69,12 +84,18 @@ type
     ensId: int         ## nProc: claim id of `ensures`
     flavour: char      ## nProc: 'A' or 'C'
   Line = tuple[text: string, owner, node: Node]  ## a rendered line, its proc and its statement
+  Mode = enum   ## how a module is rendered
+    mS,         ## staticContracts, claims as pragmas: what the prover must prove
+    mO,         ## runtimeContracts, claims as run-time tests, every proc on ~4000 inputs: the oracle
+    mD,         ## default contract mode, claims as plain code, one input from the command line
+    mR          ## mD with runtimeContracts: every check stays (the reference of mD)
 
 var
   nimony = "/home/ageralis/Projects/nimony/bin/nimony"
   workDir, outDir: string
   budget = 150
   doReduce = true
+  bounds = false     ## --mode:bounds
   programs = 0       ## procs and routines generated so far
   start = epochTime()
 
@@ -281,52 +302,71 @@ proc ok(id: int; c: bool): bool =
   Locals = ["var x = a", "var y = b", "var z = c", "var i = 0", "var j = 0", "var fuel = 0", "var w = u",
             "var r: RT = 0", "var la = default(array[2..5, int])", "result = 0", "var cx = c",
             "proc setCx(v: int) {.closure.} = cx = v", "var fn: proc (v: int) {.closure.} = setCx", "gp = addr gv"]
-  # The driver: every proc on ~4000 inputs; `al` picks what `n`/`q` alias (0: nothing, 1: gv and the same
-  # object behind two refs, 2: tv and go).
+  # Proc `p<i>` on one input; `al` picks what `n`/`q` alias (0: nothing, 1: gv and the same object
+  # behind two refs, 2: tv and go).
   Driver = """
-proc drive$1() =
+proc drive$1(a, b, c: int; u: uint8; si: int) =
   var ar = default(array[8, int])
   for k in 0 ..< 8: ar[k] = (k * 5) mod 11 - 2
   var ss = [@[1], @[2], @[0, 5, -1], @[7, 1, 3, 0, 2, 8, 4, 6]]
   ss[0].setLen(0)
   let sts = ["", "a", "abcd", "abcdefgh"]
+  var t = ss[(si + 1) mod 4]
+  var o = Obj(f: b, g: c, cnt: (si * 2), items: ss[(si + 2) mod 4])
+  gv = b
+  tv = c
+  go = Obj(f: a and 15, g: b, cnt: si, items: ss[(si + 3) mod 4])
+  gs = ss[(si + 2) mod 4]
+  gp = addr gv
+  gb = (if (si and 1) == 0: B() else: D())
+  var nn = c
+  var qq = Obj(f: c, g: a, items: ss[(si + 1) mod 4])
+  let ha = Hold(o: Obj(f: b, g: c, cnt: (si * 2), items: ss[(si + 2) mod 4]))
+  let hb = ha
+  let al = $2
+  var rr = 0
+  if al == 0:
+    rr = p$1(a, b, c, u, ss[si], t, o, ar, sts[(si + c + 1) mod 4], nn, qq)
+  elif al == 1:
+    rr = p$1(a, b, c, u, ss[si], t, ha.o, ar, sts[(si + c + 1) mod 4], gv, hb.o)
+  else:
+    rr = p$1(a, b, c, u, ss[si], t, o, ar, sts[(si + c + 1) mod 4], tv, go)
+$3
+"""
+  # Mode O: every proc on ~4000 inputs, a witness for the first input that fails each claim.
+  Inputs = """
+proc inputs$1() =
   for a in [low(int), -9, -1, 0, 1, 2, 5, 7, 8, 9, high(int)]:
     for b in [-1, 0, 1, 2, 3, 4, 6, 7, 8, high(int)]:
       for c in [-1, 2, 9]:
         for u in [0'u8, 7'u8, 255'u8]:
           for si in 0 ..< 4:
             dead = false
-            var t = ss[(si + 1) mod 4]
-            var o = Obj(f: b, g: c, cnt: (si * 2), items: ss[(si + 2) mod 4])
-            gv = b
-            tv = c
-            go = Obj(f: a and 15, g: b, cnt: si, items: ss[(si + 3) mod 4])
-            gs = ss[(si + 2) mod 4]
-            gp = addr gv
-            gb = (if (si and 1) == 0: B() else: D())
-            var nn = c
-            var qq = Obj(f: c, g: a, items: ss[(si + 1) mod 4])
-            let ha = Hold(o: Obj(f: b, g: c, cnt: (si * 2), items: ss[(si + 2) mod 4]))
-            let hb = ha
-            let al = $2
-            var rr = 0
-            if al == 0:
-              rr = p$1(a, b, c, u, ss[si], t, o, ar, sts[(si + c + 1) mod 4], nn, qq)
-            elif al == 1:
-              rr = p$1(a, b, c, u, ss[si], t, ha.o, ar, sts[(si + c + 1) mod 4], gv, hb.o)
-            else:
-              rr = p$1(a, b, c, u, ss[si], t, o, ar, sts[(si + c + 1) mod 4], tv, go)
-$3
+            drive$1(a, b, c, u, si)
             if dead and not wit[lastFail]:
               wit[lastFail] = true
               echo "W ", lastFail, " a=", a, " b=", b, " c=", c, " u=", u, " si=", si
-drive$1()
+inputs$1()
+"""
+  # Modes D and R: the one input the command line names, `<proc> <a> <b> <c> <u> <si>` (a witness).
+  Replay = """
+import std/[cmdline, parseutils]
+proc arg(i: int): int =
+  var v: BiggestInt = 0
+  discard parseBiggestInt(paramStr(i), v)
+  result = int(v)
+let a = arg(2)
+let b = arg(3)
+let c = arg(4)
+let u = uint8(arg(5))
+let si = arg(6)
+case arg(1)
 """
   PostCheck = """
-            if not dead:
-              reached[$1] = true
-              if $2: passed[$1] = true
-              else: fail($1)"""
+  if not dead:
+    reached[$1] = true
+    if $2: passed[$1] = true
+    else: fail($1)"""
   Tail = """
 for i in 0 ..< $1:
   if reached[i]: echo "R ", i
@@ -384,27 +424,36 @@ proc emit(n, p: Node; ind: string; oracle: bool; res: var seq[Line]) =
     sub(n.els)
   of nProc, nOf: discard
 
-proc render(ps: seq[Node]; oracle: bool; nclaims: int): (string, seq[Line]) =
-  ## Mode S (staticContracts, claims as pragmas) or, with `oracle`, mode O (claims as run-time tests and
-  ## a driver per proc). Returns the text and what each line belongs to.
+proc render(ps: seq[Node]; mode: Mode; nclaims: int): (string, seq[Line]) =
+  ## The module in `mode`; returns the text and what each line belongs to.
+  let oracle = mode == mO
   var res: seq[Line]
-  var hdr = "{.feature: \"" & (if oracle: "runtimeContracts" else: "staticContracts") &
-            "\".}\n{.feature: \"assumeSync\".}\n" & Prelude % (if oracle: "int" else: "range[0..8]")
+  let feature = case mode
+    of mS: "{.feature: \"staticContracts\".}"
+    of mO, mR: "{.feature: \"runtimeContracts\".}"
+    of mD: "# default contract mode"   # a line all the same: D and R report the same positions
+  var hdr = feature & "\n{.feature: \"assumeSync\".}\n" & Prelude % (if mode == mS: "range[0..8]" else: "int")
   if oracle: hdr.add Harness % $max(nclaims, 1)
   for l in hdr.strip(leading = false).splitLines: res.put(l)
   for p in ps:
-    let pr = if p.ensures != nil and not oracle: " {.ensures: " & render(p.ensures, oracle) & ".}" else: ""
+    let pr = if p.ensures != nil and mode == mS: " {.ensures: " & render(p.ensures, oracle) & ".}" else: ""
     res.put("proc p" & $p.id & "(" & Params & "): int" & pr & " =", p, p)
     for h in Locals: res.put("  " & h, p)
     emitBlock(p.kids, p, "  ", oracle, res)
-    if oracle:
-      let post = if p.ensures == nil: "            discard rr"
+    if mode != mS:
+      let post = if p.ensures == nil or not oracle: "  discard rr"
                  else: PostCheck % [$p.ensId, render(p.ensures, oracle).replace("result", "rr").
                                     replace("s.len", "ss[si].len")]
       let al = if p.flavour == 'C': "0" else: "(si + (c and 3)) mod 3"
       for l in (Driver % [$p.id, al, post]).strip(leading = false).splitLines: res.put(l)
+      if oracle:
+        for l in (Inputs % $p.id).strip(leading = false).splitLines: res.put(l)
   if oracle:
     for l in (Tail % $max(nclaims, 1)).strip(leading = false).splitLines: res.put(l)
+  if mode in {mD, mR}:
+    for l in Replay.strip(leading = false).splitLines: res.put(l)
+    for p in ps: res.put("of " & $p.id & ": drive" & $p.id & "(a, b, c, u, si)")
+    res.put("else: discard")
   res.put("echo \"END\"")
   var text = ""
   for l in res: text.add l.text & "\n"
@@ -414,12 +463,17 @@ proc render(ps: seq[Node]; oracle: bool; nclaims: int): (string, seq[Line]) =
 
 const
   Shared = ["gv", "tv", "go.f", "n", "q.f", "cx"]   # what a barrier can change behind the prover's back
+  # Bounds mode: values whose store once gave the prover a contradiction (fuzzers#93: a suffixed literal
+  # or `low(int)` read as "not nil", next to `x <= low(int)`), so every later index counted as proved.
+  Extremes = ["low(int)", "high(int)", "(-4611686018427387904)", "4611686018427387904", "0'i64", "(-1'i64)"]
   Writable = ["la", "t", "o.items", "o.arr"]        # containers an index statement may store into
 
 type Gen = object
   ## Generator state for one proc; the scope-like fields are cut back at the end of each block.
   rng: Rand
   isA: bool                             ## flavour A: shared state in claims, known-bug constructs on
+  bounds: bool                          ## bounds mode: run-time checks only (no assert, assume, ensures,
+                                        ## range), extreme stores, `for` bounds the body writes
   lvals: seq[string]                    ## int locations a statement may write
   seqs, growable, conts: seq[string]    ## seqs; those that may grow; anything indexable
   conds: seq[Expr]                      ## guards believed to hold here (invalidation ignored: that is the point)
@@ -615,6 +669,12 @@ proc barrier(g: var Gen): Node =
 proc mutation(g: var Gen): Node =
   ## A write: to a local (often a guarded one), through a pointer, to a seq, or a barrier.
   let w = g.writable
+  if g.bounds and g.chance(0.12):
+    # a value the prover knows exactly: index with it next, as a guard's variable is
+    if w.len == 0 or g.chance(0.3): return simple("w = " & $g.rng.rand(255) & "'u8")
+    let v = g.pick(w)
+    g.guarded.add (v, g.pick(g.conts))
+    return simple(v & " = " & g.pick(Extremes))
   let q = g.roll
   if g.tryDepth > 0 and g.chance(0.35): return simple("risky($1)", g.intExpr(1))
   if g.chance(0.35): return g.barrier
@@ -681,10 +741,12 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
   let noBreak = not g.isA and g.loops.len > 0 and g.loops[^1] == "for"   # for+break is finding 01
   # ---- leaves
   if q < 16: return @[g.indexing]
-  if q < 28: return @[g.newCheck("assert", @[g.claim])]
+  if q < 28: return (if g.bounds: @[g.indexing] else: @[g.newCheck("assert", @[g.claim])])
   if q < 31:
     if g.chance(0.6): return @[g.newCheck("pos", @[g.intExpr(1)], g.pick(g.writable & @["result"]) & " = needsPos($1)")]
     return @[g.newCheck("between", @[g.intExpr(1), g.intExpr(0), g.intExpr(0)], "result = needsRange($1, $2, $3)")]
+  # bounds mode: a range is never checked at run time and a false assumption is undefined
+  if q < 38 and g.bounds: return @[g.mutation]
   if q < 36:
     let qq = g.roll
     if qq < 0.4: return @[g.newCheck("rng", @[g.intExpr(1)], g.pick(["r", "o.cnt"]) & " = $1")]
@@ -696,7 +758,7 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
     return @[g.newCheck("rng", @[g.intExpr(1)], "result = takesRT($1)")]
   if g.chance(0.10):   # a barrier, then restate a guard in scope (true before the barrier)
     result = @[g.barrier]
-    if g.conds.len > 0: result.add g.newCheck("assert", @[g.pick(g.conds.last(4))])
+    if g.conds.len > 0 and not g.bounds: result.add g.newCheck("assert", @[g.pick(g.conds.last(4))])
     return
   if q < 38:
     let c = g.claim
@@ -784,9 +846,14 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
     let qq = g.roll
     var fmt: string
     var ex: seq[Expr]
+    var written = ""   # llms#164: a bound the body may write (a known bug: flavour A only)
     if qq < 0.45:
       fmt = "for " & kv & " in $1 ..< $2:"
       ex = @[g.pick([lo, lo, num(0), num(1)]), g.pick([hi, hi, g.small])]
+      let ws = among(g.writable, ["x", "y", "z", "i", "j"])
+      if g.bounds and g.isA and ws.len > 0 and g.chance(0.4):
+        written = g.pick(ws)
+        ex[1] = leaf(written)
     elif qq < 0.75:
       fmt = "for " & kv & " in $1 .. $2:"
       ex = @[g.pick([lo, num(0), num(1)]), g.pick([bin("-", hi, num(1)), bin("-", hi, num(1)), g.small])]
@@ -798,7 +865,10 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
     # a seq grown in a loop over its own length, under a fueled `while`, grows geometrically:
     # the oracle then times out or runs out of memory (odd:oracle-timeout / odd:oracle-fail)
     inc g.nogrow
-    let kids = g.body(depth, @[], @[(kv, c)])
+    var kids = g.body(depth, @[], @[(kv, c)])
+    if written.len > 0:   # the bound may be high(int): stop first, before any `continue`; write it last
+      kids.insert(Node(kind: nIf, exprs: @[cmp(">", leaf(kv), num(9))], kids: @[simple("break")]), 0)
+      kids.add simple(written & " = $1", g.small)
     dec g.nogrow
     discard g.loops.pop
     g.lets.delete(g.lets.find(kv))
@@ -837,16 +907,16 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
                                               @[(v, g.pick(["ar", "la", "o.arr"]))]))
   @[Node(kind: nCase, exprs: @[e], kids: brs, els:if g.chance(0.5): g.body(depth) else: @[])]
 
-proc genProc(seed, idx: int; flavour: char; ids: var int): Node =
+proc genProc(seed, idx: int; flavour: char; ids: var int; bounds = false): Node =
   ## Proc `p<idx>`; `ids` is the module's next claim id.
-  var g = Gen(rng: initRand(seed), isA: flavour == 'A', ids: ids, lvals: @["x", "y", "z", "i", "j", "o.f", "o.g"],
+  var g = Gen(rng: initRand(seed), isA: flavour == 'A', bounds: bounds, ids: ids, lvals: @["x", "y", "z", "i", "j", "o.f", "o.g"],
               seqs: @["s", "t", "o.items"], growable: @["t", "o.items"],
               conts: @["ar", "ar", "la", "o.arr", "s", "s", "t", "t", "o.items", "st"])
   if g.isA:
     g.lvals.add Shared
     for x in [addr g.seqs, addr g.growable, addr g.conts]: x[].add ["gs", "q.items"]
   result = Node(kind: nProc, id: idx, flavour: flavour, ensId: -1, kids: g.stmts(3, g.rng.rand(3..7)))
-  if g.chance(0.3):
+  if not g.bounds and g.chance(0.3):
     let res = leaf("result")
     if g.chance(0.5):   # make the claim plausible: set result from a bounded expression last
       result.kids.add simple("result = $1", g.pick([call("clamp7", g.intExpr(1)), bin("and", g.intExpr(1), num(7)),
@@ -1039,6 +1109,7 @@ proc run(cmd: string; secs: int; dir = ""; errFile = ""): (string, int) =
 
 proc build(src, name, cmd: string): (int, string) =
   ## Runs `nimony <cmd>` on `src` saved as <workDir>/<name>.nim; returns (exit code, output).
+  createDir(parentDir(workDir / name))
   writeFile(workDir / name & ".nim", src)
   let c = quoteShell(nimony) & " " & cmd & " --nimcache:nc_" & name & " " & name & ".nim"
   for _ in 0 .. 1:
@@ -1077,16 +1148,19 @@ proc crashy(o: string): bool =
               "out of bounds", "signal", "[assert"]:
       if w in t: return true
 
+proc exeOf(name: string): string =
+  ## The executable `build` made of <name>.nim, or "".
+  result = ""
+  for f in walkDirRec(workDir / "nc_" & name):
+    if f.extractFilename == name.extractFilename & Exe: result = f
+
 proc runOracle(src, name: string): Run =
   ## Compile in mode O and run; the program prints R/P/F <id> (reached/passed/failed) and W <id> <input>.
   let (rc, o) = build(src, name, "c")
   result.output = o
   result.status = if rc == 124: "timeout" else: "fail"
   if rc != 0: return
-  var exe = ""
-  for f in walkDirRec(workDir / "nc_" & name):
-    if f.extractFilename == name & Exe: exe = f
-  let (o2, rc2) = run(quoteShell(exe), 60)
+  let (o2, rc2) = run(quoteShell(exeOf(name)), 60)
   result.output = o2
   if rc2 == 124: result.status = "timeout"
   for l in o2.splitLines:
@@ -1115,15 +1189,17 @@ proc report(kind: string; s, id: int; sig, src, txt: string): string =
 
 # ---- oracle ------------------------------------------------------------------------
 
-proc settle(ps: var seq[Node]; nclaims: int; rejected: var Table[int, (int, string)]): (string, string, string) =
+proc settle(ps: var seq[Node]; nclaims: int; rejected: var Table[int, (int, string)];
+            mode = mS; name = "s"): (string, string, string) =
   ## Deletes every claim the prover rejects and recompiles until the module is accepted, so what is
-  ## left is exactly what it proved. rejected[id] = (round, message); returns (status, source, output).
+  ## left is exactly what it proved (in mode D: what is not violated). rejected[id] = (round, message);
+  ## returns (status, source, output); the accepted build is <name>.
   for rnd in 0 ..< 10:
-    let (src, lines) = render(ps, false, nclaims)
-    let (rc, o) = build(src, "s", "c")
+    let (src, lines) = render(ps, mode, nclaims)
+    let (rc, o) = build(src, name, "c")
     if rc == 0: return ("ok", src, o)
     if rc == 124: return ("timeout", src, o)
-    let es = errors(o, "s")
+    let es = errors(o, name.extractFilename)
     if es.len == 0 or crashy(o): return ("crash", src, o)
     var progress = false
     var drop: seq[Node]
@@ -1157,9 +1233,33 @@ proc hasWord(s, w: string): bool =
     if (i == 0 or s[i-1] notin IdentChars) and (i + w.len >= s.len or s[i + w.len] notin IdentChars): return true
     i = s.find(w, i + 1)
 
+proc writesLocal(line, v: string): bool =
+  ## Does statement `line` write the local `v` (assigned, stepped, or passed to a `var` parameter)?
+  let l = line.strip
+  for f in [v & " =", v & " +=", v & " -=", "inc " & v, "dec " & v, "inc(" & v & ",", "dec(" & v & ","]:
+    if l.startsWith(f) and (l.len == f.len or l[f.len] notin IdentChars): return true
+  for f in ["(" & v & ")", "(" & v & ",", ", " & v & ")"]:
+    if f in l and not l.startsWith("result") and " = " notin l: return true
+
+proc boundsTags(p: Node): seq[string] =
+  ## Bounds mode's tags: `forbound`, a `for` whose bound the body writes (llms#164); `lit`, a stored
+  ## extreme or suffixed literal (fuzzers#93).
+  for n in walk(p):
+    if n.kind == nFor and "forbound" notin result:
+      var body: seq[Line]
+      emitBlock(n.kids, p, "", false, body)
+      for v in ["x", "y", "z", "i", "j"]:
+        if hasWord(render(n.exprs[^1], false), v):
+          for l in body:
+            if writesLocal(l.text, v) and "forbound" notin result: result.add "forbound"
+    if n.kind == nS and "lit" notin result:
+      for e in Extremes:
+        if n.fmt.endsWith(" = " & e): result.add "lit"
+      if n.fmt.startsWith("w = ") and n.fmt.endsWith("'u8") and "lit" notin result: result.add "lit"
+
 proc classify(p: Node; cid, nclaims: int): string =
   ## Signature tags: the shared variables the failing claim names and the known-bug constructs in the proc.
-  let (src, lines) = render(@[p], false, nclaims)
+  let (src, lines) = render(@[p], mS, nclaims)
   var texts: seq[string]
   for l in lines:
     if l.node != nil and hasClaim(l.node, cid): texts.add l.text
@@ -1180,12 +1280,14 @@ proc classify(p: Node; cid, nclaims: int): string =
   for (on, tag) in [(forBreak, "forbreak"), (negShr, "negshr"), (hasAbs, "abs"), (address, "addr"), (stash, "stash"),
                     (isTry, "try")]:
     if on: tags.add tag
+  if bounds:
+    for t in boundsTags(p): tags.add t
   if tags.len == 0: "none" else: tags.join("+")
 
 proc persists(kind: string; cid, nclaims: int): proc (p: Node): bool =
   ## Does the finding persist for the single proc `p`?
   result = proc (p: Node): bool =
-    let (src, lines) = render(@[p], false, nclaims)
+    let (src, lines) = render(@[p], mS, nclaims)
     let (rc, o) = build(src, "ms", "c")
     if kind == "unsound":
       if rc != 0: return false
@@ -1198,7 +1300,7 @@ proc persists(kind: string; cid, nclaims: int): proc (p: Node): bool =
         elif e.ln in 1 .. lines.len and lines[e.ln - 1].node != nil and hasClaim(lines[e.ln - 1].node, cid) and
             ("violated" in e.msg or "out of range" in e.msg): same = true
       if not same: return false
-    let r = runOracle(render(@[p], true, nclaims)[0], "mo")
+    let r = runOracle(render(@[p], mO, nclaims)[0], "mo")
     r.status == "ok" and cid in (if kind == "unsound": r.failed else: r.passed)
 
 # ---- reduction ----------------------------------------------------------------------
@@ -1289,14 +1391,14 @@ proc reduce(p0: Node; still: proc (p: Node): bool): Node =
       dec i
   p
 
-proc minimize(base: string; p: Node; still: proc (p: Node): bool; nclaims: int) =
-  ## Reduces the finding's proc to <base>.reduced.nim.
+proc minimize(base: string; p: Node; still: proc (p: Node): bool; nclaims: int; mode = mS) =
+  ## Reduces the finding's proc to <base>.reduced.nim, rendered in `mode`.
   if not doReduce: return
   if not still(p):
     echo "  not reproduced standalone"
     return
   let q = reduce(p, still)
-  writeFile(base & ".reduced.nim", render(@[q], false, nclaims)[0])
+  writeFile(base & ".reduced.nim", render(@[q], mode, nclaims)[0])
   echo "  reduced ", walk(p).len, " -> ", walk(q).len, " nodes: ", base, ".reduced.nim"
 
 # ---- batches ----------------------------------------------------------------------
@@ -1324,22 +1426,22 @@ proc soundBatch(seed: int): int =
   for p in procs:
     for (id, _) in claims(p): owner[id] = p
   # what is left was proved: as run-time tests, a claim that fails is unsound
-  let run = runOracle(render(procs, true, nclaims)[0], "o")
+  let run = runOracle(render(procs, mO, nclaims)[0], "o")
   echo "seed ", seed, " ", flavour, ": ", procs.len, " procs, ", kinds.len, " checks, ", rejected.len, " rejected, ", owner.len,
        " proved, oracle ", run.status
   if run.status != "ok":
-    discard report("odd", seed, 0, "odd:oracle-" & run.status, render(procs, true, nclaims)[0], run.output)
+    discard report("odd", seed, 0, "odd:oracle-" & run.status, render(procs, mO, nclaims)[0], run.output)
     return 1
   for cid in run.failed.sorted:
     if cid notin owner: continue
     let p = owner[cid]
     let base = report("unsound", seed, cid, "unsound/" & flavour & ":" & kinds[cid] & ":" & classify(p, cid, nclaims),
-                      render(@[p], false, nclaims)[0], run.witness.getOrDefault(cid))
+                      render(@[p], mS, nclaims)[0], run.witness.getOrDefault(cid))
     inc result
     minimize(base, p, persists("unsound", cid, nclaims), nclaims)
   if rejected.len == 0: return
   # the reverse direction, on the original module: claims rejected in round 0 (before any deletion)
-  let back = runOracle(render(orig, true, nclaims)[0], "o2")
+  let back = runOracle(render(orig, mO, nclaims)[0], "o2")
   if back.status != "ok": return
   var origOwner = initTable[int, Node]()
   for p in orig:
@@ -1356,9 +1458,107 @@ proc soundBatch(seed: int): int =
         h.close
     elif cid in back.passed and kinds[cid] != "ensures":   # an ensures is judged per `return`, the oracle sees the proc
       let base = report("false-violation", seed, cid, "false-violation:" & kinds[cid] & ":" & head(msg, {':'}),
-                        render(@[origOwner[cid]], false, nclaims)[0], msg)
+                        render(@[origOwner[cid]], mS, nclaims)[0], msg)
       inc result
       minimize(base, origOwner[cid], persists("false-violation", cid, nclaims), nclaims)
+
+proc replay(name: string; pid: int; w: string): (string, int) =
+  ## Build <name> (mode D or R) on witness `w` ("a=… b=… c=… u=… si=…") of proc `p<pid>`; a failed
+  ## `requires` names the module as `fz.nim` whatever the build's directory, and a failed index check
+  ## keeps its index but not the range it prints (`-d:release` prints `array[2..5]`'s as `0..3`).
+  var cmd = quoteShell(exeOf(name)) & " " & $pid
+  for kv in w.splitWhitespace: cmd.add " " & quoteShell(kv.substr(kv.find('=') + 1))
+  let (o, rc) = run(cmd, 10, workDir)
+  var lines = o.replace(name & ".nim", "fz.nim").splitLines
+  for l in lines.mitems:
+    let k = l.find(" notin ")
+    if l.startsWith("index out of bounds: ") and k > 0: l.setLen k
+  (lines.join("\n"), rc)
+
+const Builds = [("default", "d/fz", "c"), ("release", "dr/fz", "c -d:release")]  ## mode D's builds
+
+proc container(c: string): string = (if c in arrays: "arr" elif c == "st": "str" else: "seq")
+
+proc checkKind(p: Node; cid: int; kind: string): string =
+  ## The claim's kind; for an index, with the kind of container (`idx-arr`, `condidx-seq`).
+  proc chk(e: Expr): string =
+    result = if e.kind == eChk and e.id == cid: e.str else: ""
+    for a in e.args:
+      if result.len == 0: result = chk(a)
+  result = kind
+  for n in walk(p):
+    if kind == "idx" and n.kind == nChk and n.id == cid: result = "idx-" & container(n.cont)
+    for e in n.exprs:
+      if kind == "condidx" and chk(e).len > 0: result = "condidx-" & container(chk(e))
+
+proc unchecked(cid, nclaims: int; w, stop: string; builds: seq[(string, string, string)]): proc (p: Node): bool =
+  ## Does single proc `p` still keep check `cid` (the planted access is never deleted), stop on witness
+  ## `w` in mode R with output `stop`, and run past it in every build of `builds`?
+  result = proc (p: Node): bool =
+    var planted = false
+    for n in walk(p): planted = planted or hasClaim(n, cid)
+    if not planted or build(render(@[p], mR, nclaims)[0], "mr/fz", "c")[0] != 0 or
+        replay("mr/fz", p.id, w)[0] != stop: return false
+    result = true
+    for (_, name, cmd) in builds:
+      let mname = "m" & name
+      result = result and build(render(@[p], mD, nclaims)[0], mname, cmd)[0] == 0 and replay(mname, p.id, w)[0] != stop
+
+proc boundsBatch(seed: int): int =
+  ## A module of 16 procs in default contract mode. Every run-time check that fails in mode O, on its
+  ## witness, must stop the default and the `-d:release` build as it stops mode R (every check kept);
+  ## returns the number of findings.
+  let flavour = if seed mod 2 == 0: 'A' else: 'C'
+  var ids = 0
+  var procs: seq[Node]
+  for i in 0 ..< 16: procs.add genProc(seed * 1000 + i + 1, i, flavour, ids, bounds = true)
+  programs += 16
+  let nclaims = ids
+  var kinds = initTable[int, string]()
+  for p in procs:
+    for (id, k) in claims(p): kinds[id] = k
+  var rejected = initTable[int, (int, string)]()   # here: violated, a correct compile-time error
+  let (status, src, o) = settle(procs, nclaims, rejected, mD, Builds[0][1])
+  if status != "ok":
+    discard report(if status == "crash": "crash" else: "odd", seed, 0,
+                   (if status == "crash": "crash" else: "odd:settle-" & status), src, o)
+    return 1
+  let run = runOracle(render(procs, mO, nclaims)[0], "o")
+  echo "seed ", seed, " ", flavour, " bounds: ", procs.len, " procs, ", kinds.len, " checks, ", rejected.len,
+       " violated, ", run.failed.len, " failing, oracle ", run.status
+  if run.status != "ok":
+    discard report("odd", seed, 0, "odd:oracle-" & run.status, render(procs, mO, nclaims)[0], run.output)
+    return 1
+  let (rrc, ro) = build(render(procs, mR, nclaims)[0], "r/fz", "c")
+  let (drc, dro) = build(src, Builds[1][1], Builds[1][2])
+  if rrc != 0 or drc != 0:
+    discard report("odd", seed, 0, "odd:build-" & (if rrc != 0: "R" else: "release"), src, ro & dro)
+    return 1
+  var owner = initTable[int, Node]()
+  for p in procs:
+    for (id, _) in claims(p): owner[id] = p
+  for cid in run.failed.sorted:
+    if cid in owner and cid in run.witness:
+      let (p, w) = (owner[cid], run.witness[cid])
+      let (stop, src) = (replay("r/fz", p.id, w)[0], render(@[p], mD, nclaims)[0])
+      if "END" in stop:   # mode R ran past a check mode O saw fail
+        discard report("odd", seed, cid, "odd:bounds-reference:" & kinds[cid], src, w & "\n" & stop)
+        inc result
+      else:
+        var past: seq[(string, string, string)] = @[]
+        var txt = "witness: " & w & "\n--- reference (runtimeContracts):\n" & stop
+        for b in Builds:
+          let got = replay(b[1], p.id, w)[0]
+          if got != stop:
+            past.add b
+            txt.add "\n--- " & b[0] & ":\n" & got
+        if past.len > 0:
+          var names: seq[string] = @[]
+          for b in past: names.add b[0]
+          let base = report("unchecked", seed, cid, "unchecked/" & flavour & ":" & checkKind(p, cid, kinds[cid]) &
+                            ":" & classify(p, cid, nclaims) & " [" & names.join("+") & "]", src, txt)
+          inc result
+          minimize(base, p, unchecked(cid, nclaims, w, stop, past), nclaims, mD)
 
 proc msgsIn(es: seq[Err]; span: (int, int); elsewhere = false): seq[string] =
   ## Messages of the errors in lines `span`, and with `elsewhere` those in other files.
@@ -1437,6 +1637,9 @@ proc main() =
     of "work": work = val
     of "budget": budget = parseInt(val)
     of "noreduce": doReduce = false
+    of "mode":
+      if val != "bounds": quit "unknown mode: " & val
+      bounds = true
     else: quit "unknown option: " & key
   if minutes > 0 and count == 10: count = high(int)
   nimony = absolutePath(nimony)
@@ -1448,7 +1651,7 @@ proc main() =
   var k = 0
   while k < count and (minutes == 0 or epochTime() - start < minutes * 60):
     let s = seed + k
-    found += (if s mod 3 == 2: funcBatch(s) else: soundBatch(s))
+    found += (if bounds: boundsBatch(s) elif s mod 3 == 2: funcBatch(s) else: soundBatch(s))
     inc k
   echo k, " modules, ", programs, " programs, ", found, " findings, wall ", int(epochTime() - start), " s - ", outDir
 
