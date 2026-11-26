@@ -361,11 +361,11 @@ proc isNop(s: string): bool =
 
 proc immTooWide(c: Case): bool =
   ## an immediate that fits neither the signed nor the unsigned range of its
-  ## memory operand's width, which GNU as truncates without a word
+  ## memory or register operand's width, which GNU as truncates without a word
   for (mn, ops) in c:
     var bits = 0
     for o in ops:
-      if o.kind == 'm' and o.bits > 0: bits = o.bits
+      if o.kind in {'m', 'r'} and o.bits > 0: bits = o.bits
     for o in ops:
       if o.kind == 'i' and bits in [8, 16, 32] and
           (o.val < -(1 shl (bits - 1)) or o.val > (1 shl bits) - 1): return true

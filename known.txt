@@ -43,6 +43,8 @@ at compile time [shl]
  [u*]
 # planetis-m/nimony-bugs-fuzzers#118: a folded NaN from sqrt/floor cannot be evaluated further
 cannot evaluate expression at compile time [none]
+# planetis-m/nimony-bugs-fuzzers#119: JS/wasm cannot evaluate a `const` that calls a routine
+fz.nim(#; #) Error: cannot evaluate expression at compile time:
 
 # --- closures (clofuzz) ---
 # planetis-m/nimony-bugs-fuzzers#33 / #37: closure-typed local captured, called by its owner / closure local in a closure iterator
@@ -79,6 +81,9 @@ could not find symbol: `ii.N
 `continue` outside of a `loop`
 trackers.nim(N; N)
 lab/jmp operand is not a symbol
+# the same collision as an unlabeled `ii` jump target (native) and a C return-type clash (CI run 45844034856)
+Symbol is not a label
+incompatible types when returning type
 statement not eliminated: for
 `n.isTagLit`
 error: invalid initializer
