@@ -37,6 +37,12 @@ variable shift whose destination aliases the count register
 [f32lit]
 # planetis-m/nimony-bugs-llms#159: a constant 64-bit `shl` that shifts bits out is refused
 at compile time [shl]
+# planetis-m/nimony-bugs-fuzzers#117: folding unsigned + - * does not wrap (refused, or a wrong folded value)
+ [u+]
+ [u-]
+ [u*]
+# planetis-m/nimony-bugs-fuzzers#118: a folded NaN from sqrt/floor cannot be evaluated further
+cannot evaluate expression at compile time [none]
 
 # --- closures (clofuzz) ---
 # planetis-m/nimony-bugs-fuzzers#33 / #37: closure-typed local captured, called by its owner / closure local in a closure iterator
