@@ -32,6 +32,12 @@ got (i #) at ??? (kind=TagLit; tag=(mov)
 # planetis-m/nimony-bugs-fuzzers#90: arm64 variable shift destination aliases the count register
 variable shift whose destination aliases the count register
 
+# --- constant folding (bfuzz, backend `fold`) ---
+# planetis-m/nimony-bugs-fuzzers#95: folding float32 arithmetic does not round the literals
+[f32lit]
+# planetis-m/nimony-bugs-llms#159: a constant 64-bit `shl` that shifts bits out is refused
+at compile time [shl]
+
 # --- closures (clofuzz) ---
 # planetis-m/nimony-bugs-fuzzers#33 / #37: closure-typed local captured, called by its owner / closure local in a closure iterator
 could not find symbol: ID.N
