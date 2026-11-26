@@ -2,7 +2,7 @@ name: fuzz
 
 # Every third day: build nimony master once per platform, then run the fuzzers
 # side by side for 45 minutes each (as the original campaigns did) on fresh
-# seeds. bfuzz also runs on linux/arm64, macOS/arm64 and windows/amd64: one
+# seeds. bfuzz (backends and constant folding) also runs on linux/arm64, macOS/arm64 and windows/amd64: one
 # job per native code generator. Each job uploads its findings and lists in its
 # summary every finding line that matches nothing in known.txt. Toolchain setup
 # follows planetis-m/test_nimony_native.
@@ -135,6 +135,9 @@ jobs:
           # 4 GiB address-space cap per process (children inherit it), as the old prover had.
           - { name: prover,   src: prover/provfuzz,  os: linux, arch: amd64, runner: ubuntu-latest, args: '--nimony:$N',
               pre: 'prlimit --as=4294967296' }
+          # Bounds-check elimination in default mode: a failing check must stop the program.
+          - { name: prover-bounds, src: prover/provfuzz, os: linux, arch: amd64, runner: ubuntu-latest,
+              args: '--nimony:$N --mode:bounds', pre: 'prlimit --as=4294967296' }
           # The other native code generators, C as the oracle.
           - { name: backends-linux-arm64,   src: backends/bfuzz, os: linux,   arch: arm64, runner: ubuntu-26.04-arm, args: '--nimony:$N' }
           - { name: backends-macos-arm64,   src: backends/bfuzz, os: macos,   arch: arm64, runner: macos-latest,     args: '--nimony:$N --backends:c,n' }
