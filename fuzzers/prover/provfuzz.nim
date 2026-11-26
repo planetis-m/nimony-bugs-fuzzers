@@ -33,8 +33,8 @@
 ## index or `requires` loses its run-time check. The procs have run-time checks
 ## only (no `{.assert.}`, `{.assume.}`, `.ensures` or `range`, which are
 ## compile-time claims or undefined when false), and also store extreme values
-## (`low(int)`, `0'i64`, `w = 7'u8`: the stores behind fuzzers#93) and, in
-## flavour A (even seeds), loop `for` up to a local the body writes (llms#164).
+## (`low(int)`, `0'i64`, `w = 7'u8`: the stores behind fuzzers#93); flavour A
+## (even seeds) or C as in the other modes.
 ## Mode D settles them in default mode (a violated claim is a correct error),
 ## mode O finds a witness input for every check that fails, and each witness
 ## replays from the command line in mode R (runtimeContracts: every check
@@ -43,7 +43,7 @@
 ##
 ## Classifier: an unsound finding's signature is its flavour, claim kind, the
 ## shared variables the claim names and the known-bug constructs in its proc;
-## an unchecked one's also the container indexed, `forbound`/`lit` and the
+## an unchecked one's also the container indexed, `lit` and the
 ## builds that ran past the check. Reducer: delta debugging over the proc's
 ## statement tree (delete subtrees, unwrap compound statements, drop
 ## else/fuel/ensures), then over sub-expressions, while the finding persists;
@@ -473,7 +473,7 @@ type Gen = object
   rng: Rand
   isA: bool                             ## flavour A: shared state in claims, known-bug constructs on
   bounds: bool                          ## bounds mode: run-time checks only (no assert, assume, ensures,
-                                        ## range), extreme stores, `for` bounds the body writes
+                                        ## range), extreme stores
   lvals: seq[string]                    ## int locations a statement may write
   seqs, growable, conts: seq[string]    ## seqs; those that may grow; anything indexable
   conds: seq[Expr]                      ## guards believed to hold here (invalidation ignored: that is the point)
@@ -846,14 +846,9 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
     let qq = g.roll
     var fmt: string
     var ex: seq[Expr]
-    var written = ""   # llms#164: a bound the body may write (a known bug: flavour A only)
     if qq < 0.45:
       fmt = "for " & kv & " in $1 ..< $2:"
       ex = @[g.pick([lo, lo, num(0), num(1)]), g.pick([hi, hi, g.small])]
-      let ws = among(g.writable, ["x", "y", "z", "i", "j"])
-      if g.bounds and g.isA and ws.len > 0 and g.chance(0.4):
-        written = g.pick(ws)
-        ex[1] = leaf(written)
     elif qq < 0.75:
       fmt = "for " & kv & " in $1 .. $2:"
       ex = @[g.pick([lo, num(0), num(1)]), g.pick([bin("-", hi, num(1)), bin("-", hi, num(1)), g.small])]
@@ -865,10 +860,7 @@ proc stmt(g: var Gen; depth: int): seq[Node] =
     # a seq grown in a loop over its own length, under a fueled `while`, grows geometrically:
     # the oracle then times out or runs out of memory (odd:oracle-timeout / odd:oracle-fail)
     inc g.nogrow
-    var kids = g.body(depth, @[], @[(kv, c)])
-    if written.len > 0:   # the bound may be high(int): stop first, before any `continue`; write it last
-      kids.insert(Node(kind: nIf, exprs: @[cmp(">", leaf(kv), num(9))], kids: @[simple("break")]), 0)
-      kids.add simple(written & " = $1", g.small)
+    let kids = g.body(depth, @[], @[(kv, c)])
     dec g.nogrow
     discard g.loops.pop
     g.lets.delete(g.lets.find(kv))
@@ -1233,28 +1225,12 @@ proc hasWord(s, w: string): bool =
     if (i == 0 or s[i-1] notin IdentChars) and (i + w.len >= s.len or s[i + w.len] notin IdentChars): return true
     i = s.find(w, i + 1)
 
-proc writesLocal(line, v: string): bool =
-  ## Does statement `line` write the local `v` (assigned, stepped, or passed to a `var` parameter)?
-  let l = line.strip
-  for f in [v & " =", v & " +=", v & " -=", "inc " & v, "dec " & v, "inc(" & v & ",", "dec(" & v & ","]:
-    if l.startsWith(f) and (l.len == f.len or l[f.len] notin IdentChars): return true
-  for f in ["(" & v & ")", "(" & v & ",", ", " & v & ")"]:
-    if f in l and not l.startsWith("result") and " = " notin l: return true
-
 proc boundsTags(p: Node): seq[string] =
-  ## Bounds mode's tags: `forbound`, a `for` whose bound the body writes (llms#164); `lit`, a stored
-  ## extreme or suffixed literal (fuzzers#93).
+  ## Bounds mode's tag `lit`: the proc stores an extreme or suffixed literal (fuzzers#93).
   for n in walk(p):
-    if n.kind == nFor and "forbound" notin result:
-      var body: seq[Line]
-      emitBlock(n.kids, p, "", false, body)
-      for v in ["x", "y", "z", "i", "j"]:
-        if hasWord(render(n.exprs[^1], false), v):
-          for l in body:
-            if writesLocal(l.text, v) and "forbound" notin result: result.add "forbound"
     if n.kind == nS and "lit" notin result:
       for e in Extremes:
-        if n.fmt.endsWith(" = " & e): result.add "lit"
+        if n.fmt.endsWith(" = " & e) and "lit" notin result: result.add "lit"
       if n.fmt.startsWith("w = ") and n.fmt.endsWith("'u8") and "lit" notin result: result.add "lit"
 
 proc classify(p: Node; cid, nclaims: int): string =

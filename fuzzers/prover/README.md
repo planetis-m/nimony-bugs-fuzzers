@@ -16,8 +16,7 @@ Design (details in the doc comment at the top of `provfuzz.nim`):
   claims as run-time tests on ~4000 inputs: proved-but-fails = unsound. Also false-violation, incomplete
   (`incomplete.log`), crash.
 * `--mode:bounds`: bounds-check elimination in the default contract mode. Run-time checks only (no assert, assume,
-  ensures or range), plus stores of extreme values (fuzzers#93) and, in flavour A, `for` bounds the body writes
-  (llms#164). Mode O finds a witness for every failing check; it replays in runtimeContracts (every check kept) and in
+  ensures or range), plus stores of extreme values (fuzzers#93). Mode O finds a witness for every failing check; it replays in runtimeContracts (every check kept) and in
   the default and `-d:release` builds. A build whose output differs ran past the check: `unchecked/<flavour>:<check>:<tags> [<builds>]`.
 * Classifier: signature = flavour, claim kind, shared variables named, known-bug constructs present.
 * Reducer: delta debugging over the statement tree and sub-expressions; writes `*.reduced.nim`.
