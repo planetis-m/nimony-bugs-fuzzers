@@ -1323,10 +1323,11 @@ proc blame(c: FoldCheck; d: FoldDiff; tag: string): (string, string) =
   ## integer check's value is known: when the folded values have it, C's run time is wrong.
   let base = "fold:mismatch:" & d.ctx & ":" & tyName(c.e.ty)
   let v = eval(c.e)
-  if v.known:
+  if v.known:   # tagged like a refused `const`: what in it wraps
     let want = shown(c.e.ty, v)
+    let w = wraps(c.e)
     if d.r != want and d.c in [want, "-"] and d.l == want: ("c", "c:mismatch:")
-    else: ("fold", base)
+    else: ("fold", base & (if w.len > 0: " [" & w & "]" else: ""))
   elif not hasF32(c.e, false) and not hasF32(c.e, true): ("fold", base)
   elif foldVerdict(c, tag) != base: ("fold", base & " [context]")   # differs only in the whole program
   elif hasF32(c.e, false) and foldVerdict(c, tag, exactF32 = true) == "": ("fold", base & " [f32lit]")
@@ -1353,8 +1354,11 @@ proc reduceFold(c: var FoldCheck; sig, tag: string): string =
   ## Shrinks the check while it keeps signature `sig` (an [f32lit] one: while exact literals still
   ## cure it).
   let target = if sig.startsWith("fold:compileFails:"): sig else: sig.split(" [")[0]
+  let tags = if sig != target: sig[target.len .. ^1] else: ""   # an integer mismatch keeps what wraps
   shrink(c, proc (x: FoldCheck): bool =
-    foldVerdict(x, tag) == target and ("[f32lit]" notin sig or foldVerdict(x, tag, exactF32 = true) == ""))
+    foldVerdict(x, tag) == target and
+      (tags in ["", " [f32lit]", " [context]"] or " [" & wraps(x.e) & "]" == tags) and
+      ("[f32lit]" notin sig or foldVerdict(x, tag, exactF32 = true) == ""))
 
 proc firstFold(a, b: string): (int, int) =
   ## (proc, check) of the folding check where outputs `a` and `b` first differ; (-1, -1) if they first
