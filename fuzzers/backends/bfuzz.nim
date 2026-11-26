@@ -18,12 +18,26 @@
 ## The reducer is difffuzz's: keep the failing `t<i>`, delete statements while
 ## the failure persists, then a line pass.
 ##
+## Folding. Each `t<i>` has a sibling `f<i>` of four constant expressions over
+## literals (the same operators, no float→int conversion, no `pow`). Each is
+## printed as a `const`, a `let` (both folded) and with every literal behind a
+## `{.noinline.}` identity (run time): all three must agree, on every backend.
+## The generator evaluates integer expressions exactly and never makes the
+## documented compile error (signed overflow) or an out-of-range conversion to
+## a signed type, so a refused `const` is a finding too, tagged with what in it
+## wraps (`u+ u- u* shl conv`). Floats are folded at "maximum precision" (as in
+## Nim 2): a `float32` difference that only skipped rounding between operations
+## is counted, not reported; one that rounding the `float32` literals first
+## cures is reported as `[f32lit]`. A differing check is reduced on its own by
+## shrinking its expression.
+##
 ##   nim c -d:release -o:bin/bfuzz bfuzz.nim
 ##   bin/bfuzz --seed:1000000 --count:100 --out:out --work:work
 ##   bin/bfuzz --seed:1234 --emit             # print one program
 ##   bin/bfuzz --backends:c,n --time:600 --noreduce
 ##
-## Every raw finding is appended to `<out>/events.csv`.
+## Every raw finding is appended to `<out>/events.csv` (backend `fold` for the
+## folding checks).
 
 import std / [os, osproc, strutils, random, times, strformat, parseopt, tables]
 
@@ -57,12 +71,33 @@ type
     narrowOvf: bool              ## checked helpers on int8/16/32 too (native: report 90)
     narrowCase: bool             ## `case` with typed narrow labels (l, j, w reject it)
 
+  FoldKind = enum fkLit, fkBin, fkUn, fkCall  ## `lit`, `(a op b)`, `(op a)`, `op(a, …)`
+
+  Fold = ref object              ## a constant expression, kept as a tree to evaluate and shrink it
+    kind: FoldKind
+    ty: Ty
+    op: string                   ## the literal, operator or callee (`sqrt`, `uint8`, `cast[int8]`)
+    kids: seq[Fold]
+
+  FoldCheck = object             ## one check of `f<i>`: its `const`, `let` and run time print alike
+    e: Fold
+    hasConst: bool               ## false once the folder refused the `const` (a finding of its own)
+
+  Val = object                   ## an integer fold's value as the generator computes it
+    known: bool                  ## false for anything that depends on a float
+    bad: bool                    ## not defined to fold: signed overflow (a documented compile error),
+                                 ## a zero divisor, `low div -1`, a shift count outside the width, a
+                                 ## conversion to a signed type that cannot hold the value ("a failure
+                                 ## to convert ... results in an exception")
+    bits: uint64                 ## the value in its type, sign-extended for a signed type
+
   Program = object               ## kept structured so the reducer can edit it
     helpers: seq[Helper]
     bodies: seq[seq[Node]]       ## statement trees, one per `t<i>`
     heads: seq[seq[string]]      ## local declarations, one block per `t<i>`
     printed: seq[seq[string]]    ## what the final `echo` of each `t<i>` prints
     calls: seq[string]           ## `t<i>(…)` call per proc
+    folds: seq[seq[FoldCheck]]   ## the folding checks of `f<i>`, one block per `t<i>`
     narrowOvf: bool
 
   Outcome = enum   # unprefixed: `$outcome` goes into file names and events.csv
@@ -77,6 +112,8 @@ const
   ParamDecl = "p0: uint64; p1: float64; p2: uint32; p3: float32; p4: int32"
   Params = [("p0", tU64), ("p1", tF64), ("p2", tU32), ("p3", tF32), ("p4", tI32)]
   Narrow = [("i8v", tI8), ("i16v", tI16), ("i32v", tI32), ("i64v", tI64), ("u16v", tU16)]
+  FoldTypes = [tU64, tU32, tU8, tU16, tI8, tI16, tI32, tI64, tF64, tF32, tBool]
+  Ints = {tU64, tU32, tU8, tU16, tI8, tI16, tI32, tI64}
 
 proc tyName(t: Ty): string =
   ## The Nim type name of `t`.
@@ -456,6 +493,296 @@ proc stmt(g: var Gen): Node =
 proc stmts(g: var Gen; n: int): seq[Node] =
   for i in 0 ..< n: result.add g.stmt()
 
+# ---- folding checks ---------------------------------------------------------------
+
+proc signed(t: Ty): bool = t in {tI8, tI16, tI32, tI64}
+
+proc norm(t: Ty; b: uint64): uint64 =
+  ## `b` cut to the width of `t`, sign-extended if `t` is signed.
+  let w = bitWidth(t)
+  if t == tBool or w == 64: return b
+  let m = (1'u64 shl w) - 1
+  result = b and m
+  if signed(t) and (result shr (w - 1)) == 1: result = result or not m
+
+proc overflows(op: string; t: Ty; x, y: uint64): bool =
+  ## Does signed `x op y` (`-x` for op "neg") leave `t`? Nimony's folder makes that an error.
+  let (a, b) = (cast[int64](x), cast[int64](y))
+  if bitWidth(t) < 64:   # exact in int64
+    let r = case op
+      of "+": a + b
+      of "-": a - b
+      of "*": a * b
+      else: -a
+    return cast[uint64](r) != norm(t, cast[uint64](r))
+  let r = cast[int64](case op
+    of "+": x + y
+    of "-": x - y
+    of "*": x * y
+    else: 0'u64 - x)
+  case op
+  of "+": ((a xor r) and (b xor r)) < 0
+  of "-": ((a xor b) and (a xor r)) < 0
+  of "*":
+    if a == 0 or b == 0: false
+    elif a == -1: b == low(int64)
+    elif b == -1: a == low(int64)
+    else: r div b != a
+  else: a == low(int64)
+
+proc litBits(s: string): uint64 =
+  ## The value of an integer or bool literal as `lit` and `num` spell it.
+  if s == "true": return 1
+  if s == "false": return 0
+  let n = s.strip(chars = {'(', ')'}).split('\'')[0]
+  if n.startsWith("0x"): fromHex[uint64](n) else: cast[uint64](parseBiggestInt(n))
+
+proc sameInt(s: Ty; x: uint64; t: Ty; y: uint64): bool =
+  ## Are `x` of type `s` and `y` of type `t` the same integer? The same bits, negative on both
+  ## sides or on neither.
+  x == y and (signed(s) and (x shr 63) == 1) == (signed(t) and (y shr 63) == 1)
+
+proc eval(e: Fold): Val =
+  ## The value of fold `e` as Nimony defines it; floats and whatever reads one stay unknown.
+  var xs: seq[Val] = @[]
+  for k in e.kids:
+    xs.add eval(k)
+    result.bad = result.bad or xs[^1].bad
+  var known = e.ty in Ints + {tBool}
+  for x in xs: known = known and x.known
+  if not known: return
+  let t = e.ty
+  let a = if xs.len > 0: xs[0].bits else: 0'u64
+  let b = if xs.len > 1: xs[1].bits else: 0'u64
+  var r = 0'u64
+  case e.kind
+  of fkLit: r = litBits(e.op)
+  of fkUn:
+    if e.op == "-":
+      result.bad = result.bad or overflows("neg", t, a, 0)
+      r = 0'u64 - a
+    elif t == tBool: r = a xor 1
+    else: r = not a
+  of fkCall:                                 # `ord`, conversions and casts between integers
+    r = a
+    if signed(t) and e.op == tyName(t) and not sameInt(e.kids[0].ty, a, t, norm(t, a)): return Val(bad: true)
+  of fkBin:
+    let st = e.kids[0].ty                    # comparisons read their operands' type
+    let lt = if signed(st): cast[int64](a) < cast[int64](b) else: a < b
+    case e.op
+    of "+", "-", "*":
+      if signed(t): result.bad = result.bad or overflows(e.op, t, a, b)
+      r = if e.op == "+": a + b elif e.op == "-": a - b else: a * b
+    of "xor": r = a xor b
+    of "and": r = a and b
+    of "or": r = a or b
+    of "div", "mod":
+      let (x, y) = (cast[int64](a), cast[int64](b))
+      if b == 0 or (signed(t) and y == -1 and overflows("neg", t, a, 0)):
+        return Val(bad: true)
+      if signed(t): r = cast[uint64](if e.op == "div": x div y else: x mod y)
+      else: r = if e.op == "div": a div b else: a mod b
+    of "shl", "shr":
+      if b >= uint64(bitWidth(t)): return Val(bad: true)
+      r = if e.op == "shl": a shl b elif signed(t): cast[uint64](ashr(cast[int64](a), b)) else: a shr b
+    of "<": r = uint64(ord(lt))
+    of "<=": r = uint64(ord(lt or a == b))
+    of "==": r = uint64(ord(a == b))
+    of "!=": r = uint64(ord(a != b))
+    of ">": r = uint64(ord(not lt and a != b))
+    else: r = uint64(ord(not lt))            # >=
+  Val(known: true, bad: result.bad, bits: norm(t, r))
+
+proc shown(t: Ty; v: Val): string =
+  ## How `bitsOf` prints the known value `v` of type `t`.
+  if t == tBool or bitWidth(t) == 64: $v.bits else: $(v.bits and ((1'u64 shl bitWidth(t)) - 1))
+
+proc wraps(e: Fold): string =
+  ## The first operation of `e`, in evaluation order, whose exact result its type cannot hold and
+  ## which Nimony defines to wrap: `u+`, `u-`, `u*`, `shl`, `conv` (a conversion to an unsigned
+  ## type); "" if none. It names what a folder that refuses `e` got wrong.
+  result = ""
+  for k in e.kids:
+    if result.len == 0: result = wraps(k)
+  let t = e.ty
+  if result.len > 0 or t notin Ints or e.kids.len == 0 or e.kids[0].ty notin Ints: return
+  let x = eval(e.kids[0]).bits
+  let y = if e.kids.len > 1: eval(e.kids[1]).bits else: 0'u64
+  let m = if bitWidth(t) == 64: high(uint64) else: (1'u64 shl bitWidth(t)) - 1
+  case e.kind
+  of fkBin:
+    if not signed(t) and e.op in ["+", "-", "*"]:
+      let over = case e.op
+        of "+": x + y < x or x + y > m
+        of "-": x < y
+        else: x != 0 and ((x * y) div x != y or x * y > m)
+      if over: result = "u" & e.op
+    elif e.op == "shl" and y < uint64(bitWidth(t)):
+      let back = if signed(t): cast[uint64](ashr(cast[int64](norm(t, x shl y)), y)) else: norm(t, x shl y) shr y
+      if back != x: result = "shl"
+  of fkCall:   # a cast reinterprets by definition: it does not wrap
+    if e.op == tyName(t) and not sameInt(e.kids[0].ty, x, t, eval(e).bits): result = "conv"
+  else: discard
+
+proc normKey(s: string): string
+
+proc rejectSig(e: Fold; err: string): string =
+  ## The signature of a refused `const`: the error's head, and what wraps (`wraps`) in brackets.
+  let at = err.find("Error: ")
+  var m = (if at >= 0: err.substr(at + "Error: ".len) else: err).splitLines[0]
+  let colon = m.find(": ")
+  if colon >= 0: m.setLen colon
+  let w = wraps(e)
+  "fold:compileFails:" & normKey(m) & " [" & (if w.len > 0: w else: "none") & "]"
+
+proc num(t: Ty; k: int): Fold =
+  ## Literal `k` of type `t`.
+  Fold(kind: fkLit, ty: t, op: (if k < 0: "(" & $k & suffix(t) & ")" else: $k & suffix(t)))
+
+proc fbin(t: Ty; op: string; x, y: Fold): Fold = Fold(kind: fkBin, ty: t, op: op, kids: @[x, y])
+proc fun(t: Ty; op: string; x: Fold): Fold = Fold(kind: fkUn, ty: t, op: op, kids: @[x])
+proc fcall(t: Ty; op: string; xs: varargs[Fold]): Fold = Fold(kind: fkCall, ty: t, op: op, kids: @xs)
+
+proc fold(g: var Gen; t: Ty; depth: int): Fold =
+  ## A constant expression of type `t`: bfuzz's operators over literals. A signed `+ - *` or negation
+  ## that overflows becomes `xor`/`not`, since that overflow is a documented compile-time error. No
+  ## float→int conversion (undefined out of range) and no cast of a float to an int (a NaN's payload is
+  ## not specified, and the folder canonicalizes it).
+  if depth <= 0 or g.chance(0.25): return Fold(kind: fkLit, ty: t, op: g.lit(t))
+  template e(tt: Ty): Fold = g.fold(tt, depth - 1)
+  let ints = [tI8, tI16, tI32, tI64, tU8, tU16, tU32, tU64]
+  var r: Fold
+  case t
+  of tI8, tI16, tI32, tI64:
+    case g.rng.rand(15)
+    of 0..4: r = fbin(t, g.pick(["+", "-", "*"]), e(t), e(t))
+    of 5: r = fbin(t, g.pick(["xor", "and", "or"]), e(t), e(t))
+    # divisor in 1..64, shift count below the width, as in `expr`
+    of 6: r = fbin(t, g.pick(["div", "mod"]), e(t), fbin(t, "+", fbin(t, "and", e(t), num(t, 63)), num(t, 1)))
+    of 7: r = fbin(t, g.pick(["shl", "shr"]), e(t), fbin(t, "and", e(t), num(t, bitWidth(t) - 1)))
+    of 8: r = fun(t, "-", e(t))
+    of 9, 10: r = fcall(t, tyName(t), e(g.pick(ints)))
+    of 11:
+      let src = g.pick([tU8, tU16, tU32, tU64])
+      r = fcall(t, (if bitWidth(src) == bitWidth(t): "cast[" & tyName(t) & "]" else: tyName(t)), e(src))
+    of 12: r = fun(t, "not", e(t))
+    else: r = Fold(kind: fkLit, ty: t, op: g.lit(t))
+  of tU64, tU32, tU8, tU16:
+    case g.rng.rand(13)
+    of 0..5: r = fbin(t, g.pick(["+", "-", "*", "xor", "and", "or"]), e(t), e(t))
+    of 6: r = fbin(t, g.pick(["shl", "shr"]), e(t), fbin(t, "and", e(t), num(t, bitWidth(t) - 1)))
+    of 7: r = fbin(t, g.pick(["div", "mod"]), e(t), fbin(t, "or", e(t), num(t, 1)))
+    of 8: r = fcall(t, tyName(t), e(g.pick(ints)))
+    of 9:
+      let src = case t
+        of tU64: tI64
+        of tU32: tI32
+        of tU16: tI16
+        else: tI8
+      r = fcall(t, "cast[" & tyName(t) & "]", e(src))
+    of 10: r = fcall(t, tyName(t), fcall(tI64, "ord", e(tBool)))
+    of 11: r = fun(t, "not", e(t))
+    else: r = Fold(kind: fkLit, ty: t, op: g.lit(t))
+  of tF64:
+    case g.rng.rand(15)
+    of 0..4: r = fbin(t, g.pick(["+", "-", "*", "/"]), e(t), e(t))
+    of 5: r = fun(t, "-", e(t))
+    of 6: r = fcall(t, "float64", e(g.pick([tI8, tI16, tI32, tI64, tU8, tU16, tU32, tU64, tF32])))
+    of 7: r = fcall(t, "cast[float64]", e(tU64))
+    # no `pow`: libms round it differently
+    of 8: r = fcall(t, g.pick(["sqrt", "floor", "round", "trunc", "ceil", "abs"]), e(t))
+    of 9: r = fcall(t, g.pick(["min", "max"]), e(t), e(t))
+    else: r = Fold(kind: fkLit, ty: t, op: g.lit(t))
+  of tF32:
+    case g.rng.rand(9)
+    of 0..3: r = fbin(t, g.pick(["+", "-", "*", "/"]), e(t), e(t))
+    of 4: r = fcall(t, "float32", e(g.pick([tF64, tI16, tI32, tI64, tU32, tU64])))
+    of 5: r = fcall(t, "cast[float32]", e(tU32))
+    of 6: r = fcall(t, "sqrt", e(t))
+    else: r = Fold(kind: fkLit, ty: t, op: g.lit(t))
+  else:
+    case g.rng.rand(7)
+    of 0..3:
+      let ct = g.pick(FoldTypes[0 .. ^2])
+      r = fbin(t, g.pick(["<", "<=", "==", "!=", ">", ">="]), e(ct), e(ct))
+    of 4: r = fbin(t, g.pick(["and", "or"]), e(t), e(t))
+    of 5: r = fun(t, "not", e(t))
+    else: r = Fold(kind: fkLit, ty: t, op: g.lit(t))
+  if eval(r).bad:
+    if r.kind == fkCall:   # an out-of-range conversion to a signed type: the bits of the unsigned one
+      let u = case t
+        of tI8: tU8
+        of tI16: tU16
+        of tI32: tU32
+        else: tU64
+      r = fcall(t, "cast[" & tyName(t) & "]", fcall(u, tyName(u), r.kids))
+    else: r.op = (if r.kind == fkUn: "not" else: "xor")
+  r
+
+proc render(e: Fold; runtime, exactF32: bool): string =
+  ## The expression's source. `runtime`: every literal passes through `rt_<type>`, so nothing folds.
+  ## `exactF32`: a decimal `float32` literal is spelled as the bits it rounds to (the triage of #95).
+  var xs: seq[string] = @[]
+  for k in e.kids: xs.add render(k, runtime, exactF32)
+  case e.kind
+  of fkLit:
+    var s = e.op
+    if exactF32 and e.ty == tF32 and not s.startsWith("cast"):
+      s = "cast[float32](0x" & toHex(cast[uint32](float32(parseFloat(s[0 ..< ^4])))) & "'u32)"
+    if runtime: "rt_" & tyName(e.ty) & "(" & s & ")" else: s
+  of fkBin: "(" & xs[0] & " " & e.op & " " & xs[1] & ")"
+  of fkUn: (if e.op == "-": "(-(" & xs[0] & "))" else: "(" & e.op & " " & xs[0] & ")")
+  of fkCall: e.op & "(" & xs.join(", ") & ")"
+
+proc hasF32(e: Fold; arith: bool): bool =
+  ## With `arith`: does `e` compute in `float32`? Without: does it have a decimal `float32` literal?
+  result = if arith: e.ty == tF32 and (e.kind == fkBin or e.op == "sqrt")
+           else: e.kind == fkLit and e.ty == tF32 and not e.op.startsWith("cast")
+  for k in e.kids: result = result or hasF32(k, arith)
+
+proc smaller(e: Fold): seq[Fold] =
+  ## `e` with one node replaced by a kid of its type or by a trivial literal (the reducer's steps).
+  for k in e.kids:
+    if k.ty == e.ty: result.add k
+  let one = case e.ty
+    of tF64: "1.0"
+    of tF32: "1.0'f32"
+    of tBool: "true"
+    else: "1" & suffix(e.ty)
+  if e.op != one: result.add Fold(kind: fkLit, ty: e.ty, op: one)
+  for i, k in e.kids:
+    for x in smaller(k):
+      let y = Fold(kind: e.kind, ty: e.ty, op: e.op, kids: e.kids)
+      y.kids[i] = x
+      result.add y
+
+proc rtHelpers(): string =
+  ## `rt_<type>`: an identity the folder cannot see through.
+  for t in FoldTypes:
+    result.add "proc rt_" & tyName(t) & "(x: " & tyName(t) & "): " & tyName(t) & " {.noinline.} = x\n"
+
+proc render(name: string; cs: seq[FoldCheck]; exactF32: bool; res: var string) =
+  ## Proc `name` printing each check's `const` (`-` once refused), `let` and run-time value.
+  res.add "proc " & name & "() =\n"
+  var printed: seq[string] = @[]
+  for k, c in cs:
+    let (t, folded) = (tyName(c.e.ty), render(c.e, false, exactF32))
+    if c.hasConst:
+      res.add "  const c" & $k & ": " & t & " = " & folded & "\n"
+      printed.add bitsOf(c.e.ty, "c" & $k)
+    else:
+      printed.add "\"-\""
+    res.add "  let l" & $k & ": " & t & " = " & folded & "\n"
+    res.add "  let r" & $k & ": " & t & " = " & render(c.e, true, exactF32) & "\n"
+    printed.add [bitsOf(c.e.ty, "l" & $k), bitsOf(c.e.ty, "r" & $k)]
+  res.add "  echo \"" & name & " \", " & printed.join(", \" \", ") & "\n\n"
+
+proc foldProgram(c: FoldCheck; exactF32 = false): string =
+  ## A program of check `c` alone: what the reducer shrinks and the triage rebuilds.
+  result = "# generated by nimony-fuzz/backends/bfuzz.nim\nimport std/[syncio, math]\n\n" & rtHelpers() & "\n"
+  render("f0", @[c], exactF32, result)
+  result.add "f0()\n"
+
 # ---- helpers and procs ----------------------------------------------------------
 
 proc toU64(t: Ty; x: string): string =
@@ -608,6 +935,15 @@ proc generate(seed, nprocs: int): Program =
     result.bodies.add body
     result.printed.add printed
     result.calls.add call
+  for i in 0 ..< nprocs:
+    g.rng = initRand(-(seed * 1000 + i + 1))   # the folds of `f<i>` do not shift `t<i>`
+    var cs: seq[FoldCheck] = @[]
+    for k in 0 ..< 4:
+      let t = g.pick(FoldTypes)
+      var e = g.fold(t, 3)
+      while e.kind == fkLit: e = g.fold(t, 3)   # a lone literal folds to itself
+      cs.add FoldCheck(e: e, hasConst: true)
+    result.folds.add cs
 
 # ---- rendering ------------------------------------------------------------------
 
@@ -645,10 +981,15 @@ proc render(p: Program; only: int = -1): string =
     for l in p.heads[i]: result.add l & "\n"
     for n in p.bodies[i]: render(n, 2, result)
     result.add "  echo \"t" & $i & " \", " & p.printed[i].join(", \" \", ") & "\n\n"
+  if only < 0:
+    result.add rtHelpers() & "\n"
+    for i, cs in p.folds: render("f" & $i, cs, false, result)
   result.add "proc main() =\n"
   for i in 0 ..< p.calls.len:
     if only >= 0 and i != only: continue
     result.add "  " & p.calls[i] & "\n"
+  if only < 0:
+    for i in 0 ..< p.folds.len: result.add "  f" & $i & "()\n"
   result.add "\nmain()\n"
 
 # ---- running ----------------------------------------------------------------------
@@ -711,10 +1052,12 @@ proc buildRun(be, tag: string): Run =
   (true, rc == 0, (if rc == 0: r else: r & "\nexit code " & $rc))
 
 proc runAll(src, tag: string; bes: seq[string]): Table[string, Run] =
-  ## Build and run `src` with each backend in `bes`.
+  ## Build and run `src` with each backend in `bes`, C first: when C does not compile there is no
+  ## oracle and the others are skipped.
   createDir(workDir / tag)
   writeFile(workDir / tag / "fz.nim", src)
-  for be in bes: result[be] = buildRun(be, tag)
+  for be in bes:
+    if "c" notin result or result["c"].compiled: result[be] = buildRun(be, tag)
 
 proc firstDiff(a, b: string): int =
   ## The `t<i>` of the first output line that differs, or -1.
@@ -862,6 +1205,12 @@ proc reduce(p: var Program; target: Verdict; only: int; tag, be: string): string
       if stillFails(p): result = true
       else: p.heads[pi][li] = line
 
+  # The folding checks, unless the failure is in one of them.
+  if only < 0:
+    let folds = p.folds
+    p.folds = @[]
+    if not stillFails(p): p.folds = folds
+
   # Print only the values that differ: everything else printed is a call (and
   # a live range) the miscompile may not need.
   if only >= 0 and target.outcome == mismatch:
@@ -915,6 +1264,117 @@ proc reduce(p: var Program; target: Verdict; only: int; tag, be: string): string
     inc i
   lines.join("\n")
 
+# ---- folding oracle ------------------------------------------------------------------
+#
+# Each `f<i>` prints, for every check, the bits of its `const`, its `let` (both folded) and its run-time
+# value: all three must agree. A `const` the folder refuses is a finding as well: the generator never
+# makes the one documented compile-time error (signed overflow). Nimony, like Nim 2, documents that
+# folding computes floats at "maximum precision": a `float32` result that differs only because the
+# folder skipped rounding between operations is counted, not reported. A `float32` literal is a value
+# of its type, though, so a mismatch that rounding the literals first cures is reported ([f32lit]).
+
+type FoldDiff = tuple[i, k: int; ctx, c, l, r: string]  ## `f<i>` check `k`: what differs, the printed bits
+
+proc foldDiffs(outp: string): seq[FoldDiff] =
+  ## The checks whose `const` or `let` differs from their run-time value in output `outp`.
+  for line in outp.splitLines:
+    if line.len > 1 and line[0] == 'f' and line[1] in Digits:
+      let xs = line.split(' ')
+      for k in 0 ..< (xs.len - 1) div 3:
+        let (c, l, r) = (xs[3*k + 1], xs[3*k + 2], xs[3*k + 3])
+        var ctx: seq[string] = @[]
+        if c != "-" and c != r: ctx.add "const"
+        if l != r: ctx.add "let"
+        if ctx.len > 0: result.add (parseInt(xs[0][1 .. ^1]), k, ctx.join("+"), c, l, r)
+
+proc refuseConsts(p: var Program; src, outp: string; refused: var seq[(int, int, string)]): bool =
+  ## Drops the `const` of every check the C build refused and records (proc, check, error line); true if
+  ## any was dropped, so the program can be built again without them.
+  result = false
+  let lines = src.splitLines
+  for l in outp.splitLines:
+    let at = l.find("fz.nim(")
+    let comma = if at >= 0: l.find(',', at) else: -1
+    if comma > at and "Error" in l:
+      let ln = parseInt(l[at + "fz.nim(".len ..< comma]) - 1
+      if ln in 0 ..< lines.len and lines[ln].startsWith("  const c"):
+        var j = ln
+        while not lines[j].startsWith("proc f"): dec j
+        let i = parseInt(lines[j]["proc f".len ..< lines[j].find('(')])
+        let k = parseInt(lines[ln]["  const c".len ..< lines[ln].find(':')])
+        if p.folds[i][k].hasConst:
+          p.folds[i][k].hasConst = false
+          refused.add (i, k, l)
+          result = true
+
+proc foldVerdict(c: FoldCheck; tag: string; exactF32 = false): string =
+  ## The signature of check `c` built alone, without triage tags; "" if it agrees with run time.
+  createDir(workDir / tag)
+  writeFile(workDir / tag / "fz.nim", foldProgram(c, exactF32))
+  let r = buildRun("c", tag)
+  result = ""
+  if not r.compiled: result = rejectSig(c.e, r.output)
+  else:
+    for d in foldDiffs(r.output):
+      result = "fold:mismatch:" & d.ctx & ":" & tyName(c.e.ty)
+
+proc blame(c: FoldCheck; d: FoldDiff; tag: string): (string, string) =
+  ## (who, signature) of a differing check, or ("", "") for a documented `float32` difference. An
+  ## integer check's value is known: when the folded values have it, C's run time is wrong.
+  let base = "fold:mismatch:" & d.ctx & ":" & tyName(c.e.ty)
+  let v = eval(c.e)
+  if v.known:
+    let want = shown(c.e.ty, v)
+    if d.r != want and d.c in [want, "-"] and d.l == want: ("c", "c:mismatch:")
+    else: ("fold", base)
+  elif not hasF32(c.e, false) and not hasF32(c.e, true): ("fold", base)
+  elif foldVerdict(c, tag) != base: ("fold", base & " [context]")   # differs only in the whole program
+  elif hasF32(c.e, false) and foldVerdict(c, tag, exactF32 = true) == "": ("fold", base & " [f32lit]")
+  elif hasF32(c.e, true): ("", "")
+  else: ("fold", base)
+
+proc shrink(c: var FoldCheck; still: proc (x: FoldCheck): bool): string =
+  ## Shrinks the check's expression while `still` holds and the expression stays defined (`bad`);
+  ## returns the one-check program.
+  var tests = 0
+  var changed = true
+  while changed and tests < budget and not late():
+    changed = false
+    for cand in smaller(c.e):
+      let x = FoldCheck(e: cand, hasConst: c.hasConst)
+      if not changed and tests < budget and not late() and not eval(cand).bad:
+        inc tests
+        if still(x):
+          c.e = cand
+          changed = true
+  foldProgram(c)
+
+proc reduceFold(c: var FoldCheck; sig, tag: string): string =
+  ## Shrinks the check while it keeps signature `sig` (an [f32lit] one: while exact literals still
+  ## cure it).
+  let target = if sig.startsWith("fold:compileFails:"): sig else: sig.split(" [")[0]
+  shrink(c, proc (x: FoldCheck): bool =
+    foldVerdict(x, tag) == target and ("[f32lit]" notin sig or foldVerdict(x, tag, exactF32 = true) == ""))
+
+proc firstFold(a, b: string): (int, int) =
+  ## (proc, check) of the folding check where outputs `a` and `b` first differ; (-1, -1) if they first
+  ## differ elsewhere.
+  let (la, lb) = (a.splitLines, b.splitLines)
+  for i in 0 ..< min(la.len, lb.len):
+    if la[i] != lb[i]:
+      let (xa, xb) = (la[i].split(' '), lb[i].split(' '))
+      if la[i].len < 2 or la[i][0] != 'f' or la[i][1] notin Digits or xa.len != xb.len: return (-1, -1)
+      for k in 0 ..< (xa.len - 1) div 3:
+        if xa[3*k + 1 .. 3*k + 3] != xb[3*k + 1 .. 3*k + 3]: return (parseInt(xa[0][1 .. ^1]), k)
+      return (-1, -1)
+  (-1, -1)
+
+proc reduceFoldOn(c: var FoldCheck; tag, be: string): string =
+  ## Shrinks a check that backend `be` prints differently from C, while it still does.
+  shrink(c, proc (x: FoldCheck): bool =
+    let r = runAll(foldProgram(x), tag, @["c", be])
+    r["c"].ran and be in r and (not r[be].compiled or r[be].output != r["c"].output))
+
 # ---- driver ------------------------------------------------------------------------
 
 proc main() =
@@ -953,50 +1413,87 @@ proc main() =
     if be != "c": others.add be
   let t0 = epochTime()
   if minutes > 0: deadline = t0 + minutes * 60
-  var found, invalidCount, programs = 0
+  var found, invalidCount, programs, folds, documented = 0
   var perBe = initCountTable[string]()
   var seen = initCountTable[string]()    # findings per signature
   let events = open(outDir / "events.csv", fmAppend)
   events.writeLine "time_s,programs,backend,outcome,signature,seed,file"
+  proc record(who: string; outcome: Outcome; sig: string; seed: int; base: string) =
+    ## Counts a finding and appends it to events.csv.
+    seen.inc sig
+    perBe.inc who
+    inc found
+    let csig = sig.replace("\"", "'").replace(",", ";")
+    events.writeLine &"{int(epochTime() - t0)},{programs},{who},{outcome},{csig},{seed},{base}.nim"
+    events.flushFile()
   for k in 0 ..< count:
     if minutes > 0 and epochTime() - t0 > minutes * 60: break
     let seed = first + k
     var p = generate(seed, nprocs)
     let tag = "s" & $seed
-    let src = render(p)
-    let runs = runAll(src, tag, backends)
+    var src = render(p)
+    var runs = runAll(src, tag, backends)
     inc programs
+    # a `const` the folder refuses is a finding; the program is built again without it
+    var refused: seq[(int, int, string)] = @[]
+    while not runs["c"].compiled and refuseConsts(p, src, runs["c"].output, refused):
+      src = render(p)
+      runs = runAll(src, tag, backends)
+    var line = &"seed {seed}:"
+    for (i, k, err) in refused:
+      var c = p.folds[i][k]
+      c.hasConst = true
+      let sig = rejectSig(c.e, err)
+      let base = outDir / &"fold_compileFails_{seed}_f{i}_{k}"
+      record("fold", compileFails, sig, seed, base)
+      line.add &" [fold compileFails f{i}.{k}]"
+      writeFile(base & ".nim", foldProgram(c))
+      writeFile(base & ".c.txt", err & "\n")
+      if doReduce and seen[sig] <= 1: writeFile(base & ".reduced.nim", reduceFold(c, sig, tag & "f"))
     if not runs["c"].compiled or not runs["c"].ran:
       inc invalidCount
       echo &"seed {seed}: INVALID (generator bug; C side failed)"
       writeFile(outDir / &"invalid_{seed}.nim", src)
       writeFile(outDir / &"invalid_{seed}.txt", runs["c"].output)
       continue
+    for cs in p.folds: folds += cs.len
+    for d in foldDiffs(runs["c"].output):
+      var c = p.folds[d.i][d.k]
+      let (who, sig) = blame(c, d, tag & "f")
+      if who.len == 0: inc documented
+      else:
+        let base = outDir / &"{who}_mismatch_{seed}_f{d.i}_{d.k}"
+        record(who, mismatch, sig, seed, base)
+        line.add &" [{who} mismatch f{d.i}.{d.k}]"
+        writeFile(base & ".nim", src)
+        writeFile(base & ".c.txt", &"const {d.c}\nlet {d.l}\nrun time {d.r}\n")
+        if doReduce and who == "fold" and seen[sig] <= maxReduce:
+          writeFile(base & ".reduced.nim", reduceFold(c, sig, tag & "f"))
     var verdicts = initTable[string, Verdict]()
     for be in others: verdicts[be] = classify(runs, be)
     # C suspect: every other backend ran, they all agree, and C alone differs
     var cSuspect = others.len >= 2
     for be in others:
       if verdicts[be].outcome != mismatch or runs[be].output != runs[others[0]].output: cSuspect = false
-    var line = &"seed {seed}:"
     for be in (if cSuspect: @[others[0]] else: others):
       let r = verdicts[be]
       if r.outcome == okSame: continue
       let who = if cSuspect: "c" else: be
       let sig = who & ":" & $r.outcome & ":" & (if r.outcome == compileFails: normKey(r.detail) else: "")
-      seen.inc sig
-      perBe.inc who
-      inc found
-      line.add &" [{who} {r.outcome} t{r.badProc}]"
       let base = outDir / &"{who}_{r.outcome}_{seed}"
+      record(who, r.outcome, sig, seed, base)
+      line.add &" [{who} {r.outcome} t{r.badProc}]"
       writeFile(base & ".nim", src)
       writeFile(base & ".c.txt", r.outC)
       writeFile(base & "." & be & ".txt", (if r.outcome == compileFails: r.detail else: r.outOther))
-      let csig = sig.replace("\"", "'").replace(",", ";")
-      events.writeLine &"{int(epochTime() - t0)},{programs},{who},{r.outcome},{csig},{seed},{base}.nim"
-      events.flushFile()
       # a compile error's signature names one bug; all mismatches share one signature
-      if doReduce and seen[sig] <= (if r.outcome == compileFails: 1 else: maxReduce):
+      let (fi, fk) = if r.outcome == mismatch: firstFold(r.outC, r.outOther) else: (-1, -1)
+      if doReduce and fi >= 0 and seen[sig] <= maxReduce:
+        # the backends first differ in a folding check: reduce that check alone
+        var c = p.folds[fi][fk]
+        writeFile(base & ".reduced.nim", reduceFoldOn(c, tag & "f", be))
+        echo &"  reduced to check f{fi}.{fk}: {base}.reduced.nim"
+      elif doReduce and seen[sig] <= (if r.outcome == compileFails: 1 else: maxReduce):
         var only = r.badProc
         # reduce `t<badProc>` alone only if it fails without the other procs
         if only >= 0 and not sameFailure(check(render(p, only), tag, be), r): only = -1
@@ -1009,10 +1506,12 @@ proc main() =
         echo &"  reduced to {reduced.countLines} lines: {base}.reduced.nim"
     if line.endsWith(":"): line.add " same"
     removeDir(workDir / tag)
+    removeDir(workDir / tag & "f")
     echo &"{int(epochTime() - t0)}s ", line
   events.close()
   echo &"{programs} programs, {found} findings, {invalidCount} invalid (generator), " &
        &"wall {int(epochTime() - t0)}s — {outDir}"
+  echo &"  {folds} folds checked, {documented} float32 differences of documented precision (not findings)"
   for be, n in perBe: echo &"  {be}: {n} raw findings"
   for sig, n in seen: echo &"  {n}x {sig}"
 
