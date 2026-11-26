@@ -599,8 +599,8 @@ proc shown(t: Ty; v: Val): string =
 
 proc wraps(e: Fold): string =
   ## The first operation of `e`, in evaluation order, whose exact result its type cannot hold and
-  ## which Nimony defines to wrap: `u+`, `u-`, `u*`, `shl`, `conv` (a conversion to an unsigned
-  ## type); "" if none. It names what a folder that refuses `e` got wrong.
+  ## which Nimony defines to wrap: `u+`, `u-`, `u*`, `shl`; "" if none. It names what a folder that
+  ## refuses `e` got wrong. (Conversions and casts to an unsigned type wrap too, but they fold right.)
   result = ""
   for k in e.kids:
     if result.len == 0: result = wraps(k)
@@ -620,8 +620,6 @@ proc wraps(e: Fold): string =
     elif e.op == "shl" and y < uint64(bitWidth(t)):
       let back = if signed(t): cast[uint64](ashr(cast[int64](norm(t, x shl y)), y)) else: norm(t, x shl y) shr y
       if back != x: result = "shl"
-  of fkCall:   # a cast reinterprets by definition: it does not wrap
-    if e.op == tyName(t) and not sameInt(e.kids[0].ty, x, t, eval(e).bits): result = "conv"
   else: discard
 
 proc normKey(s: string): string
@@ -1483,7 +1481,13 @@ proc main() =
       let r = verdicts[be]
       if r.outcome == okSame: continue
       let who = if cSuspect: "c" else: be
-      let sig = who & ":" & $r.outcome & ":" & (if r.outcome == compileFails: normKey(r.detail) else: "")
+      let (fi, fk) = if r.outcome == mismatch: firstFold(r.outC, r.outOther) else: (-1, -1)
+      # a mismatch in a folding check names the check and what wraps in it, as a fold finding does
+      let w = if fi >= 0: wraps(p.folds[fi][fk].e) else: ""
+      let sig = who & ":" & $r.outcome & ":" & (if r.outcome == compileFails: normKey(r.detail)
+                                                 elif fi < 0: ""
+                                                 elif w.len > 0: "fold [" & w & "]"
+                                                 else: "fold")
       let base = outDir / &"{who}_{r.outcome}_{seed}"
       record(who, r.outcome, sig, seed, base)
       line.add &" [{who} {r.outcome} t{r.badProc}]"
@@ -1491,7 +1495,6 @@ proc main() =
       writeFile(base & ".c.txt", r.outC)
       writeFile(base & "." & be & ".txt", (if r.outcome == compileFails: r.detail else: r.outOther))
       # a compile error's signature names one bug; all mismatches share one signature
-      let (fi, fk) = if r.outcome == mismatch: firstFold(r.outC, r.outOther) else: (-1, -1)
       if doReduce and fi >= 0 and seen[sig] <= maxReduce:
         # the backends first differ in a folding check: reduce that check alone
         var c = p.folds[fi][fk]
