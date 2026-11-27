@@ -81,11 +81,12 @@ could not find symbol: `ii.N
 `continue` outside of a `loop`
 trackers.nim(N; N)
 lab/jmp operand is not a symbol
-# the same collision as an unlabeled `ii` jump target (native) and a C return-type clash (CI run 45844034856)
-Symbol is not a label
+# the same collision as a C return-type clash (CI run 45844034856)
 incompatible types when returning type
 Unknown or invalid symbol: `ii.
 Jump target must be label
+# planetis-m/nimony-bugs-fuzzers#112: nifasm `Symbol is not a label` on closure-iterator programs
+Symbol is not a label
 # planetis-m/nimony-bugs-fuzzers#120: native, `except ErrorCode as e` in an inline iterator inlined into a closure
 getOrQuit: missing key
 statement not eliminated: for
